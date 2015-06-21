@@ -1,7 +1,7 @@
 {
     "name": "awsp/ship",
     "description": "A shipping abstraction library written in PHP",
-    "homepage": "https://github.com/alexfraundorf-com/ship",
+    "homepage": "https://bitbucket.org/alexfraundorf_com/awsp-ship",
     "license": "MIT",
     "authors": [
         {
