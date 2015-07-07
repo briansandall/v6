@@ -1,3 +1,26 @@
+Adapted from Alex Fraundorf's project at https://bitbucket.org/alexfraundorf_com/awsp-ship
+
+Purpose:
+
+The original example code by Alex Fraundorf assumes that the packages are already
+known, but for many, especially E-Commerce sites, this is likely not the case.
+
+The purpose of this adaptation, therefore, is to provide a means to pack products,
+specifically so that any packing algorithm may be used, and that any algorithm may
+be easily swapped for any other.
+
+A default packing implementation is provided that packs all items individually,
+subject to the shipper's size and weight requirements. More complex algorithms that
+fit multiple products per box, favor packages below the 'large package' threshold,
+expect data Objects instead of arrays for the items to pack, etc., once developed,
+can be used by changing just one line of code.
+
+Copyright (c) 2015 Brian Sandall
+Original license and disclaimer(s) apply (see below).
+
+-------------------------------------------------------------------------------------------------------
+Original Readme
+-------------------------------------------------------------------------------------------------------
 -- Stay tuned.  A new and improved version of this module is coming soon!
 
 

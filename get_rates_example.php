@@ -3,9 +3,10 @@
  * Basic example usage of the AWSP Shipping class to obtain rates.
  * 
  * @package Awsp Shipping Package
- * @author Alex Fraundorf - AlexFraundorf.com
+ * @author Brian Sandall (originally by Alex Fraundorf - AlexFraundorf.com)
+ * @copyright (c) 2015 Brian Sandall
  * @copyright (c) 2012-2013, Alex Fraundorf and AffordableWebSitePublishing.com LLC
- * @version 04/19/2013 - NOTICE: This is beta software.  Although it has been tested, there may be bugs and 
+ * @version 07/07/2015 - NOTICE: This is beta software.  Although it has been tested, there may be bugs and 
  *      there is plenty of room for improvement.  Use at your own risk.
  * @since 12/02/2012
  * @license MIT License http://www.opensource.org/licenses/mit-license.php
@@ -17,95 +18,97 @@ use \Awsp\Ship as Ship;
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
-// require the config file and the autoloader file
+// require the config file (autoloader file already included by config)
 require_once('includes/config.php');
-require_once('includes/autoloader.php');
 
+// The first order of business is to retrieve all ordered items and package them.
+// Items may be arrays or any custom Object type, usually as dictated by the choice
+// of ECommerce framework. The default IPacker implementation expects an array type.
+// Normally the items to ship are retrieved from the user's shopping cart.
+
+// An item with the minimum information required to be packable into a Package:
+$item1 = array(
+    'weight' => 11.34,
+    'length' => 14.2,
+    'width'  => 16.8,
+    'height' => 26.34
+);
+
+// An item with some extra options, as well as in quantity:
+$item2 = array(
+    'weight'   => 24,
+    'length'   => 10,
+    'width'    => 6,
+    'height'   => 12,
+    'quantity' => 3,
+    'options'  => array(
+        'signature_required' => true, 
+        'insured_amount'     => 274.95
+    )
+);
+
+// These are the default (UPS) measurements in LBS and INCHES; convert / change as needed
+$max_package_weight = 150;
+$max_package_length = 108;
+$max_package_size   = 165;
+
+// The default packing implementation provided packs all items separately, but the packing
+// algorithm can be changed simply by changing this line to use a different IPacker implementation.
+$packer = new Ship\DefaultPacker($max_package_weight, $max_package_length, $max_package_size, false);
+
+// Stores any items that could not be packed so we can display an error message to the user
+$not_packed = array();
+
+// Make the actual packages to ship
+$packages = $packer->makePackages(array($item1, $item2), $not_packed);
+
+// Exit with error message if any items could not be packed - these need special attention
+// or may not even be shippable. Customer may still order other items after removing the
+// items listed here from their cart.
+if (!empty($not_packed)) {
+    $not_shipped = '';
+    foreach ($not_packed as $p) {
+        $not_shipped .= $p['name'];
+    }
+    exit("<p>The following items are not eligible for shipping via UPS - please call to order:</p><p><strong>$not_shipped</strong></p>");
+}
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// The $shipmentData array is information you have received from your user.  Always validate and sanitize user input!
+// The $ship_to Address is information you have received from your user.  Always validate and sanitize user input!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-// initialize the $shipmentData array
-$shipmentData = array();
+// if ship_from is null, the default shipper address from the config is used
+$ship_from = null;
+$ship_to = new Ship\Address(array(
+        'name'           => 'XYZ Corporation',
+        'attention'      => 'Attn: Bill',
+        'phone'          => '555-123-4567',
+        'email'          => '',
+        'address1'       => '2 Massachusetts Ave NE',
+        'address2'       => 'Suite 100',
+        'address3'       => 'Room 5C', // not supported by all shippers
+        'city'           => 'Washington',
+        'state'          => 'DC',
+        'postal_code'    => '20212',
+        'country_code'   => 'US',
+        'is_residential' => false
+    )
+);
 
-// shipping from location information (if different than shipper's information)
-$shipmentData['ship_from_different_address'] = false;
-// if $shipmentData['ship_from_different_address'] is true, the following information must be completed
-$shipmentData['shipping_from_name'] = null;
-$shipmentData['shipping_from_attention_name'] = null;
-$shipmentData['shipping_from_phone'] = null;
-$shipmentData['shipping_from_email'] = null;
-$shipmentData['shipping_from_address1'] = null;
-$shipmentData['shipping_from_address2'] = null;
-$shipmentData['shipping_from_address3'] = null;
-$shipmentData['shipping_from_city'] = null;
-$shipmentData['shipping_from_state'] = null;
-$shipmentData['shipping_from_postal_code'] = null;
-$shipmentData['shipping_from_country_code'] = null;
-
-// receiver information
-$shipmentData['receiver_name'] = 'XYZ Corporation';
-$shipmentData['receiver_attention_name'] = 'Attn: Bill';
-$shipmentData['receiver_phone'] = '555-123-4567';
-$shipmentData['receiver_email'] = '';
-$shipmentData['receiver_address1'] = '2 Massachusetts Ave NE';
-$shipmentData['receiver_address2'] = 'Suite 100';
-$shipmentData['receiver_address3'] = 'Room 5C'; // not supported by all shippers
-$shipmentData['receiver_city'] = 'Washington';
-$shipmentData['receiver_state'] = 'DC';
-$shipmentData['receiver_postal_code'] = '20212';
-$shipmentData['receiver_country_code'] = 'US';
-$shipmentData['receiver_is_residential'] = false; // true or false
-
-
-// create a Shipment object
+// create a Shipment object with the provided addresses and packed items
 try {
-    $Shipment = new Ship\Shipment($shipmentData); 
+    $shipment = new Ship\Shipment($ship_to, $ship_from, $packages);
 }
 // catch any exceptions 
 catch(\Exception $e) {
     exit('<br /><br />Error: ' . $e->getMessage() . '<br /><br />');    
 }
-
-// create a Package object and add it to the Shipment (a shipment can have multiple packages)
-// this package is 24 pounds, has dimensions of 10 x 6 x 12 inches, has an insured value of $274.95 and is being sent 
-//      signature required
-try {
-    $Package1 = new Ship\Package(
-            24, // weight 
-            array(10, 6, 12), // dimensions
-            array( // options
-                'signature_required' => true, 
-                'insured_amount' => 274.95
-            )
-        );
-    $Shipment->addPackage($Package1);
-}
-// catch any exceptions 
-catch(\Exception $e) {
-    exit('<br /><br />Error: ' . $e->getMessage() . '<br /><br />');    
-}
-
-// optional - create additional Package(s) and add them to the Shipment
-// note: weight and dimensions can be integers or floats, although UPS alwasy rounds up to the next whole number
-// this package is 11.34 pounds and has dimensions of 14.2 x 16.8 x 26.34 inches
-try {
-    $Package2 = new Ship\Package(11.34, array(14.2, 16.8, 26.34));
-    $Shipment->addPackage($Package2);
-}
-// catch any exceptions 
-catch(\Exception $e) {
-    exit('<br /><br />Error: ' . $e->getMessage() . '<br /><br />');    
-}
-
-
 
 // UPS rates -----------------------------------------------------------------------------------------------------------
 // interface with the desired shipper plugin object
 try {
     // create the shipper object and pass it the Shipment object and config data array
-    $Ups = new Ship\Ups($Shipment, $config);
+    $Ups = new Ship\Ups($shipment, $config);
     // calculate rates for shipment - returns an instance of RatesResponse
     $rates = $Ups->getRate();
 }
