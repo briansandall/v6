@@ -4,14 +4,14 @@
  * sub-classes to determine how each item is to be packaged. This allows each item to be any
  * type required by the individual software, instead of only allowing standard arrays.
  *
- * @package Awsp Shipping Package
+ * @package Awsp Packer Package
  * @author Brian Sandall
  * @copyright (c) 2015 Brian Sandall
  * @version 07/07/2015 - NOTICE: This is beta software.  Although it has been tested, there may be bugs and 
  *      there is plenty of room for improvement.  Use at your own risk.
  * @license MIT License http://www.opensource.org/licenses/mit-license.php
  */
-namespace Awsp\Ship;
+namespace Awsp\Packer;
 
 abstract class AbstractPacker implements IPacker
 {
@@ -72,7 +72,7 @@ abstract class AbstractPacker implements IPacker
      *               have a quantity greater than one
      * @throws InvalidArgumentException if the item cannot be packaged for any reason
      * @throws UnexpectedValueException may be thrown when creating the Package
-     * @return Array of one or more Packages
+     * @return Array of one or more Awsp\Ship\Package objects
      */
     protected abstract function getPackageWorker($item);
 

@@ -3,14 +3,14 @@
  * Default packer implementation packages each item individually within the constraints provided.
  * Each item is represented by an array.
  *
- * @package Awsp Shipping Package
+ * @package Awsp Packer Package
  * @author Brian Sandall
  * @copyright (c) 2015 Brian Sandall
  * @version 07/07/2015 - NOTICE: This is beta software.  Although it has been tested, there may be bugs and 
  *      there is plenty of room for improvement.  Use at your own risk.
  * @license MIT License http://www.opensource.org/licenses/mit-license.php
  */
-namespace Awsp\Ship;
+namespace Awsp\Packer;
 
 class DefaultPacker extends AbstractPacker
 {
@@ -44,7 +44,7 @@ class DefaultPacker extends AbstractPacker
             $weight = max(0.1, ($weight / $quantity));
         }
         $options = (empty($item['options']) || !is_array($item['options']) ? array() : $item['options']);
-        $package = new Package($weight, array($length, $width, $height), $options);
+        $package = new \Awsp\Ship\Package($weight, array($length, $width, $height), $options);
         if ($package->get('weight') > $this->max_weight || $package->get('length') > $this->max_length || $package->get('size') > $this->max_size) {
             throw new \InvalidArgumentException("Item exceeds maximum package weight or size requirements");
         }

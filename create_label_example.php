@@ -2,7 +2,6 @@
 /**
  * Basic example usage of the AWSP Shipping class to create a shipping label(s).
  * 
- * @package Awsp Shipping Package
  * @author Brian Sandall (originally by Alex Fraundorf - AlexFraundorf.com)
  * @copyright (c) 2015 Brian Sandall
  * @copyright (c) 2012-2013, Alex Fraundorf and AffordableWebSitePublishing.com LLC
@@ -13,6 +12,7 @@
  * 
  */
 use \Awsp\Ship as Ship;
+use \Awsp\Packer as Packer;
 
 // display all errors while in development
 error_reporting(E_ALL);
@@ -54,7 +54,7 @@ $max_package_size   = 165;
 
 // The default packing implementation provided packs all items separately, but the packing
 // algorithm can be changed simply by changing this line to use a different IPacker implementation.
-$packer = new Ship\DefaultPacker($max_package_weight, $max_package_length, $max_package_size, false);
+$packer = new Packer\DefaultPacker($max_package_weight, $max_package_length, $max_package_size, false);
 
 // Stores any items that could not be packed so we can display an error message to the user
 $not_packed = array();
