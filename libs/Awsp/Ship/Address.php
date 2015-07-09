@@ -20,11 +20,12 @@ class Address
      * Constructs address object from the given array.
      * Required elements: 'address1', 'city', 'state', 'postal_code', 'country_code'
      * Allowed array elements: 'name','attention','phone','email','address1','address2','address3','city','state','postal_code','country_code','is_residential'
+     * @param $validateAsLabel If true, 'name' and 'phone' fields will also be required
      */
-    public function __construct(array $data = array()) {
+    public function __construct(array $data = array(), $validateAsLabel = true) {
         $this->data = $data;
         $this->sanitizeInput();
-        $this->validate();
+        $this->validate($validateAsLabel);
     }
 
     /**
@@ -56,11 +57,14 @@ class Address
 
     /**
      * Checks that the Address object is valid; if not, an exception is thrown.
-     * Note that 'name' and 'phone' are also required fields when creating labels.
+     * @param $isLabel If true, 'name' and 'phone' fields will also be required
      * @throws UnexpectedValueException if Address object is not valid
      */
-    protected function validate() {
+    protected function validate($isLabel) {
         $required_fields = array('address1', 'city', 'state', 'postal_code', 'country_code');
+        if ($isLabel) {
+            $required_fields = array_merge(array('name', 'phone'), $required_fields);
+        }
         $invalid_properties = null;
         foreach ($required_fields as $field) {
             if ($this->data[$field] == null) {
