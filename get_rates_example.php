@@ -62,6 +62,28 @@ $not_packed = array();
 // Make the actual packages to ship
 $packages = $packer->makePackages(array($item1, $item2), $not_packed);
 
+/*
+// Example using vendor-based packing algorithms (OpenCart, in this case)
+// Assumed that the following code is placed in OpenCart's shipping/ups.php model or its equivalent
+// Note that the OpenCart packing implementations convert measurements based on store settings,
+// so the constructor arguments do not need to be updated when those settings change.
+
+// Choose a packing algorithm:
+// 1. The same default packing algorithm as before but with OpenCart's measurement conversion capabilities
+$packer = new Packer\Vendor\OpenCart\DefaultPacker($this->registry, 'ups', 150, 108, 165, 'lb', 'in');
+
+// 2. A packing algorithm that packs as many of the same product into each package as possible without becoming oversize or overweight
+$packer = (new Packer\Vendor\OpenCart\PackByProduct($this->registry, 'ups', 150, 108, 165, 'lb', 'in'))->setPreferredWeight(70, 'lb')->setPreferredSize(130, 'in');
+
+// Then create packages using the shopping cart contents:
+$packages = $packer->makePackages($this->cart->getProducts(), $notPacked);
+
+// Update the AWSP $config array based on shipper / store settings so API request uses correct units
+$config['weight_unit'] = strtoupper($this->registry->get('weight')->getUnit($this->config->get('ups_weight_class_id')));
+$config['dimension_unit'] = strtoupper($this->registry->get('length')->getUnit($this->config->get('ups_length_class_id')));
+$config['currency_code'] = strtoupper($this->registry->get('currency')->getCode());
+*/
+
 // Exit with error message if any items could not be packed - these need special attention
 // or may not even be shippable. Customer may still order other items after removing the
 // items listed here from their cart.
