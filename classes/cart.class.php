@@ -765,6 +765,9 @@ class Cart {
 					$this->basket['contents'][$hash]['name']     = $product['name'];
 					$this->basket['contents'][$hash]['product_code']   = $product['product_code'];
 					$this->basket['contents'][$hash]['product_weight']   = $product['product_weight'];
+					$this->basket['contents'][$hash]['product_length']   = $product['product_length'];
+					$this->basket['contents'][$hash]['product_height']   = $product['product_height'];
+					$this->basket['contents'][$hash]['product_width']   = $product['product_width'];
 				} else {
 					if (!isset($item['certificate'])) {
 						continue;
