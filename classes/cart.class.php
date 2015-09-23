@@ -706,6 +706,9 @@ class Cart {
 											$value['price_display'] .= $GLOBALS['tax']->priceFormat($display_option_tax, true);
 										}
 										$product['product_weight'] += (isset($value['option_weight'])) ? $value['option_weight'] : 0;
+										$product['product_length'] += (isset($value['option_length'])) ? $value['option_length'] : 0;
+										$product['product_height'] += (isset($value['option_height'])) ? $value['option_height'] : 0;
+										$product['product_width'] += (isset($value['option_width'])) ? $value['option_width'] : 0;
 										$value['value_name'] = $option_value;
 										$product['options'][] = $value;
 									}
@@ -751,6 +754,9 @@ class Cart {
 											}
 										}
 										$product['product_weight'] += (isset($value['option_weight'])) ? $value['option_weight'] : 0;
+										$product['product_length'] += (isset($value['option_length'])) ? $value['option_length'] : 0;
+										$product['product_height'] += (isset($value['option_height'])) ? $value['option_height'] : 0;
+										$product['product_width'] += (isset($value['option_width'])) ? $value['option_width'] : 0;
 										$product['options'][] = $value;
 										
 									}
