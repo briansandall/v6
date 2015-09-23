@@ -52,6 +52,10 @@ class PackByProduct extends AbstractOCPacker
         }
         extract($array);
         
+        // Make sure length is the longest dimension before attempting to build packages
+        $lwh = array($length, $width, $height);
+        rsort($lwh, SORT_NUMERIC);
+        
         // Determine individual item weight and optimal quantity per package based on weight
         $this->item_weight = $this->weight->convert($weight, $item['weight_class_id'], $this->weight_class_id);
         $quantity = filter_var($item['quantity'], FILTER_VALIDATE_INT, array('options' => array('default' => 1, 'min_range' => 1)));
@@ -59,9 +63,9 @@ class PackByProduct extends AbstractOCPacker
         $this->optimal_weight_quantity = max(1, $this->preferred_weight / $this->item_weight);
         
         // Item dimensions and optimal quantity per package based on size
-        $this->item_length = $this->length->convert($length, $item['length_class_id'], $this->length_class_id);
-        $this->item_width = $this->length->convert($width, $item['length_class_id'], $this->length_class_id);
-        $this->item_height = $this->length->convert($height, $item['length_class_id'], $this->length_class_id);
+        $this->item_length = $this->length->convert($lwh[0], $item['length_class_id'], $this->length_class_id);
+        $this->item_width = $this->length->convert($lwh[1], $item['length_class_id'], $this->length_class_id);
+        $this->item_height = $this->length->convert($lwh[2], $item['length_class_id'], $this->length_class_id);
         $this->optimal_size_quantity = max(1, ((($this->preferred_size - $this->item_length) / 2) - $this->item_height) / $this->item_width);
         
         // Default item options, e.g. packaging type, signature required, etc.

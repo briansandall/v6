@@ -44,7 +44,7 @@ class DefaultPacker extends AbstractOCPacker
         $weight = $this->weight->convert($weight, $item['weight_class_id'], $this->weight_class_id);
         $weight = max(0.1, $weight / $quantity);
         
-        // Convert item dimensions based on current measurement unit settings
+        // Convert item dimensions based on current measurement unit settings (will be sorted in Package constructor)
         $length = $this->length->convert($length, $item['length_class_id'], $this->length_class_id);
         $width = $this->length->convert($width, $item['length_class_id'], $this->length_class_id);
         $height = $this->length->convert($height, $item['length_class_id'], $this->length_class_id);
