@@ -60,13 +60,14 @@ class PackByProduct extends AbstractOCPacker
         $this->item_weight = $this->weight->convert($weight, $item['weight_class_id'], $this->weight_class_id);
         $quantity = filter_var($item['quantity'], FILTER_VALIDATE_INT, array('options' => array('default' => 1, 'min_range' => 1)));
         $this->item_weight = max(0.1, $this->item_weight / $quantity);
-        $this->optimal_weight_quantity = max(1, $this->preferred_weight / $this->item_weight);
+        $this->optimal_weight_quantity = (int) max(1, floor($this->preferred_weight / $this->item_weight));
         
         // Item dimensions and optimal quantity per package based on size
         $this->item_length = $this->length->convert($lwh[0], $item['length_class_id'], $this->length_class_id);
         $this->item_width = $this->length->convert($lwh[1], $item['length_class_id'], $this->length_class_id);
         $this->item_height = $this->length->convert($lwh[2], $item['length_class_id'], $this->length_class_id);
-        $this->optimal_size_quantity = max(1, ((($this->preferred_size - $this->item_length) / 2) - $this->item_height) / $this->item_width);
+        // Size = l + 2n(w + h), assuming 'square' proportions, so optimal n = (s - l) / 2(w + h), fitting n-squared items
+        $this->optimal_size_quantity = (int) max(1, floor(($this->preferred_size - $this->item_length) / (2 * ($this->item_width + $this->item_height))));
         
         // Default item options, e.g. packaging type, signature required, etc.
         // ['options'] is not part of the default OpenCart product model, but could be as part of a module
@@ -100,7 +101,12 @@ class PackByProduct extends AbstractOCPacker
             $weight = $this->item_weight * $quantity;
             $width = $width_modifier * $this->item_width;
             $height = $height_modifier * $this->item_height;
-            $total_size = $this->item_length + (2 * ($width + $height));
+            // Re-sort dimensions, in case width or height now exceeds length
+            $lwh = array($item['length'], $width, $height);
+            rsort($lwh);
+            $lwh = array_combine(array('length','width','height'), $lwh); // re-add array keys
+            extract($lwh);
+            $total_size = $length + (2 * ($width + $height));
             if ($weight > $this->max_weight || $total_size > $this->max_size 
                 || ($total_size > $this->preferred_size && $quantity > $this->optimal_size_quantity) 
                 || ($weight > $this->preferred_weight && $quantity > $this->optimal_weight_quantity))
@@ -120,8 +126,7 @@ class PackByProduct extends AbstractOCPacker
                 if ($this->requires_insurance || array_key_exists('insured_amount', $options)) {
                     $options['insured_amount'] = $item['total'];
                 }
-                $package = new \Awsp\Ship\Package($weight, array($this->item_length, $width, $height), $options);
-                $packages[] = $package;
+                $packages[] = new \Awsp\Ship\Package($weight, array($length, $width, $height), $options);
             }
         }
         return $packages;
