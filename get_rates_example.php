@@ -90,9 +90,9 @@ $config['currency_code'] = strtoupper($this->registry->get('currency')->getCode(
 if (!empty($not_packed)) {
     $not_shipped = '';
     foreach ($not_packed as $p) {
-        $not_shipped .= $p['name'];
+        $not_shipped .= '<p><strong>' . (empty($p['name']) ? 'Unknown Item' : $p['name']) . '</strong>' . (empty($p['error']) ? '' : " - Error: $p[error]") . '</p>';
     }
-    exit("<p>The following items are not eligible for shipping via UPS - please call to order:</p><p><strong>$not_shipped</strong></p>");
+    exit("<p>The following items are not eligible for shipping via UPS - please call to order:</p>$not_shipped");
 }
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

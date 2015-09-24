@@ -59,6 +59,7 @@ abstract class AbstractPacker implements IPacker
                     $packages = array_merge($packages, $packed);
                 }
             } catch (\Exception $e) {
+                $item['error'] = $e->getMessage(); // allows error message to be displayed
                 $notPacked[] = $item;
             }
         }
