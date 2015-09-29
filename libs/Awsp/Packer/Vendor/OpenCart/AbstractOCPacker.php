@@ -46,10 +46,10 @@ abstract class AbstractOCPacker extends \Awsp\Packer\AbstractPacker
     /**
      * Abstract OpenCart packer requires maximum allowed weight, length, and total size.
      * All units are converted based on shipper module settings.
-     * @param object  $registry        Registry object from OpenCart
-     * @param string  $shipper_prefix  Prefix used to retrieve shipping information from OpenCart's config file
-     * @param integer $weight_code     Measurement unit code for the weight parameter (default is 'lb')
-     * @param integer $length_code     Measurement unit code for the length parameter (default is 'in')
+     * @param object $registry        Registry object from OpenCart
+     * @param string $shipper_prefix  Prefix used to retrieve shipping information from OpenCart's config file
+     * @param string $weight_code     Measurement unit code for all weight parameters (default is 'lb')
+     * @param string $length_code     Measurement unit code for all length parameters (default is 'in')
      */
     public function __construct($registry, $shipper_prefix = 'ups', $max_weight = 150, $max_length = 108, $max_size = 165, $weight_code = 'lb', $length_code = 'in') {
         parent::__construct($max_weight, $max_length, $max_size);
