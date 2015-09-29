@@ -56,6 +56,20 @@ $max_package_size   = 165;
 // The default packing implementation provided packs all items separately, but the packing
 // algorithm can be changed simply by changing this line to use a different IPacker implementation.
 $packer = new Packer\DefaultPacker($max_package_weight, $max_package_length, $max_package_size, false);
+///////////////////////////////////////////////////////////////////////////////
+// OPTIONAL: Additional setup for the IPacker object
+// NOTE that the following methods belong to the AbstractPacker class, NOT the IPacker
+// interface, so they may need to change or be removed for custom IPacker implementations
+///////////////////////////////////////////////////////////////////////////////
+
+// Add additional constraints that may cause the shipper to refuse the package
+$packer->setMaxInsurance(50000.00);
+
+// Add additional constraints to avoid extra charges when merging packages
+$packer->setPreferredSize(129.999);  // Package considered 'large' if over 130 inches in total size
+$packer->setPreferredWeight(69.999); // Package considered 'large' if over 70 lbs
+
+///////////////////////////////////////////////////////////////////////////////
 
 // Stores any items that could not be packed so we can display an error message to the user
 $not_packed = array();
@@ -74,7 +88,11 @@ $packages = $packer->makePackages($items, $not_packed);
 $packer = new Packer\Vendor\OpenCart\DefaultPacker($this->registry, 'ups', 150, 108, 165, 'lb', 'in');
 
 // 2. A packing algorithm that packs as many of the same product into each package as possible without becoming oversize or overweight
-$packer = (new Packer\Vendor\OpenCart\PackByProduct($this->registry, 'ups', 150, 108, 165, 'lb', 'in'))->setPreferredWeight(70, 'lb')->setPreferredSize(130, 'in');
+$packer = (new Packer\Vendor\OpenCart\PackByProduct($this->registry, 'ups', 150, 108, 165, 'lb', 'in'));
+
+// Perform any optional steps here, such as adding additional constraints
+$packer->setPreferredSize(129.999);  // Package considered 'large' if over 130 inches in total size
+$packer->setPreferredWeight(69.999); // Package considered 'large' if over 70 lbs
 
 // Then create packages using the shopping cart contents:
 $packages = $packer->makePackages($this->cart->getProducts(), $notPacked);

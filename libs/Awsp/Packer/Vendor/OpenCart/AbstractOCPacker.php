@@ -22,26 +22,26 @@ abstract class AbstractOCPacker extends \Awsp\Packer\AbstractPacker
     /** OpenCart weight object (for converting) */
     protected $weight;
     
-    /** Shipper's weight class id (for converting) */
-    protected $weight_class_id;
-    
     /** Weight code for the shipper's API, not necessarily the same as used in OpenCart */
     protected $weight_code;
     
-    /** Preferred maximum weight (i.e. to avoid extra charges) */
-    protected $preferred_weight;
+    /** Shipper's weight class id (for converting) */
+    protected $weight_class_id;
+    
+    /** Default weight class for parameters (for converting values to the shipper's weight class) */
+    protected $default_weight_class_id;
     
     /** OpenCart length object (for converting) */
     protected $length;
     
-    /** Shipper's length class id (for converting) */
-    protected $length_class_id;
-    
     /** Length code for the shipper's API, not necessarily the same as used in OpenCart */
     protected $length_code;
     
-    /** Preferred maximum total size (i.e. to avoid extra charges) */
-    protected $preferred_size;
+    /** Shipper's length class id (for converting) */
+    protected $length_class_id;
+    
+    /** Default length class for parameters (for converting values to the shipper's length class) */
+    protected $default_length_class_id;
     
     /**
      * Abstract OpenCart packer requires maximum allowed weight, length, and total size.
@@ -52,58 +52,78 @@ abstract class AbstractOCPacker extends \Awsp\Packer\AbstractPacker
      * @param string $length_code     Measurement unit code for all length parameters (default is 'in')
      */
     public function __construct($registry, $shipper_prefix = 'ups', $max_weight = 150, $max_length = 108, $max_size = 165, $weight_code = 'lb', $length_code = 'in') {
-        parent::__construct($max_weight, $max_length, $max_size, true);
+        parent::__construct(
+            $max_weight, $max_length, $max_size, true,
+            array( // init options
+                'registry'       => $registry,
+                'shipper_prefix' => $shipper_prefix,
+                'weight_code'    => $weight_code,
+                'length_code'    => $length_code
+            )
+        );
+    }
+    
+    /**
+     * @Override
+     * @param array $init_options Requires the following entries:
+     *              'registry'       => OpenCart Registry object
+     *              'shipper_prefix' => String prefix used to retrieve shipper options from the config
+     *              'length_code'    => Code for the length unit used by parameters, e.g. 'in'
+     *              'weight_code'    => Code for the weight unit used by parameters, e.g. 'lb'
+     */
+    protected function init(array $init_options) {
+        // Retrieve necessary objects from the init options array
+        $registry = $init_options['registry'];
+        $shipper_prefix = $init_options['shipper_prefix'];
         $config = $registry->get('config');
-        $this->weight = $registry->get('weight');
+        // Setup measurement and weight units
         $this->length = $registry->get('length');
-        $this->packaging_type = $this->getPackagingType($config, $shipper_prefix);
-        $this->requires_insurance = ($config->has($shipper_prefix . '_insurance') ? $config->get($shipper_prefix . '_insurance') : null);
-        $this->weight_class_id = $config->get($shipper_prefix . '_weight_class_id');
-        $this->weight_code = strtoupper($this->weight->getUnit($this->weight_class_id));
-        if ($this->weight_code == 'KG') {
-            $this->weight_code = 'KGS';
-        } elseif ($this->weight_code == 'LB') {
-            $this->weight_code = 'LBS';
-        }
         $this->length_class_id = $config->get($shipper_prefix . '_length_class_id');
         $this->length_code = strtoupper($this->length->getUnit($this->length_class_id));
-        
-        // Convert weight and length values so they can stay the same regardless of config settings
-        $this->max_weight = $this->weight->convert($this->max_weight, $this->getWeightCodeId($weight_code), $this->weight_class_id);
-        $this->preferred_weight = $this->max_weight; // default until set otherwise
-        
-        $length_code_id = $this->getLengthCodeId($length_code);
-        $this->max_length = $this->length->convert($this->max_length, $length_code_id, $this->length_class_id);
-        $this->max_size = $this->length->convert($this->max_size, $length_code_id, $this->length_class_id);
-        $this->preferred_size = $this->max_size; // default until set otherwise
+        $this->default_length_class_id = $this->getLengthCodeId($init_options['length_code']);
+        $this->weight = $registry->get('weight');
+        $this->weight_class_id = $config->get($shipper_prefix . '_weight_class_id');
+        $this->weight_code = strtoupper($this->weight->getUnit($this->weight_class_id));
+        $this->weight_code = ($this->weight_code == 'KG' ? 'KGS' : ($this->weight_code == 'LB' ? 'LBS' : $this->weight_code));
+        $this->default_weight_class_id = $this->getWeightCodeId($init_options['weight_code']);
+        // Setup remaining config-based fields
+        $this->packaging_type = $this->getPackagingType($config, $shipper_prefix);
+        $this->requires_insurance = ($config->has($shipper_prefix . '_insurance') ? $config->get($shipper_prefix . '_insurance') : null);
     }
     
     /**
-     * Set the preferred package size
-     * @param integer size        Usually the max size before a package is considered 'large'
-     * @param string  length_code A valid weight code, e.g. 'in' or 'cm' (case-insensitive)
-     * @return Returns itself for convenience
+     * @Override Converts value from the default currency to the store's currency
      */
-    public function setPreferredSize($size = 130, $length_code = 'in') {
-        if (!is_int($size)) {
-            throw new \InvalidArgumentException("Expected integer for 'size'; received " + getType($size));
-        }
-        $this->preferred_size = $this->length->convert($size, $this->getLengthCodeId($length_code), $this->length_class_id);
-        return $this;
+    protected function getCurrencyValue($value) {
+        return $this->getValidatedFloat($value); // TODO
     }
     
     /**
-     * Set the preferred package weight
-     * @param integer weight      Usually the max weight before a package is considered 'heavy'
-     * @param string  weight_code A valid weight code, e.g. 'lb' or 'kg' (case-insensitive)
-     * @return Returns itself for convenience
+     * @Override Converts value from the default_length_class_id to the shipper's length_class_id
      */
-    public function setPreferredWeight($weight = 70, $weight_code = 'lb') {
-        if (!is_int($weight)) {
-            throw new \InvalidArgumentException("Expected integer for 'weight'; received " + getType($weight));
+    protected function getMeasurementValue($value) {
+        return $this->length->convert($this->getValidatedFloat($value), $this->default_length_class_id, $this->length_class_id);
+    }
+    
+    /**
+     * @Override Converts value from the default_weight_class_id to the shipper's weight_class_id
+     */
+    protected function getWeightValue($value) {
+        return $this->weight->convert($this->getValidatedFloat($value), $this->default_weight_class_id, $this->weight_class_id);
+    }
+    
+    /**
+     * @Override
+     */
+    protected function getPackageOptions($item) {
+        $options = parent::getPackageOptions($item);
+        if (!array_key_exists('type', $options) && $this->packaging_type !== null) {
+            $options['type'] = $this->packaging_type;
         }
-        $this->preferred_weight = $this->weight->convert($weight, $this->getWeightCodeId($weight_code), $this->weight_class_id);
-        return $this;
+        if ($this->requires_insurance || array_key_exists('insured_amount', $options)) {
+            $options['insured_amount'] = $item['total'];
+        }
+        return $options;
     }
     
     /**
