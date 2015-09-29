@@ -18,7 +18,7 @@ class DefaultPacker extends AbstractPacker
      * @Override Packs each item individually
      * @param array $item An array containing 'weight', 'length', 'width', 'height', and possibly 'quantity'
      */
-    protected function getPackageWorker($item) {
+    protected function getPackageWorker($item, array &$packages) {
         if (!is_array($item)) {
             throw new \InvalidArgumentException("Expected item to be an array; received " . getType($item));
         }

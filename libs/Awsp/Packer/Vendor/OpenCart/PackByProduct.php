@@ -30,7 +30,7 @@ class PackByProduct extends AbstractOCPacker
     /**
      * @Override Bridge method to real worker
      */
-    protected function getPackageWorker($item) {
+    protected function getPackageWorker($item, array &$packages) {
         if (!is_array($item)) {
             throw new \InvalidArgumentException("Expected item to be an array; received " . getType($item));
         }

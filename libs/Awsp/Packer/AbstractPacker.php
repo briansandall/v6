@@ -57,7 +57,7 @@ abstract class AbstractPacker implements IPacker
         $packages = array();
         foreach ($items as $item) {
             try {
-                $packed = $this->getPackageWorker($item);
+                $packed = $this->getPackageWorker($item, $packages);
                 if (!is_array($packed)) {
                     $notPacked[] = $item;
                 } else {
@@ -76,10 +76,12 @@ abstract class AbstractPacker implements IPacker
      * information (e.g. weight, dimensions, etc.) and that it fulfills all constraints.
      * @param $item Array or Object representing a single item, although that item may
      *               have a quantity greater than one
+     * @param $packages Array of Package objects already packed so that the current item
+     *               may attempt to merge with a previous package
      * @throws InvalidArgumentException if the item cannot be packaged for any reason
      * @throws UnexpectedValueException may be thrown when creating the Package
-     * @return Array of one or more Awsp\Ship\Package objects
+     * @return Array of \Awsp\Ship\Package objects to add, may be empty if item merged with $packages
      */
-    protected abstract function getPackageWorker($item);
+    protected abstract function getPackageWorker($item, array &$packages);
 
 }
