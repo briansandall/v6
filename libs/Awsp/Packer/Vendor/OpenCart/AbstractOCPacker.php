@@ -52,7 +52,7 @@ abstract class AbstractOCPacker extends \Awsp\Packer\AbstractPacker
      * @param string $length_code     Measurement unit code for all length parameters (default is 'in')
      */
     public function __construct($registry, $shipper_prefix = 'ups', $max_weight = 150, $max_length = 108, $max_size = 165, $weight_code = 'lb', $length_code = 'in') {
-        parent::__construct($max_weight, $max_length, $max_size);
+        parent::__construct($max_weight, $max_length, $max_size, true);
         $config = $registry->get('config');
         $this->weight = $registry->get('weight');
         $this->length = $registry->get('length');

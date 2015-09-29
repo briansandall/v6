@@ -28,17 +28,6 @@ class PackByProduct extends AbstractOCPacker
     $additional_handling;
     
     /**
-     * Concrete implementation of AbstractOCPacker that complies with all constraints
-     * @param object  $registry        Registry object from OpenCart
-     * @param string  $shipper_prefix  Prefix used to retrieve shipping information from OpenCart's config file
-     * @param integer $weight_code     Measurement unit code for the weight parameter (default is 'lb')
-     * @param integer $length_code     Measurement unit code for the length parameter (default is 'in')
-     */
-    public function __construct($registry, $shipper_prefix = 'ups', $max_weight = 150, $max_length = 108, $max_size = 165, $weight_code = 'lb', $length_code = 'in') {
-        parent::__construct($registry, $shipper_prefix, $max_weight, $max_length, $max_size, $weight_code, $length_code);
-    }
-    
-    /**
      * @Override Bridge method to real worker
      */
     protected function getPackageWorker($item) {

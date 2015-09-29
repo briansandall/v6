@@ -14,18 +14,6 @@ namespace Awsp\Packer;
 
 class DefaultPacker extends AbstractPacker
 {
-    /** True if items passed to #getPackageWorker use a combined weight (item weight * quantity) */
-    private $is_weight_combined;
-
-    /**
-     * For complete details, see AbstractPacker#__construct
-     * @param $is_weight_combined True if items passed to #getPackageWorker use a combined weight (item weight * quantity)
-     */
-    public function __construct($max_weight = 150, $max_length = 108, $max_size = 165, $is_weight_combined = false) {
-        parent::__construct($max_weight, $max_length, $max_size);
-        $this->is_weight_combined = filter_var($is_weight_combined, FILTER_VALIDATE_BOOLEAN);
-    }
-
     /**
      * @Override Packs each item individually
      * @param array $item An array containing 'weight', 'length', 'width', 'height', and possibly 'quantity'

@@ -15,6 +15,9 @@ namespace Awsp\Packer;
 
 abstract class AbstractPacker implements IPacker
 {
+    /** True if items passed to #getPackageWorker use a combined weight (item weight * quantity) */
+    protected $is_weight_combined;
+
     /** Maximum weight for a single package */
     protected $max_weight;
 
@@ -30,12 +33,14 @@ abstract class AbstractPacker implements IPacker
      * @param integer $max_weight The absolute maximum weight allowed for any one package
      * @param integer $max_length The absolute maximum length (longest dimension) allowed
      * @param integer $max_size   The absolute maximum total size allowed, where total size = (length + (2 * (width + height)))
+     * @param $is_weight_combined True if items passed to #getPackageWorker use a combined weight (item weight * quantity)
      * @throws InvalidArgumentException if any argument fails to validate
      */
-    public function __construct($max_weight = 150, $max_length = 108, $max_size = 165) {
+    public function __construct($max_weight = 150, $max_length = 108, $max_size = 165, $is_weight_combined = false) {
         $this->max_weight = filter_var($max_weight, FILTER_VALIDATE_INT);
         $this->max_length = filter_var($max_length, FILTER_VALIDATE_INT);
         $this->max_size = filter_var($max_size, FILTER_VALIDATE_INT);
+        $this->is_weight_combined = filter_var($is_weight_combined, FILTER_VALIDATE_BOOLEAN);
         if (!is_int($this->max_weight)) {
             throw new \InvalidArgumentException("Expected integer for 'max_weight'; received " . getType($max_weight));
         } elseif (!is_int($this->max_length)) {

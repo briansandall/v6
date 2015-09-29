@@ -14,18 +14,6 @@ namespace Awsp\Packer\Vendor\OpenCart;
 class DefaultPacker extends AbstractOCPacker
 {
     /**
-     * Concrete implementation of AbstractOCPacker packages each item individually
-     * provided the item does not exceed max allowed weight, length, or total size
-     * @param object  $registry        Registry object from OpenCart
-     * @param string  $shipper_prefix  Prefix used to retrieve shipping information from OpenCart's config file
-     * @param integer $weight_code     Measurement unit code for the weight parameter (default is 'lb')
-     * @param integer $length_code     Measurement unit code for the length parameter (default is 'in')
-     */
-    public function __construct($registry, $shipper_prefix = 'ups', $max_weight = 150, $max_length = 108, $max_size = 165, $weight_code = 'lb', $length_code = 'in') {
-        parent::__construct($registry, $shipper_prefix, $max_weight, $max_length, $max_size, $weight_code, $length_code);
-    }
-    
-    /**
      * @Override Packs each item individually
      * @param array $item An array containing 'weight', 'length', 'width', 'height', and possibly 'quantity'
      */
