@@ -25,9 +25,10 @@ require_once('includes/config.php');
 // Items may be arrays or any custom Object type, usually as dictated by the choice
 // of ECommerce framework. The default IPacker implementation expects an array type.
 // Normally the items to ship are retrieved from the user's shopping cart.
+$items = array();
 
 // An item with the minimum information required to be packable into a Package:
-$item1 = array(
+$items[] = array(
     'weight' => 11.34,
     'length' => 14.2,
     'width'  => 16.8,
@@ -35,7 +36,7 @@ $item1 = array(
 );
 
 // An item with some extra options, as well as in quantity:
-$item2 = array(
+$items[] = array(
     'weight'   => 24,
     'length'   => 10,
     'width'    => 6,
@@ -60,7 +61,7 @@ $packer = new Packer\DefaultPacker($max_package_weight, $max_package_length, $ma
 $not_packed = array();
 
 // Make the actual packages to ship
-$packages = $packer->makePackages(array($item1, $item2), $not_packed);
+$packages = $packer->makePackages($items, $not_packed);
 
 /*
 // Example using vendor-based packing algorithms (OpenCart, in this case)
