@@ -27,6 +27,9 @@ abstract class AbstractPacker implements IPacker
      */
     protected $optional_constraints = array();
 
+    /** Array of \Awsp\MergeStrategy\IMergeStrategy strategies available for merging packages */
+    protected $merge_strategies = array();
+
     /** True if items passed to #getPackageWorker use a combined weight (item weight * quantity) */
     protected $is_weight_combined;
 
@@ -44,6 +47,9 @@ abstract class AbstractPacker implements IPacker
 
     /** Preferred maximum total size (e.g. to avoid additional handling fees) */
     protected $preferred_size;
+
+    /** Constraint for package dimensions before additional handling fees are applied (may be NULL) */
+    protected $handling_constraint = null;
 
     /**
      * Constructs a default packer with maximum allowed package weight, length, and size constraints.
@@ -180,6 +186,32 @@ abstract class AbstractPacker implements IPacker
     }
 
     /**
+     * Adds or removes (optional) additional handling constraint based on the parameter
+     * @param boolean $required True to add the constraint, false to remove it
+     */
+    protected function setAdditionalHandlingConstraint($required) {
+        if ($required && $this->handling_constraint instanceof \Awsp\Constraint\IConstraint) {
+            $this->addConstraint($this->handling_constraint, 'additional_handling', false, true);
+        } else {
+            unset($this->optional_constraints['additional_handling']);
+        }
+    }
+
+    /**
+     * Set the additional handling thresholds, but does not add the constraint
+     * @param float|int $first  Maximum length of longest dimension before additional handling charges are applied
+     * @param float|int $second Maximum length of second-longest dimension before additional handling charges are applied
+     *                          Values are passed through #getMeasurementValue before they are used
+     * @return Returns itself for convenience
+     */
+    public function setAdditionalHandlingLimits($first, $second) {
+        $thresholds = array($this->getMeasurementValue($this->getValidatedFloat($first)),
+                            $this->getMeasurementValue($this->getValidatedFloat($second)));
+        $this->handling_constraint = new \Awsp\Constraint\PackageHandlingConstraint($thresholds);
+        return $this;
+    }
+
+    /**
      * Adds (required) constraint for the maximum allowed insurance amount
      * @param float|int $value Value is passed through #getCurrencyValue before it is used
      * @return Returns itself for convenience
@@ -209,6 +241,116 @@ abstract class AbstractPacker implements IPacker
             return filter_var($item['quantity'], FILTER_VALIDATE_INT, array('options' => array('default' => 1, 'min_range' => 1)));
         }
         return 1;
+    }
+
+    /**
+     * Returns numeric arguments as an array('length','width','height') sorted from highest to lowest
+     */
+    protected function getSortedDimensions($l, $w, $h) {
+        $lwh = array($l, $w, $h);
+        rsort($lwh, SORT_NUMERIC);
+        return array_combine(array('length','width','height'), $lwh);
+    }
+
+    /**
+     * Split an item into two, each with half the original quantity and any other
+     * properties adjusted accordingly - usually used in combination with recursion.
+     *
+     * @param array|object $item The item to split must have a quantity greater than 1
+     * @return Array containing exactly 2 items whose total quantity equals the original quantity
+     * @throws InvalidArgumentException if item quantity is less than 2
+     */
+    protected function splitItem($item) {
+        $quantity = $this->getQuantityFromItem($item);
+        if ($quantity < 2) {
+            throw new \InvalidArgumentException("Cannot split an item with quantity less than 2: item quantity = $quantity");
+        }
+        $tmp = array($item, $item);
+        $tmp[0]['quantity'] = ceil($quantity / 2.0);
+        $tmp[1]['quantity'] = $quantity - $tmp[0]['quantity'];
+        return $tmp;
+    }
+
+    /**
+     * Adds a merge strategy for use when combining items into previous packages.
+     * Note that the IPacker implementation must support merging for this to have any effect.
+     * @return Returns itself for convenience
+     */
+    public function addMergeStrategy(\Awsp\MergeStrategy\IMergeStrategy $strategy) {
+        $this->merge_strategies[] = $strategy;
+        return $this;
+    }
+
+    /**
+     * Attempts to merge up to the given quantity of a package into existing packages.
+     * Best to only call this method if there is at least one \Awsp\MergeStrategy\IMergeStrategy available.
+     *
+     * @param array   $packages    Array of \Awsp\Ship\Package packages from #getPackageWorker 
+     * @param Package $single_item An \Awsp\Ship\Package package, usually representing quantity 1 of the item to be packed
+     * @param int     $quantity    Quantity of the item to pack, usually retrieved from #getQuantityFromItem
+     * @return int Remaining quantity after merge
+     */
+    protected function merge(array &$packages, \Awsp\Ship\Package $single_item, $quantity) {
+        foreach ($packages as &$current_package) {
+            while ($quantity > 0 && $this->mergePackage($current_package, $single_item, $this->merge_strategies)) {
+                $quantity--;
+            }
+        }
+        unset($current_package); // unset reference to save puppies
+        return $quantity;
+    }
+
+    /**
+     * Attempts to merge one package into another using the most efficient strategy provided.
+     * The combined package must meet all required and optional constraints.
+     *
+     * @param \Awsp\Ship\Package $old  Reference to previously existing package - will be modified if merged
+     * @param \Awsp\Ship\Package $item A package to be merged into the existing one
+     * @param array        $strategies Any number of \Awsp\MergeStrategy\IMergeStrategy strategies to be attempted
+     * @return True on success, otherwise false
+     */
+    protected function mergePackage(\Awsp\Ship\Package &$old, \Awsp\Ship\Package $item, array $strategies) {
+        // If neither package requires additional handling, add the constraint; otherwise, remove it
+        // Add additional handling constraint if the old package passes (i.e. it does not
+        // already require additional handling); otherwise, ensure constraint is removed.
+        if ($this->handling_constraint != null) {
+            $this->setAdditionalHandlingConstraint($this->handling_constraint->check($old));
+        }
+        // Find the most efficiently packed package out of all available strategies
+        $package = null;
+        foreach ($strategies as $strategy) {
+            if (!($strategy instanceof \Awsp\MergeStrategy\IMergeStrategy)) {
+                // throw an exception to alert developers, or simply ignore it and continue on
+                // throw new \InvalidArgumentException("Expected type \Awsp\MergeStrategy\IMergeStrategy, received " . getType($strategy));
+                continue;
+            }
+            $combined = $this->getMergeResult($old, $item, $strategy);
+            if ($combined) {
+                if ($package == null || $package->get('size') > $combined->get('size')) {
+                    $package = $combined;
+                }
+            }
+        }
+        if ($package instanceof \Awsp\Ship\Package) {
+            $old = $package;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Attempts to merge the packages using the strategy provided, then checks
+     * the resulting package against all required and optional constraints.
+     * @return False if the packages could not be merged, or the merged \Awsp\Ship\Package package object
+     */
+    protected function getMergeResult(\Awsp\Ship\Package $old, \Awsp\Ship\Package $item, \Awsp\MergeStrategy\IMergeStrategy $strategy) {
+        $combined = $strategy->merge($old, $item);
+        if (!($combined instanceof \Awsp\Ship\Package)) {
+            return false;
+        } elseif (!$this->checkConstraints($combined) || !$this->checkOptionalConstraints($combined)) {
+            return false;
+        }
+        return $combined;
     }
 
     /**
