@@ -295,4 +295,54 @@ class Package {
         return number_format($cm * 0.393701, 2);
     }
     
+    
+    /**
+     * Merges another package's options with the current options array, as follows:
+     * 'description'         : Descriptions concatenate unless the string is already present
+     * 'insured_amount'      : Amounts are added together if present
+     * 'type'                : Both packages must have the same packing type
+     * 'additional_handling' : True if either package has this option
+     * 'signature_required'  : True if either package has this option
+     *
+     * @param Package $package The package being merged with the current Package instance
+     * @param string  $error   Message describing why the merge failed, if applicable
+     * @return False if options were unable to merge
+     * @version 09/25/2015
+     * @since 09/25/2015
+     */
+    public function mergeOptions(Package $package, &$error) {
+        if (empty($this->options)) {
+            $this->options = $package->options;
+            return true;
+        }
+        foreach ($package->options as $key => $value) {
+            switch ($key) {
+            case 'description': // Descriptions concatenate unless the string is already present
+                $description = (empty($this->options[$key]) ? '' : $this->options[$key]);
+                $description .= (empty($value) || strpos($description, $value) >= 0 ? '' : '. ' . $value);
+                if (!empty($description)) {
+                    $this->options[$key] = $description;
+                }
+                break;
+            case 'insured_amount': // Amounts are added together if present
+                $value += (empty($this->options[$key]) ? 0 : $this->options[$key]);
+                if ($value > 0) {
+                    $this->options[$key] = $value;
+                }
+                break;
+            case 'type': // Both packages must have the same packing type
+                $type = (array_key_exists($key, $this->options) ? $this->options[$key] : '');
+                if ($type !== $value) {
+                    $error = "<p>Packaging types do not match: $type vs. $value</p>";
+                    return false;
+                }
+                break;
+            case 'additional_handling': // fall-through
+            case 'signature_required':  // True if either package has this option
+                $this->options[$key] = (!empty($value) || !empty($this->options[$key]));
+                break;
+            }
+        }
+        return true;
+    }
 }
