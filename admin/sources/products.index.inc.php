@@ -63,7 +63,7 @@ if (isset($_POST['save']) && Admin::getInstance()->permissions('products', CC_PE
 	}
 
 	//Need to remove these in some cases to stop SQL errors
-	$records = array('product_id', 'product_weight', 'stock_level', 'stock_warning');
+	$records = array('product_id', 'product_weight', 'product_length', 'product_height', 'product_width', 'stock_level', 'stock_warning');
 	foreach ($records as $r) {
 		if (empty($record[$r]) && !is_numeric($record[$r])) {
 			unset($record[$r]);
