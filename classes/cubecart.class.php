@@ -240,11 +240,17 @@ class Cubecart {
 										$value = $GLOBALS['catalogue']->getOptionData((int)$option_id, $assign_id);
 										if ($value) {
 											$product['product_weight'] += (isset($value['option_weight'])) ? $value['option_weight'] : 0;
+											$product['product_length'] += (isset($value['option_length'])) ? $value['option_length'] : 0;
+											$product['product_height'] += (isset($value['option_height'])) ? $value['option_height'] : 0;
+											$product['product_width'] += (isset($value['option_width'])) ? $value['option_width'] : 0;
 										}
 									}
 								} elseif (is_numeric($option_data)) {
 									if (($value = $GLOBALS['catalogue']->getOptionData((int)$option_id, (int)$option_data)) !== false) {
 										$product['product_weight'] += (isset($value['option_weight'])) ? $value['option_weight'] : 0;
+										$product['product_length'] += (isset($value['option_length'])) ? $value['option_length'] : 0;
+										$product['product_height'] += (isset($value['option_height'])) ? $value['option_height'] : 0;
+										$product['product_width'] += (isset($value['option_width'])) ? $value['option_width'] : 0;
 									}
 								}
 							}
