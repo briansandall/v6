@@ -201,7 +201,7 @@
                   {if $PRODUCT.product_length > 0}
                   <tr>
                      <td>{$LANG.common.dimensions}</td>
-                     <td>{$PRODUCT.product_length} x {$PRODUCT.product_height} x {$PRODUCT.product_width} {$CONFIG.product_measurement_unit}</td>
+                     <td><span id="spec_product_length" data-product_length="{$PRODUCT.product_length}">{$PRODUCT.product_length}</span> x <span id="spec_product_height" data-product_height="{$PRODUCT.product_height}">{$PRODUCT.product_height}</span> x <span id="spec_product_width" data-product_width="{$PRODUCT.product_width}">{$PRODUCT.product_width}</span> {$CONFIG.product_measurement_unit}</td>
                   </tr>
                   {/if}
                </tbody>

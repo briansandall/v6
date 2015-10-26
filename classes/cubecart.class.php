@@ -2894,6 +2894,9 @@ class Cubecart {
 			}
 		}
 		$product['product_weight'] += (isset($option['option_weight'])) ? $option['option_weight'] : 0;
+		$product['product_length'] += (isset($option['option_length'])) ? $option['option_length'] : 0;
+		$product['product_height'] += (isset($option['option_height'])) ? $option['option_height'] : 0;
+		$product['product_width']  += (isset($option['option_width']))  ? $option['option_width']  : 0;
 		return $product;
 	}
 }
