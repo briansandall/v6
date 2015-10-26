@@ -216,6 +216,49 @@ class Cubecart {
 					}
 					exit;
 				break;
+				case 'ajax_update_product_data':
+					$GLOBALS['debug']->supress();
+					$options = (isset($_GET['productOptions']) && is_array($_GET['productOptions']) ? $_GET['productOptions'] : false);
+					if ($options) {
+						$options_identifier_string = $GLOBALS['catalogue']->defineOptionsIdentifier($options);
+						$result = $GLOBALS['db']->select('CubeCart_option_matrix', 'product_id, stock_level, product_code, upc, ean, jan, isbn', array('options_identifier' => $options_identifier_string));
+						$matrix = ($result ? array_pop($result) : false);
+						if (is_array($matrix) && filter_var($matrix['product_id'], FILTER_VALIDATE_INT)) {
+							$product = $GLOBALS['catalogue']->getProductData($matrix['product_id'], 1, false, 10, 1, false, $options_identifier_string);
+						}
+						if (isset($product)) {
+							// Modify product specifications based on each option
+							foreach ($options as $option_id => $option_data) {
+								if (is_array($option_data)) {
+									// Text option
+									foreach ($option_data as $trash => $option_value) {
+										if (($assign_id = $GLOBALS['db']->select('CubeCart_option_assign', false, array('product' => $matrix['product_id'], 'option_id' => $option_id))) !== false) {
+											$assign_id = $assign_id[0]['assign_id'];
+										} else {
+											$assign_id = 0;
+										}
+										$value = $GLOBALS['catalogue']->getOptionData((int)$option_id, $assign_id);
+										if ($value) {
+											$product['product_weight'] += (isset($value['option_weight'])) ? $value['option_weight'] : 0;
+										}
+									}
+								} elseif (is_numeric($option_data)) {
+									if (($value = $GLOBALS['catalogue']->getOptionData((int)$option_id, (int)$option_data)) !== false) {
+										$product['product_weight'] += (isset($value['option_weight'])) ? $value['option_weight'] : 0;
+									}
+								}
+							}
+							// Matrix values always overwrite matching product values
+							foreach ($matrix as $k => $v) {
+								if (!empty($v)) {
+									$product[$k] = $v;
+								}
+							}
+						}
+						die(json_encode(isset($product) ? $product : $matrix));
+					}
+					die(json_encode(false));
+				break;
 				case 'ajax_email':
 					$GLOBALS['debug']->supress();
 
