@@ -120,7 +120,7 @@
                {else}
                <div class="medium-2 columns show-for-medium-up">
                   <input type="text" name="quantity" value="1" class="quantity required text-center">
-                  <input type="hidden" name="add" value="{$PRODUCT.product_id}">
+                  <input type="hidden" name="add" id="product_id" value="{$PRODUCT.product_id}">
                </div>
                <div  class="small-12 medium-10 columns">
                   <button type="submit" value="{$LANG.catalogue.add_to_basket}" class="button postfix">{$LANG.catalogue.add_to_basket}</button>
@@ -157,7 +157,7 @@
                <tbody>
                   <tr>
                      <td>{$LANG.catalogue.product_code}</td>
-                     <td>{$PRODUCT.product_code}</td>
+                     <td><span id="spec_product_code">{$PRODUCT.product_code}</span></td>
                   </tr>
                   {if $PRODUCT.manufacturer}
                   <tr>
@@ -168,7 +168,7 @@
                   {if $PRODUCT.stock_level}
                   <tr>
                      <td>{$LANG.catalogue.stock_level}</td>
-                     <td>{$PRODUCT.stock_level}</td>
+                     <td><span id="spec_stock_level">{$PRODUCT.stock_level}</span></td>
                   </tr>
                   {/if}
                   <tr>
@@ -178,7 +178,7 @@
                   {if $PRODUCT.product_weight > 0}
                   <tr>
                      <td>{$LANG.common.weight}</td>
-                     <td>{$PRODUCT.product_weight}{$CONFIG.product_weight_unit}</td>
+                     <td><span id="spec_product_weight">{$PRODUCT.product_weight}</span>{$CONFIG.product_weight_unit}</td>
                   </tr>
                   {/if}
                </tbody>

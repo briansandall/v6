@@ -216,6 +216,66 @@ class Cubecart {
 					}
 					exit;
 				break;
+				case 'ajax_update_product_data':
+					$GLOBALS['debug']->supress();
+					$product_id = filter_var($_GET['product_id'], FILTER_VALIDATE_INT);
+					if (!is_int($product_id)) {
+						die(json_encode(false));
+					}
+					$options = (isset($_GET['productOptions']) && is_array($_GET['productOptions']) ? $_GET['productOptions'] : false);
+					$product = $GLOBALS['catalogue']->getProductData($product_id, 1, false, 10, 1, false, null);
+					if ($product && $options) {
+						// Modify product specifications based on each option
+						foreach ($options as $option_id => $option_data) {
+							if (is_array($option_data)) {
+								// Text option
+								foreach ($option_data as $trash => $option_value) {
+									if (($assign_id = $GLOBALS['db']->select('CubeCart_option_assign', false, array('product' => $product_id, 'option_id' => $option_id))) !== false) {
+										$assign_id = $assign_id[0]['assign_id'];
+									} else {
+										$assign_id = 0;
+									}
+									$value = $GLOBALS['catalogue']->getOptionData((int)$option_id, $assign_id);
+									if ($value) {
+										Cart::updateProductDataWithOption($product, $value);
+									}
+								}
+							} elseif (is_numeric($option_data)) {
+								if (($value = $GLOBALS['catalogue']->getOptionData((int)$option_id, (int)$option_data)) !== false) {
+									Cart::updateProductDataWithOption($product, $value);
+								}
+							}
+						}
+						// Apply option matrix modifiers, if any
+						$options_identifier_string = $GLOBALS['catalogue']->defineOptionsIdentifier($options);
+						$matrix_fields = 'product_id, use_stock as use_stock_level, stock_level, product_code, upc, ean, jan, isbn';
+						$matrix_where = array('product_id' => $product_id, 'status' => 1, 'options_identifier' => $options_identifier_string);
+						$matrix = $GLOBALS['db']->select('CubeCart_option_matrix', $matrix_fields, $matrix_where);
+						if ($matrix) {
+							// These values should be overwritten even if 'empty'
+							$overwrite = array('use_stock_level', 'stock_level');
+							foreach ($matrix as $k => $v) {
+								if (!empty($v) || array_search($k, $overwrite) !== false) {
+									$product[$k] = $v;
+								}
+							}
+						}
+					}
+					// Finally, format product values for display
+					if (is_array($product)) {
+						if ($product['price'] < $product['sale_price']) {
+							$product['sale_price'] = $product['price'];
+						}
+						$product['price'] = $GLOBALS['tax']->priceFormat($product['price']);
+						$product['sale_price'] = $GLOBALS['tax']->priceFormat($product['sale_price']);
+						// Format the following entries to 3-decimal precision
+						$thousands = array('product_weight');
+						foreach ($thousands as $key) {
+							$product[$key] = sprintf('%.3F', $product[$key]);
+						}
+					}
+					die(json_encode($product));
+				break;
 				case 'ajax_email':
 					$GLOBALS['debug']->supress();
 
