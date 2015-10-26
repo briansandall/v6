@@ -703,6 +703,9 @@ class Cart {
 											$value['price_display'] .= $GLOBALS['tax']->priceFormat($display_option_tax, true);
 										}
 										$product['product_weight'] += (isset($value['option_weight'])) ? $value['option_weight'] : 0;
+										$product['product_length'] += (isset($value['option_length'])) ? $value['option_length'] : 0;
+										$product['product_height'] += (isset($value['option_height'])) ? $value['option_height'] : 0;
+										$product['product_width'] += (isset($value['option_width'])) ? $value['option_width'] : 0;
 										$value['value_name'] = $option_value;
 										$product['options'][] = $value;
 									}
@@ -748,6 +751,9 @@ class Cart {
 											}
 										}
 										$product['product_weight'] += (isset($value['option_weight'])) ? $value['option_weight'] : 0;
+										$product['product_length'] += (isset($value['option_length'])) ? $value['option_length'] : 0;
+										$product['product_height'] += (isset($value['option_height'])) ? $value['option_height'] : 0;
+										$product['product_width'] += (isset($value['option_width'])) ? $value['option_width'] : 0;
 										$product['options'][] = $value;
 										
 									}
@@ -765,6 +771,9 @@ class Cart {
 					$this->basket['contents'][$hash]['name']     = $product['name'];
 					$this->basket['contents'][$hash]['product_code']   = $product['product_code'];
 					$this->basket['contents'][$hash]['product_weight']   = $product['product_weight'];
+					$this->basket['contents'][$hash]['product_length']   = $product['product_length'];
+					$this->basket['contents'][$hash]['product_height']   = $product['product_height'];
+					$this->basket['contents'][$hash]['product_width']   = $product['product_width'];
 				} else {
 					if (!isset($item['certificate'])) {
 						continue;

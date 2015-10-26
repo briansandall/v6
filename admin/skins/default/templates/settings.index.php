@@ -222,6 +222,10 @@
             {foreach from=$OPT_PRODUCT_WEIGHT_UNIT item=option}<option value="{$option.value}"{$option.selected}>{$option.title}</option>{/foreach}
             </select></span>
          </div>
+         <div><label for="product_measurement_unit">{$LANG.settings.measurement_unit}</label><span><select name="config[product_measurement_unit]" id="product_measurement_unit" class="textbox">
+            {foreach from=$OPT_PRODUCT_MEASUREMENT_UNIT item=option}<option value="{$option.value}"{$option.selected}>{$option.title}</option>{/foreach}
+            </select></span>
+         </div>
          <div><label for="show_basket_weight">{$LANG.settings.show_basket_weight}</label><span><input name="config[show_basket_weight]" id="show_basket_weight" type="hidden" class="toggle" value="{$CONFIG.show_basket_weight}"></span></div>
          <div><label for="basket_allow_non_invoice_address">{$LANG.settings.dispatch_to_non_invoice}</label><span><input name="config[basket_allow_non_invoice_address]" id="basket_allow_non_invoice_address" type="hidden" class="toggle" value="{$CONFIG.basket_allow_non_invoice_address}"></span></div>
          <div><label for="stock_change_time">{$LANG.settings.stock_reduce}</label><span><select name="config[stock_change_time]" id="stock_change_time" class="textbox">

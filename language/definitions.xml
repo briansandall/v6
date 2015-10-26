@@ -409,6 +409,9 @@
     <string name="product_type_digital" introduced="5.0.0"><![CDATA[Digital]]></string>
     <string name="product_type_tangible" introduced="5.0.0"><![CDATA[Tangible]]></string>
     <string name="product_weight" introduced="5.0.0"><![CDATA[Product Weight]]></string>
+    <string name="product_length" introduced="6.0.8"><![CDATA[Product Length]]></string>
+    <string name="product_height" introduced="6.0.8"><![CDATA[Product Height]]></string>
+    <string name="product_width" introduced="6.0.8"><![CDATA[Product Width]]></string>
     <string name="quantity_discounts" introduced="5.0.0"><![CDATA[Quantity Discounts]]></string>
     <string name="quantity_discounts_explained" introduced="5.0.0"><![CDATA[You can save money on this item when you purchase several at a time. The table below shows the minimum quantities required to benefit from this offer, and how much they'll cost.]]></string>
     <string name="recipient_email" introduced="5.0.0"><![CDATA[Recipient Email]]></string>
@@ -617,6 +620,7 @@
     <string name="decision_remove" introduced="5.0.0"><![CDATA[Are you sure you want to remove this?]]></string>
     <string name="desktop_site" introduced="5.1.1"><![CDATA[Desktop Site]]></string>
     <string name="details" introduced="5.0.0"><![CDATA[Details]]></string>
+    <string name="dimensions" introduced="6.0.8"><![CDATA[Dimensions]]></string>
     <string name="disable" introduced="5.0.0"><![CDATA[Disable]]></string>
     <string name="disabled" introduced="5.0.0"><![CDATA[Disabled]]></string>
     <string name="display" introduced="5.0.0"><![CDATA[Display]]></string>
@@ -1976,10 +1980,13 @@
     <string name="title_time_date" introduced="5.0.0"><![CDATA[Time &amp; Date]]></string>
     <string name="title_welcome_back" introduced="5.0.0"><![CDATA[Welcome back]]></string>
     <string name="weight_unit" introduced="5.0.0"><![CDATA[Weight Unit]]></string>
+    <string name="measurement_unit" introduced="6.0.8"><![CDATA[Measurement Unit]]></string>
     <string name="current_value" introduced="5.0.0"><![CDATA[Current Value]]></string>
     <string name="new_value" introduced="5.0.0"><![CDATA[New Value]]></string>
     <string name="weight_unit_kg" introduced="5.0.0"><![CDATA[Metric (Kg)]]></string>
     <string name="weight_unit_lb" introduced="5.0.0"><![CDATA[Imperial (lb)]]></string>
+    <string name="measurement_unit_cm" introduced="6.0.8"><![CDATA[Metric (cm)]]></string>
+    <string name="measurement_unit_in" introduced="6.0.8"><![CDATA[Imperial (in)]]></string>
     <string name="default_product_sort" introduced="5.2.0"><![CDATA[Product List Sorting]]></string>
   </group>
   <group name="setup">

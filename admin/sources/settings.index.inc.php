@@ -325,6 +325,7 @@ $select_options = array(
 	'stock_change_time'  => array(2 => $lang['settings']['stock_reduce_pending'], 1 => $lang['settings']['stock_reduce_process'], 0 => $lang['settings']['stock_reduce_complete']),
 	'stock_warn_type'  => array($lang['settings']['stock_warning_method_global'], $lang['settings']['stock_warning_method_product']),
 	'product_weight_unit' => array('Lb' => $lang['settings']['weight_unit_lb'], 'Kg' => $lang['settings']['weight_unit_kg']),
+	'product_measurement_unit' => array('in' => $lang['settings']['measurement_unit_in'], 'cm' => $lang['settings']['measurement_unit_cm']),
 	'time_format'   => '%Y-%m-%d %H:%M',
 	'product_sort_direction' => array('ASC' => 'ASC', 'DESC' => 'DESC'),
 	'product_clone'      => array('0' => $lang['common']['disabled'], '2' => $lang['settings']['product_clone_hide'], '1' => $lang['common']['enabled']),

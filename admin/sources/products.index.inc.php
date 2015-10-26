@@ -63,7 +63,7 @@ if (isset($_POST['save']) && Admin::getInstance()->permissions('products', CC_PE
 	}
 
 	//Need to remove these in some cases to stop SQL errors
-	$records = array('product_id', 'product_weight', 'stock_level', 'stock_warning');
+	$records = array('product_id', 'product_weight', 'product_length', 'product_height', 'product_width', 'stock_level', 'stock_warning');
 	foreach ($records as $r) {
 		if (empty($record[$r]) && !is_numeric($record[$r])) {
 			unset($record[$r]);
@@ -222,6 +222,9 @@ if (isset($_POST['save']) && Admin::getInstance()->permissions('products', CC_PE
 				'option_negative' => (isset($_POST['option_add']['negative'][$offset]) && $_POST['option_add']['negative'][$offset]==1) ? $_POST['option_add']['negative'][$offset] : '0',
 				'option_price'  => $_POST['option_add']['price'][$offset],
 				'option_weight'  => $_POST['option_add']['weight'][$offset],
+				'option_length'  => $_POST['option_add']['length'][$offset],
+				'option_height'  => $_POST['option_add']['height'][$offset],
+				'option_width'  => $_POST['option_add']['width'][$offset],
 				'matrix_include'  => $_POST['option_add']['matrix_include'][$offset],
 				'set_enabled'  => $_POST['option_add']['set_enabled'][$offset],
 				'absolute_price'  => $_POST['option_add']['absolute_price'][$offset]
@@ -864,7 +867,7 @@ if (isset($_GET['action'])) {
 								$group = (isset($group_list[$member['option_id']])) ? $group_list[$member['option_id']] : array();
 								$value = ($member['value_id'] > 0 && isset($value_list[$member['option_id']][$member['value_id']])) ? $value_list[$member['option_id']][$member['value_id']] : array();
 								$group['display'] = in_array($group['option_type'], $select_types) ? '<strong>'.$group['option_name'].':</strong> '.$value['value_name'] : $group['option_name'];
-								$assign = array('set_enabled' => '1', 'option_price' => number_format(0, 2), 'option_weight' => number_format(0, 2));
+								$assign = array('set_enabled' => '1', 'option_price' => number_format(0, 2), 'option_weight' => number_format(0, 2), 'option_length' => number_format(0, 2), 'option_height' => number_format(0, 2), 'option_width' => number_format(0, 2));
 
 								$option_list[$member['option_id']][$member['value_id']] = array_merge($member, $group, $value, $assign, array('show_disable' => true));
 							}

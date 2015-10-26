@@ -181,6 +181,12 @@
                      <td><span id="spec_product_weight" data-product_weight="{$PRODUCT.product_weight}">{$PRODUCT.product_weight}</span>{$CONFIG.product_weight_unit}</td>
                   </tr>
                   {/if}
+                  {if $PRODUCT.product_length > 0}
+                  <tr>
+                     <td>{$LANG.common.dimensions}</td>
+                     <td>{$PRODUCT.product_length} x {$PRODUCT.product_height} x {$PRODUCT.product_width} {$CONFIG.product_measurement_unit}</td>
+                  </tr>
+                  {/if}
                </tbody>
             </table>
          </div>
