@@ -51,7 +51,7 @@ class PackageValueConstraint implements IConstraint
      * @throws InvalidArgumentException if $value is NULL or the operator is not recognized
      */
     protected function compare($value, $bound) {
-        if ($value == null) {
+        if ($value === null) {
             throw new \InvalidArgumentException("Value for key '{$this->key}' was NULL: invalid comparison");
         }
         switch ($this->operator) {

@@ -414,7 +414,7 @@ abstract class AbstractPacker implements IPacker
      * @throws InvalidArgumentException if the value fails the filter
      */
     final protected function getValidatedFloat($value) {
-        if (!($return = filter_var($value, FILTER_VALIDATE_FLOAT))) {
+        if (false === ($return = filter_var($value, FILTER_VALIDATE_FLOAT))) {
             throw new \InvalidArgumentException("Expected float or integer, received " . getType($value));
         }
         return $return;
