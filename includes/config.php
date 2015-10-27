@@ -59,9 +59,9 @@ $config['ups']['user'] = '';
 $config['ups']['password'] = '';
 $config['ups']['account_number'] = '';
 $config['ups']['testing_url'] = 'https://wwwcie.ups.com/webservices';
-$config['ups']['production_url'] = 'https://onlinetools.ups.com/webservices'; 
+$config['ups']['production_url'] = 'https://onlinetools.ups.com/webservices';
 // absolute path to the UPS API files relative to the Ups.php file
-$config['ups']['path_to_api_files'] = SHIP_PATH . '/Awsp/Ship/ups_api_files'; 
+$config['ups']['path_to_api_files'] = SHIP_PATH . '/Awsp/Ship/ups_api_files';
 
 // shipper information - make any necessary overrides
 // note: needs to match information on file with UPS or the API call will fail
@@ -75,7 +75,7 @@ $config['ups']['shipper_address'] = $config['shipper_address'];
 19 - Letter Center
 20 - Air Service Center
 */
-$config['ups']['pickup_type'] = '01'; 
+$config['ups']['pickup_type'] = '01';
 
 /*
 00 - Rates Associated with Shipper Number
@@ -83,6 +83,6 @@ $config['ups']['pickup_type'] = '01';
 04 - Retail Rates
 53 - Standard List Rates
 */
-$config['ups']['rate_type'] = '00'; 
+$config['ups']['rate_type'] = '00';
 
 //----------------------------------------------------------------------------------------------------------------------
