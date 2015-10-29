@@ -278,8 +278,10 @@ jQuery(document).ready(function() {
 
     if($('#ptp').length > 0 && $('[name^=productOptions]').length > 0) {
         price_inc_options();
+		specification_inc_options();
         $("[name^=productOptions]").change(function() {
             price_inc_options();
+			specification_inc_options();
         });
     }
 
@@ -354,6 +356,52 @@ function price_inc_options() {
             }
         });
     }
+}
+
+function specification_inc_options() {
+	var options = [];
+	$("[name^=productOptions]").each(function (index, element) {
+		// skip processing if even one option not yet chosen
+		if (!$(this).val() || ($(this).is('input:radio') && $("input[name='" + element.name + "']:checked").length < 1)) {
+			options = false;
+			return false;
+		}
+		if ($(this).is('input:radio')) {
+			if ($(this).is(':checked')) {
+				options.push(element.name + '=' + $(this).val());
+			}
+        } else if ($(this).is('select')) {
+			options.push(element.name + '=' + ($(this).find("option:selected").val()));
+        } else if (($(this).is('textarea') || $(this).is('input:text')) && $(this).val() !== '') {
+			// TODO options.push(element.name + '=' + $(this).val());
+        } else { // include other product options, e.g. those with only 1 option
+			options.push(element.name + '=' + $(this).val());
+		}
+    });
+	if (options) {
+		var action = $('form.add_to_basket').attr('action');
+		var parts = action.split("?");
+		action += (parts.length > 1 ? '&' : '?') + '_g=ajax_update_product_data&';
+		options = options.join('&');
+		$.ajax({
+            url: action + options,
+            cache: true,
+            complete: function(returned) {
+                var data = $.parseJSON(returned.responseText);
+                for (var key in data) {
+					var id = '#spec_' + key;
+					if (data.hasOwnProperty(key) && $(id).length) {
+						$(id).html(data[key]);
+					}
+				}
+            }
+        });
+	} else { // revert to original values
+		$("[id^=spec_]").each(function (index, element) {
+			var name = element.id.substr(5);
+			$(this).html($(this).attr('data-' + name));
+		});
+	}
 }
 
 function add_to_basket(form) {

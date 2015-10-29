@@ -157,7 +157,7 @@
                <tbody>
                   <tr>
                      <td>{$LANG.catalogue.product_code}</td>
-                     <td>{$PRODUCT.product_code}</td>
+                     <td><span id="spec_product_code" data-product_code="{$PRODUCT.product_code}">{$PRODUCT.product_code}</span></td>
                   </tr>
                   {if $PRODUCT.manufacturer}
                   <tr>
@@ -168,7 +168,7 @@
                   {if $PRODUCT.stock_level}
                   <tr>
                      <td>{$LANG.catalogue.stock_level}</td>
-                     <td>{$PRODUCT.stock_level}</td>
+                     <td><span id="spec_stock_level" data-stock_level="{$PRODUCT.stock_level}">{$PRODUCT.stock_level}</span></td>
                   </tr>
                   {/if}
                   <tr>
@@ -178,7 +178,13 @@
                   {if $PRODUCT.product_weight > 0}
                   <tr>
                      <td>{$LANG.common.weight}</td>
-                     <td>{$PRODUCT.product_weight}{$CONFIG.product_weight_unit}</td>
+                     <td><span id="spec_product_weight" data-product_weight="{$PRODUCT.product_weight}">{$PRODUCT.product_weight}</span>{$CONFIG.product_weight_unit}</td>
+                  </tr>
+                  {/if}
+                  {if $PRODUCT.product_length > 0}
+                  <tr>
+                     <td>{$LANG.common.dimensions}</td>
+                     <td><span id="spec_product_length" data-product_length="{$PRODUCT.product_length}">{$PRODUCT.product_length}</span> x <span id="spec_product_height" data-product_height="{$PRODUCT.product_height}">{$PRODUCT.product_height}</span> x <span id="spec_product_width" data-product_width="{$PRODUCT.product_width}">{$PRODUCT.product_width}</span> {$CONFIG.product_measurement_unit}</td>
                   </tr>
                   {/if}
                </tbody>
