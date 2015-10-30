@@ -20,12 +20,28 @@ class RecursivePacker extends \Awsp\Packer\RecursivePacker
     /** Weight of packaging (if any) based on store settings */
     private $packaging_weight = 0.0;
 
+    /** Default package dimensions based on store settings */
+    private $default_dimensions = array('product_length' => 8, 'product_width' => 8, 'product_height' => 8);
+
     /**
      * Sets the amount of weight to add to each package to account for packaging material
      * @param float $value Must also expect possible empty string in place of zero from CubeCart
      */
     public function setPackagingWeight($value) {
         $this->packaging_weight = (empty($value) ? 0 : max(0.0, $this->getValidatedFloat($value)));
+    }
+
+    /**
+     * Sets default package dimensions for cases in which a product's dimensions are not specified
+     * @param array Array containing exactly 3 float or integer values
+     */
+    public function setDefaultDimensions(array $dimensions) {
+        $values = filter_var(array_values($dimensions), FILTER_VALIDATE_FLOAT, FILTER_REQUIRE_ARRAY);
+        if (!is_array($values) || count($values) !== 3) {
+            throw new \InvalidArgumentException("Expected exactly 3 float or integer values contained in an array; received: " . implode(',', $dimensions));
+        }
+        rsort($values);
+        $this->default_dimensions = array_combine(array_keys($this->default_dimensions), $values);
     }
 
     /**
@@ -38,7 +54,18 @@ class RecursivePacker extends \Awsp\Packer\RecursivePacker
         }
         // Extract required values from $item parameter
         $array = array_intersect_key($item, array('product_weight' => 0, 'product_length' => 0, 'product_height' => 0, 'product_width' => 0));
-        if (count($array) < 4) {
+        // Set any missing or invalid product dimensions to the store defaults
+        $n = 3; // number of set dimensions
+        foreach ($this->default_dimensions as $k => $v) {
+            if (!array_key_exists($k, $array) || !filter_var($array[$k], FILTER_VALIDATE_FLOAT) || $array[$k] <= 0) {
+                $array[$k] = (float) $v;
+                $n--;
+            }
+        }
+        // Product dimensions must either not be set at all, or all must be set
+        if ($n < 3 && $n > 0) {
+            throw new \InvalidArgumentException("Product dimensions must all be set or all left blank: $n dimension(s) were set");
+        } elseif (count($array) < 4) {
             throw new \InvalidArgumentException("Item must contain the following fields: 'product_length', 'product_height', 'product_width', 'product_weight', and usually 'quantity'");
         }
         extract($array);
