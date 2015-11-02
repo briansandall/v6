@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * AWSP UPS Module for CubeCart v6
+ * ========================================
+ * @author Brian Sandall
+ * @copyright (c) 2015 Brian Sandall
+ * @license GPL-3.0 http://opensource.org/licenses/GPL-3.0
+ * ========================================
+ * CubeCart is a registered trade mark of CubeCart Limited
+ * Copyright CubeCart Limited 2014. All rights reserved.
+ * UK Private Limited Company No. 5323904
+ * ========================================
+ * Web:   http://www.cubecart.com
+ * Email:  sales@devellion.com
+ * License:  GPL-2.0 http://opensource.org/licenses/GPL-2.0
+-->
+<definitions version="1.0">
+ <group name="awsp_ups">
+  <string name="account_key"><![CDATA[Account Key]]></string>
+  <string name="account_number"><![CDATA[Account Number]]></string>
+  <string name="account_pass"><![CDATA[Account Password]]></string>
+  <string name="account_user"><![CDATA[Account User]]></string>
+  <string name="account_phone"><![CDATA[Phone Number]]></string>
+  <string name="account_address_1"><![CDATA[Address Line 1]]></string>
+  <string name="account_address_2"><![CDATA[Address Line 2]]></string>
+  <string name="account_city"><![CDATA[City]]></string>
+  <string name="address_commercial"><![CDATA[Commercial]]></string>
+  <string name="address_residential"><![CDATA[Residential]]></string>
+  <string name="module_description"><![CDATA[This module will communicate with UPS to retrieve real time shipping quotes based on the basket weight. Please make sure all products have a weight to use this module.]]></string>
+  <string name="module_title"><![CDATA[UPS]]></string>
+  <string name="package_type"><![CDATA[Packaging Type]]></string>
+  <string name="default_package_length"><![CDATA[Default Package Length]]></string>
+  <string name="default_package_width"><![CDATA[Default Package Width]]></string>
+  <string name="default_package_height"><![CDATA[Default Package Height]]></string>
+  <string name="package_weight"><![CDATA[Packaging Weight]]></string>
+  <string name="pack_custom"><![CDATA[Custom Packaging]]></string>
+  <string name="pack_envelope"><![CDATA[UPS Letter Envelope]]></string>
+  <string name="pack_tube"><![CDATA[UPS Tube]]></string>
+  <string name="pack_box"><![CDATA[Express Box]]></string>
+  <string name="pack_25k"><![CDATA[Worldwide 25kg]]></string>
+  <string name="pack_10k"><![CDATA[Worldwide 10kg]]></string>
+  <string name="pickup_type_rdp"><![CDATA[Regular Daily Pickup]]></string>
+  <string name="pickup_type_oca"><![CDATA[On Call Air]]></string>
+  <string name="pickup_type_otp"><![CDATA[One-Time Pickup]]></string>
+  <string name="pickup_type_lc"><![CDATA[Letter Center]]></string>
+  <string name="pickup_type_cc"><![CDATA[Customer Counter]]></string>
+  <string name="rate_account"><![CDATA[Rates Associated with Shipper Number]]></string>
+  <string name="rate_daily"><![CDATA[Daily Rates]]></string>
+  <string name="rate_retail"><![CDATA[Retail Rates]]></string>
+  <string name="rate_standard"><![CDATA[Standard List Rates]]></string>
+  <string name="service_canada_standard"><![CDATA[Canada Standard]]></string>
+  <string name="service_day2_air"><![CDATA[2nd Day Air]]></string>
+  <string name="service_day2_am"><![CDATA[2nd Day Air Early AM]]></string>
+  <string name="service_day3_select"><![CDATA[3 Day Select]]></string>
+  <string name="service_ground"><![CDATA[Ground]]></string>
+  <string name="service_nextday_air"><![CDATA[Next Day Air]]></string>
+  <string name="service_nextday_am"><![CDATA[Next Day Air Early AM]]></string>
+  <string name="service_nextday_saver"><![CDATA[Next Day Air Saver]]></string>
+  <string name="service_worldwide_expedited"><![CDATA[Worldwide Expedited]]></string>
+  <string name="service_worldwide_express"><![CDATA[Worldwide Express]]></string>
+  <string name="service_worldwide_express_plus"><![CDATA[Worldwide Express Plus]]></string>
+  <string name="test_mode"><![CDATA[Test Mode]]></string>
+  <string name="title_account_info"><![CDATA[UPS Account Info]]></string>
+  <string name="title_address"><![CDATA[Destination Address Type]]></string>
+  <string name="title_package_info"><![CDATA[Packaging Type]]></string>
+  <string name="title_products"><![CDATA[UPS Products]]></string>
+  <string name="title_pickup_type"><![CDATA[Pickup Type]]></string>
+  <string name="title_rate"><![CDATA[Rate]]></string>
+  <string name="title_store_info"><![CDATA[Store Info]]></string>
+ </group>
+</definitions>
