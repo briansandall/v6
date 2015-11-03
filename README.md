@@ -9,7 +9,7 @@ This branch of this CubeCart fork is solely for developing Lineman's Equipment.
 2. Create and checkout a new branch* to begin working on a feature
 
 	> git checkout -b feature_branch
-	
+
 * Create a new branch based off of the 'installed' branch for each feature
   unless it depends on an earlier feature not yet merged
 
@@ -40,7 +40,7 @@ This branch of this CubeCart fork is solely for developing Lineman's Equipment.
 	> Open the MySQL console
 	
 	> CREATE DATABASE `cubecart`; // or whatever name you wish
-	
+
 3. Create a new database user (skip this step if using the root user)
 
 	> CREATE USER 'cc_user'@'localhost' IDENTIFIED BY 'password';
@@ -69,6 +69,10 @@ This branch of this CubeCart fork is solely for developing Lineman's Equipment.
 
 7. Import data
 
+	> Ask the site admin to send you the cc_data.sql file
+	
+	> mysql -u root -p db_name < c:/path/to/cc_data.sql
+
 8. Verify/Update Store Settings
 
 	> Log in to 127.0.0.1/path/to/cc/admin as 'admin', password 'Welcome1'
@@ -76,3 +80,23 @@ This branch of this CubeCart fork is solely for developing Lineman's Equipment.
 	> Click on 'Store Settings' -> 'SSL' tab and update the Store URL to match your directory
 	
 	> Click on 'Store Settings' -> 'Logos' and update the logo to '/path/to/cc/images/logos/logo.png'
+
+## Troubleshooting
+
+Q: Page 404 errors when navigating away from the home page
+
+A: Check that the Apache rewrite_module is enabled
+
+Q: Can't log in to admin panel
+
+A: Are you using Chrome?
+
+	> Yes
+	
+		Make sure the settings under Store Settings -> SSL all use 127.0.0.1 instead of localhost.
+		This will already be the case if you imported the test database data, or can be done using a different browser.
+		See https://forums.cubecart.com/topic/50319-resolved-issues-getting-started
+	
+	> No
+	
+		Make sure you are using the correct username and password 
