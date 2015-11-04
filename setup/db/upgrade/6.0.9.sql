@@ -1,0 +1,1 @@
+ALTER TABLE `CubeCart_option_matrix` ADD COLUMN `set_enabled` TINYINT(1) unsigned NOT NULL DEFAULT 1 COMMENT 'Whether this combination is enabled' AFTER `cached_name`;

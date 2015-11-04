@@ -225,7 +225,7 @@ class Cubecart {
 					}
 					if ($options) {
 						$options_identifier_string = $GLOBALS['catalogue']->defineOptionsIdentifier($options);
-						$result = $GLOBALS['db']->select('CubeCart_option_matrix', 'product_id, use_stock as use_stock_level, stock_level, product_code, upc, ean, jan, isbn', array('options_identifier' => $options_identifier_string));
+						$result = $GLOBALS['db']->select('CubeCart_option_matrix', 'product_id, set_enabled, use_stock as use_stock_level, stock_level, product_code, upc, ean, jan, isbn', array('options_identifier' => $options_identifier_string));
 						$matrix = ($result ? array_pop($result) : false);
 						if (is_array($matrix) && filter_var($matrix['product_id'], FILTER_VALIDATE_INT)) {
 							if (!$product) {
@@ -237,6 +237,7 @@ class Cubecart {
 						}
 						if ($product) {
 							// Modify product specifications based on each option
+							$product['set_enabled'] = true; // default product, i.e. no options selected, should not show 'unavailable' message
 							foreach ($options as $option_id => $option_data) {
 								if (is_array($option_data)) {
 									// Text option
@@ -259,7 +260,7 @@ class Cubecart {
 							}
 							if (is_array($matrix)) {
 								// These values should be overwritten even if 'empty'
-								$overwrite = array('use_stock_level', 'stock_level');
+								$overwrite = array('set_enabled', 'use_stock_level', 'stock_level');
 								// Matrix values always overwrite matching product values
 								foreach ($matrix as $k => $v) {
 									if (!empty($v) || array_search($k, $overwrite) !== false) {

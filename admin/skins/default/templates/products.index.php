@@ -501,6 +501,7 @@
          <thead>
             <tr>
                <th>{$LANG.common.combination}</th>
+               <th>{$LANG.common.status}</th>
                <th>{$LANG.catalogue.stock_level_use}</th>
                <th>{$LANG.catalogue.stock_level}</th>
                <th>{$LANG.catalogue.product_code}</th>
@@ -515,6 +516,7 @@
             {foreach from=$OPTIONS_MATRIX.all_possible item=row}
             <tr>
                <td>{$row.options_values}</td>
+               <td align="center"><input type="hidden" id="set_enabled_{$row.options_identifier}" name="option_matrix[{$row.options_identifier}][set_enabled]" value="{$OPTIONS_MATRIX.existing.{$row.options_identifier}.set_enabled}" class="toggle"></td>
                <td align="center"><input type="hidden" id="use_stock_{$row.options_identifier}" name="option_matrix[{$row.options_identifier}][use_stock]" value="{$OPTIONS_MATRIX.existing.{$row.options_identifier}.use_stock}" class="toggle"></td>
                <td><input type="text" name="option_matrix[{$row.options_identifier}][stock_level]" class="textbox number" value="{$OPTIONS_MATRIX.existing.{$row.options_identifier}.stock_level}"></td>
                <td><input type="text" name="option_matrix[{$row.options_identifier}][product_code]" class="textbox number" value="{$OPTIONS_MATRIX.existing.{$row.options_identifier}.product_code}"></td>
