@@ -221,7 +221,7 @@ class Cubecart {
 					$options = (isset($_GET['productOptions']) && is_array($_GET['productOptions']) ? $_GET['productOptions'] : false);
 					if ($options) {
 						$options_identifier_string = $GLOBALS['catalogue']->defineOptionsIdentifier($options);
-						$result = $GLOBALS['db']->select('CubeCart_option_matrix', 'product_id, stock_level, product_code, upc, ean, jan, isbn', array('options_identifier' => $options_identifier_string));
+						$result = $GLOBALS['db']->select('CubeCart_option_matrix', 'product_id, use_stock as use_stock_level, stock_level, product_code, upc, ean, jan, isbn', array('options_identifier' => $options_identifier_string));
 						$matrix = ($result ? array_pop($result) : false);
 						if (is_array($matrix) && filter_var($matrix['product_id'], FILTER_VALIDATE_INT)) {
 							$product = $GLOBALS['catalogue']->getProductData($matrix['product_id'], 1, false, 10, 1, false, $options_identifier_string);
@@ -248,9 +248,11 @@ class Cubecart {
 									}
 								}
 							}
+							// These values should be overwritten even if 'empty'
+							$overwrite = array('use_stock_level', 'stock_level');
 							// Matrix values always overwrite matching product values
 							foreach ($matrix as $k => $v) {
-								if (!empty($v)) {
+								if (!empty($v) || array_search($k, $overwrite) !== false) {
 									$product[$k] = $v;
 								}
 							}
