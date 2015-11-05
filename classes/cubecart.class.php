@@ -2875,7 +2875,12 @@ class Cubecart {
 	private function _updateProductDataForOption(array $product, array $option) {
 		if ($option['option_price'] > 0) {
 			if ($option['absolute_price']) {
-				$product['price'] = $option['option_price'];
+				// Use the greater of two absolute prices
+				$product['price'] = (empty($product['absolute_price']) ? $option['option_price'] : max($product['price'], $option['option_price']));
+				$product['sale_price'] = $product['price'];
+				$product['absolute_price'] = true;
+			} elseif (!empty($product['absolute_price'])) {
+				// don't do anything - absolute prices should not be modified
 			} elseif (empty($option['option_negative'])) {
 				$product['price'] += $option['option_price'];
 				$product['sale_price'] += $option['option_price'];
