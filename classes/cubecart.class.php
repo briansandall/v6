@@ -267,6 +267,10 @@ class Cubecart {
 							}
 						}
 					}
+					// Finally, format product values for display
+					if (is_array($product)) {
+						$product['product_weight'] = sprintf('%.3F', $product['product_weight']);
+					}
 					die(json_encode($product));
 				break;
 				case 'ajax_email':
