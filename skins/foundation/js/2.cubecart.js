@@ -379,6 +379,10 @@ function specification_inc_options() {
 		}
     });
 	if (options.length > 0) {
+		var product_id = document.getElementById('product_id');
+		if (product_id && product_id.tagName === 'INPUT') {
+			options.push('product_id=' + product_id.value);
+		}
 		var action = $('form.add_to_basket').attr('action');
 		var parts = action.split("?");
 		action += (parts.length > 1 ? '&' : '?') + '_g=ajax_update_product_data&';

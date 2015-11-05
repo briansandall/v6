@@ -120,7 +120,7 @@
                {else}
                <div class="medium-2 columns show-for-medium-up">
                   <input type="text" name="quantity" value="1" class="quantity required text-center">
-                  <input type="hidden" name="add" value="{$PRODUCT.product_id}">
+                  <input type="hidden" name="add" id="product_id" value="{$PRODUCT.product_id}">
                </div>
                <div  class="small-12 medium-10 columns">
                   <button type="submit" value="{$LANG.catalogue.add_to_basket}" class="button postfix">{$LANG.catalogue.add_to_basket}</button>
