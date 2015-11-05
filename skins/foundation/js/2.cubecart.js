@@ -277,10 +277,8 @@ jQuery(document).ready(function() {
     }
 
     if($('#ptp').length > 0 && $('[name^=productOptions]').length > 0) {
-        price_inc_options();
 		specification_inc_options();
         $("[name^=productOptions]").change(function() {
-            price_inc_options();
 			specification_inc_options();
         });
     }
@@ -393,9 +391,18 @@ function specification_inc_options() {
             complete: function(returned) {
                 var data = $.parseJSON(returned.responseText);
                 for (var key in data) {
-					var id = '#spec_' + key;
-					if (data.hasOwnProperty(key) && $(id).length) {
-						$(id).html(data[key]);
+					switch (key) {
+					case 'price':
+						$('#fbp').html(data[key]);
+					break;
+					case 'sale_price':
+						$('#ptp').html(data[key]);
+					break;
+					default: // update product specifications
+						var id = '#spec_' + key;
+						if (data.hasOwnProperty(key) && $(id).length) {
+							$(id).html(data[key]);
+						}
 					}
 				}
             }

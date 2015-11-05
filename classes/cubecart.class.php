@@ -248,12 +248,12 @@ class Cubecart {
 										}
 										$value = $GLOBALS['catalogue']->getOptionData((int)$option_id, $assign_id);
 										if ($value) {
-											$product['product_weight'] += (isset($value['option_weight'])) ? $value['option_weight'] : 0;
+											$product = $this->_updateProductDataForOption($product, $value);
 										}
 									}
 								} elseif (is_numeric($option_data)) {
 									if (($value = $GLOBALS['catalogue']->getOptionData((int)$option_id, (int)$option_data)) !== false) {
-										$product['product_weight'] += (isset($value['option_weight'])) ? $value['option_weight'] : 0;
+										$product = $this->_updateProductDataForOption($product, $value);
 									}
 								}
 							}
@@ -269,6 +269,11 @@ class Cubecart {
 					}
 					// Finally, format product values for display
 					if (is_array($product)) {
+						if ($product['price'] < $product['sale_price']) {
+							$product['sale_price'] = $product['price'];
+						}
+						$product['price'] = $GLOBALS['tax']->priceFormat($product['price']);
+						$product['sale_price'] = $GLOBALS['tax']->priceFormat($product['sale_price']);
 						$product['product_weight'] = sprintf('%.3F', $product['product_weight']);
 					}
 					die(json_encode($product));
@@ -2841,5 +2846,27 @@ class Cubecart {
 
 		$content = $GLOBALS['smarty']->fetch('templates/content.search.php');
 		$GLOBALS['smarty']->assign('PAGE_CONTENT', $content);
+	}
+
+	/**
+	 * Applies option modifiers (e.g. to price, weight, etc) to the product data
+	 * @param array $product product to modify, as retreived from Catalogue->getProductData
+	 * @param array $option  option to apply, as retrieved from Catalogue->getOptionData
+	 * @return modified product array
+	 */
+	private function _updateProductDataForOption(array $product, array $option) {
+		if ($option['option_price'] > 0) {
+			if ($option['absolute_price']) {
+				$product['price'] = $option['option_price'];
+			} elseif (empty($option['option_negative'])) {
+				$product['price'] += $option['option_price'];
+				$product['sale_price'] += $option['option_price'];
+			} else {
+				$product['price'] -= $option['option_price'];
+				$product['sale_price'] -= $option['option_price'];
+			}
+		}
+		$product['product_weight'] += (isset($option['option_weight'])) ? $option['option_weight'] : 0;
+		return $product;
 	}
 }
