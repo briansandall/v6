@@ -361,12 +361,12 @@ function price_inc_options() {
 function specification_inc_options() {
 	var options = [];
 	$("[name^=productOptions]").each(function (index, element) {
-		// skip processing if even one option not yet chosen
 		if (!$(this).val() || ($(this).is('input:radio') && $("input[name='" + element.name + "']:checked").length < 1)) {
-			options = false;
-			return false;
-		}
-		if ($(this).is('input:radio')) {
+		} else if ($(this).is('input:radio')) {
+			// Prevent empty radio selections from adding multiple entries
+			if (!$(this).is('input:radio') || $.inArray(element.name + '=0', options) === -1) {
+				options.push(element.name + '=0');
+			}
 			if ($(this).is(':checked')) {
 				options.push(element.name + '=' + $(this).val());
 			}
@@ -378,7 +378,7 @@ function specification_inc_options() {
 			options.push(element.name + '=' + $(this).val());
 		}
     });
-	if (options) {
+	if (options.length > 0) {
 		var action = $('form.add_to_basket').attr('action');
 		var parts = action.split("?");
 		action += (parts.length > 1 ? '&' : '?') + '_g=ajax_update_product_data&';
