@@ -400,11 +400,6 @@ function specification_inc_options() {
 				}
             }
         });
-	} else { // revert to original values
-		$("[id^=spec_]").each(function (index, element) {
-			var name = element.id.substr(5);
-			$(this).html($(this).attr('data-' + name));
-		});
 	}
 }
 
