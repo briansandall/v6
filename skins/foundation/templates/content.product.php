@@ -168,7 +168,7 @@
          </div>
          {/if}
          <div class="content{if empty($PRODUCT.description)} active{/if}" id="product_spec">
-            <table>
+            <table id="product_spec_table">
                <tbody>
                   <tr>
                      <td>{$LANG.catalogue.product_code}</td>
@@ -181,11 +181,13 @@
                   </tr>
                   {/if}
                   {if $PRODUCT.stock_level}
-                  <tr>
+                  <tr id="stock_level_row">
+				  {else}
+				  <tr id="stock_level_row" class="hide">
+				  {/if}
                      <td>{$LANG.catalogue.stock_level}</td>
                      <td><span id="spec_stock_level">{$PRODUCT.stock_level}</span></td>
                   </tr>
-                  {/if}
                   <tr>
                      <td>{$LANG.common.condition}</td>
                      <td>{$PRODUCT.condition}</td>

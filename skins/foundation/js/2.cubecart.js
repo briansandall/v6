@@ -419,6 +419,18 @@ function specification_inc_options() {
 					case 'sale_price':
 						$('#ptp').html(data[key]);
 					break;
+					case 'use_stock_level':
+						var rows = $('table#product_spec_table tr');
+						if (data[key] == 1) {
+							rows.filter('#stock_level_row').show();
+							rows.filter('.hidden_row').remove();
+						} else {
+							rows.filter('#stock_level_row').hide();
+							if (rows.filter('.hidden_row').length == 0) {
+								rows.filter('#stock_level_row').after('<tr class="hide hidden_row"><td></td><td></td></tr>');
+							}
+						}
+					break;
 					case 'CTRL_SETTINGS':
 						if (data[key]['CTRL_ALLOW_PURCHASE'] && !data[key]['CATALOGUE_MODE']) {
 							$('#allow_purchase').show();
