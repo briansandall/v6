@@ -411,6 +411,8 @@ class Catalogue {
 			$optionArray = $this->getProductOptions($product_id);
 			if (is_array($optionArray)) {
 				ksort($optionArray);
+				$absolute = false;
+				$options_price_modifier = 0;
 				foreach ($optionArray as $type => $group) {
 					switch ($type) {
 					case self::OPTION_SELECT:  ## Dropdown options
@@ -445,12 +447,16 @@ class Catalogue {
 								
 								if($selected[$value['assign_id']]) {
 									if($value['absolute_price']=='1') {
-										$this->_options_line_price =  $value['option_price'];
+										$this->_options_line_price = (empty($absolute) ? $value['option_price'] : max($this->_options_line_price - $options_price_modifier, $value['option_price']));
+										$this->_options_line_price += $options_price_modifier;
+										$absolute = true;
 									} else {
 										if($value['option_price']>0 && $value['option_negative'] == 0) { 
 											$this->_options_line_price +=  $value['option_price'];
+											$options_price_modifier += $value['option_price'];
 										} elseif($value['option_price']>0) { 
 											$this->_options_line_price -=  $value['option_price'];
+											$options_price_modifier -= $value['option_price'];
 										}
 									}
 								}
@@ -485,12 +491,16 @@ class Catalogue {
 							);
 							
 							if($option[0]['absolute_price']=='1') {
-								$this->_options_line_price =  $option[0]['option_price'];
+								$this->_options_line_price = (empty($absolute) ? $option[0]['option_price'] : max($this->_options_line_price - $options_price_modifier, $option[0]['option_price']));
+								$this->_options_line_price += $options_price_modifier;
+								$absolute = true;
 							} else {
 								if($option[0]['option_price']>0 && $option[0]['option_negative'] == 0) { 
 									$this->_options_line_price +=  $option[0]['option_price'];
+									$options_price_modifier += $option[0]['option_price'];
 								} elseif($value['option_price']>0) { 
 									$this->_options_line_price -=  $option[0]['option_price'];
+									$options_price_modifier -= $option[0]['option_price'];
 								}
 							}
 						}
