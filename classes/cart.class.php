@@ -657,6 +657,8 @@ class Cart {
 						$remove_options_tax = true;
 					}
 					$option_line_price = 0;
+					$option_price_modifier = 0;
+					$option_price_ignoring_tax_modifier = 0;
 					if (isset($item['options']) && is_array($item['options'])) {
 						foreach ($item['options'] as $option_id => $option_data) {
 							if (is_array($option_data)) {
@@ -675,32 +677,24 @@ class Cart {
 											if ($remove_options_tax) {
 												$GLOBALS['tax']->inclusiveTaxRemove($value['option_price'], $product['tax_type']);
 											}
+											$price_value = $value['option_price'] * (isset($value['option_negative']) && $value['option_negative'] ? -1 : 1);
+											$display_option_tax *= (isset($value['option_negative']) && $value['option_negative'] ? -1 : 1);
 											if($value['absolute_price']) {
+												$product['price'] = (defined('ABSOLUTE_PRICE') ? max($product['price'] - $option_price_modifier, $price_value) : $price_value);
+												$option_price_ignoring_tax = (defined('ABSOLUTE_PRICE') ? max($option_price_ignoring_tax - $option_price_ignoring_tax_modifier, $display_option_tax) : $display_option_tax);
 												define('ABSOLUTE_PRICE', true);
-												$product['price'] = $option_line_price = $option_price_ignoring_tax = 0;
-												if (isset($value['option_negative']) && $value['option_negative']) {
-													$product['price'] -= $value['option_price'];
-													$option_line_price -= $value['option_price'];
-													$option_price_ignoring_tax -= $display_option_tax;
-												} else {
-													$product['price'] += $value['option_price'];
-													$option_line_price += $value['option_price'];
-													$option_price_ignoring_tax += $display_option_tax;
-												}
+												$product['price'] += $option_price_modifier;
+												$option_price_ignoring_tax += $option_price_ignoring_tax_modifier;
+												$option_line_price = $product['price'];
 											} else {
-												if (isset($value['option_negative']) && $value['option_negative']) {
-													$product['price'] -= $value['option_price'];
-													$option_line_price -= $value['option_price'];
-													$option_price_ignoring_tax -= $display_option_tax;
-													$value['price_display'] = '-';
-												} else {
-													$product['price'] += $value['option_price'];
-													$option_line_price += $value['option_price'];
-													$option_price_ignoring_tax += $display_option_tax;
-													$value['price_display'] = '+';
-												}
+												$product['price'] += $price_value;
+												$option_line_price += $price_value;
+												$option_price_modifier += $price_value;
+												$option_price_ignoring_tax += $display_option_tax;
+												$option_price_ignoring_tax_modifier += $display_option_tax;
+												$value['price_display'] = ($price_value < 0 ? '-' : '+');
 											}
-											$value['price_display'] .= $GLOBALS['tax']->priceFormat($display_option_tax, true);
+											$value['price_display'] .= $GLOBALS['tax']->priceFormat(abs($display_option_tax), true);
 										}
 										$product['product_weight'] += (isset($value['option_weight'])) ? $value['option_weight'] : 0;
 										$value['value_name'] = $option_value;
@@ -719,33 +713,24 @@ class Cart {
 												$GLOBALS['tax']->inclusiveTaxRemove($value['option_price'], $product['tax_type']);
 											}
 
+											$price_value = $value['option_price'] * (isset($value['option_negative']) && $value['option_negative'] ? -1 : 1);
+											$display_option_tax *= (isset($value['option_negative']) && $value['option_negative'] ? -1 : 1);
 											if($value['absolute_price']) {
+												$product['price'] = (defined('ABSOLUTE_PRICE') ? max($product['price'] - $option_price_modifier, $price_value) : $price_value);
+												$option_price_ignoring_tax = (defined('ABSOLUTE_PRICE') ? max($option_price_ignoring_tax - $option_price_ignoring_tax_modifier, $display_option_tax) : $display_option_tax);
 												define('ABSOLUTE_PRICE', true);
-												$product['price'] = $option_line_price = $option_price_ignoring_tax = 0;
-												if (isset($value['option_negative']) && $value['option_negative']) {
-													$option_line_price -= $value['option_price'];
-													$product['price'] -= $value['option_price'];
-													$option_price_ignoring_tax -= $display_option_tax;
-												} else {
-													$option_line_price += $value['option_price'];
-													$product['price'] += $value['option_price'];
-													$option_price_ignoring_tax += $display_option_tax;
-												}
-
+												$product['price'] += $option_price_modifier;
+												$option_price_ignoring_tax += $option_price_ignoring_tax_modifier;
+												$option_line_price = $product['price'];
 											} else {
-												if (isset($value['option_negative']) && $value['option_negative']) {
-													$option_line_price -= $value['option_price'];
-													$product['price'] -= $value['option_price'];
-													$option_price_ignoring_tax -= $display_option_tax;
-													$value['price_display'] = '-';
-												} else {
-													$option_line_price += $value['option_price'];
-													$product['price'] += $value['option_price'];
-													$option_price_ignoring_tax += $display_option_tax;
-													$value['price_display'] = '+';
-												}
-												$value['price_display'] .= $GLOBALS['tax']->priceFormat($display_option_tax, true);
+												$product['price'] += $price_value;
+												$option_line_price += $price_value;
+												$option_price_modifier += $price_value;
+												$option_price_ignoring_tax += $display_option_tax;
+												$option_price_ignoring_tax_modifier += $display_option_tax;
+												$value['price_display'] = ($price_value < 0 ? '-' : '+');
 											}
+											$value['price_display'] .= $GLOBALS['tax']->priceFormat(abs($display_option_tax), true);
 										}
 										$product['product_weight'] += (isset($value['option_weight'])) ? $value['option_weight'] : 0;
 										$product['options'][] = $value;
