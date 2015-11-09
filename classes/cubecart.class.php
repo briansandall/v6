@@ -237,6 +237,7 @@ class Cubecart {
 						}
 						if ($product) {
 							// Modify product specifications based on each option
+							$product['price_total_modifier'] = 0.00; // running total of all modifiers for dealing with multiple absolute pricing options
 							foreach ($options as $option_id => $option_data) {
 								if (is_array($option_data)) {
 									// Text option
@@ -2876,17 +2877,19 @@ class Cubecart {
 		if ($option['option_price'] > 0) {
 			if ($option['absolute_price']) {
 				// Use the greater of two absolute prices
-				$product['price'] = (empty($product['absolute_price']) ? $option['option_price'] : max($product['price'], $option['option_price']));
+				$product['price'] = (empty($product['absolute_price']) ? $option['option_price'] : max($product['price'] - $product['price_total_modifier'], $option['option_price']));
+				// Apply total of all previous price modifiers
+				$product['price'] += $product['price_total_modifier'];
 				$product['sale_price'] = $product['price'];
 				$product['absolute_price'] = true;
-			} elseif (!empty($product['absolute_price'])) {
-				// don't do anything - absolute prices should not be modified
 			} elseif (empty($option['option_negative'])) {
 				$product['price'] += $option['option_price'];
 				$product['sale_price'] += $option['option_price'];
+				$product['price_total_modifier'] += $option['option_price'];
 			} else {
 				$product['price'] -= $option['option_price'];
 				$product['sale_price'] -= $option['option_price'];
+				$product['price_total_modifier'] -= $option['option_price'];
 			}
 		}
 		$product['product_weight'] += (isset($option['option_weight'])) ? $option['option_weight'] : 0;
