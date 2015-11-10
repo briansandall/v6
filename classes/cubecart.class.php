@@ -216,6 +216,88 @@ class Cubecart {
 					}
 					exit;
 				break;
+				case 'ajax_update_product_data':
+					$GLOBALS['debug']->supress();
+					$options = (isset($_GET['productOptions']) && is_array($_GET['productOptions']) ? $_GET['productOptions'] : false);
+					$product = false;
+					if (filter_var($_GET['product_id'], FILTER_VALIDATE_INT)) {
+						$product = $GLOBALS['catalogue']->getProductData($_GET['product_id'], 1, false, 10, 1, false, null);
+					}
+					if ($options) {
+						$options_identifier_string = $GLOBALS['catalogue']->defineOptionsIdentifier($options);
+						$result = $GLOBALS['db']->select('CubeCart_option_matrix', 'product_id, use_stock as use_stock_level, stock_level, product_code, upc, ean, jan, isbn', array('options_identifier' => $options_identifier_string));
+						$matrix = ($result ? array_pop($result) : false);
+						if (is_array($matrix) && filter_var($matrix['product_id'], FILTER_VALIDATE_INT)) {
+							if (!$product) {
+								$product = $GLOBALS['catalogue']->getProductData($matrix['product_id'], 1, false, 10, 1, false, $options_identifier_string);
+							} elseif ($product['product_id'] != $matrix['product_id']) {
+								// product id mismatch can happen if one or more options missing a valid value
+								die(json_encode($product)); // show default product data
+							}
+						}
+						if ($product) {
+							// Modify product specifications based on each option
+							foreach ($options as $option_id => $option_data) {
+								if (is_array($option_data)) {
+									// Text option
+									foreach ($option_data as $trash => $option_value) {
+										if (($assign_id = $GLOBALS['db']->select('CubeCart_option_assign', false, array('product' => $matrix['product_id'], 'option_id' => $option_id))) !== false) {
+											$assign_id = $assign_id[0]['assign_id'];
+										} else {
+											$assign_id = 0;
+										}
+										$value = $GLOBALS['catalogue']->getOptionData((int)$option_id, $assign_id);
+										if ($value) {
+											$product = $this->_updateProductDataForOption($product, $value);
+										}
+									}
+								} elseif (is_numeric($option_data)) {
+									if (($value = $GLOBALS['catalogue']->getOptionData((int)$option_id, (int)$option_data)) !== false) {
+										$product = $this->_updateProductDataForOption($product, $value);
+									}
+								}
+							}
+							if (is_array($matrix)) {
+								// These values should be overwritten even if 'empty'
+								$overwrite = array('use_stock_level', 'stock_level');
+								// Matrix values always overwrite matching product values
+								foreach ($matrix as $k => $v) {
+									if (!empty($v) || array_search($k, $overwrite) !== false) {
+										$product[$k] = $v;
+									}
+								}
+							}
+						}
+					}
+					// Finally, format product values for display
+					if (is_array($product)) {
+						if ($product['price'] < $product['sale_price']) {
+							$product['sale_price'] = $product['price'];
+						}
+						$product['price'] = $GLOBALS['tax']->priceFormat($product['price']);
+						$product['sale_price'] = $GLOBALS['tax']->priceFormat($product['sale_price']);
+						$product['product_weight'] = sprintf('%.3F', $product['product_weight']);
+						
+						// Add settings to determine which GUI elements to display / hide (replicates variables / logic in Catalogue#displayProduct)
+						$product['CTRL_SETTINGS'] = array(
+							'CATALOGUE_MODE'      => ($GLOBALS['config']->get('config', 'catalogue_mode') ? true : false),
+							'CTRL_ALLOW_PURCHASE' => true,
+							'CTRL_OUT_OF_STOCK'   => false,
+							'CTRL_HIDE_PRICES'    => false
+						);
+						if ((bool)$product['use_stock_level']) {
+							if ((int)$product['stock_level'] < 1 && !$GLOBALS['config']->get('config', 'basket_out_of_stock_purchase')) {
+								$product['CTRL_SETTINGS']['CTRL_ALLOW_PURCHASE'] = false;
+								$product['CTRL_SETTINGS']['CTRL_OUT_OF_STOCK'] = true;
+							}
+						}
+						if ($GLOBALS['session']->get('hide_prices')) {
+							$product['CTRL_SETTINGS']['CTRL_ALLOW_PURCHASE'] = false;
+							$product['CTRL_SETTINGS']['CTRL_HIDE_PRICES'] = true;
+						}
+					}
+					die(json_encode($product));
+				break;
 				case 'ajax_email':
 					$GLOBALS['debug']->supress();
 
@@ -2791,5 +2873,27 @@ class Cubecart {
 
 		$content = $GLOBALS['smarty']->fetch('templates/content.search.php');
 		$GLOBALS['smarty']->assign('PAGE_CONTENT', $content);
+	}
+
+	/**
+	 * Applies option modifiers (e.g. to price, weight, etc) to the product data
+	 * @param array $product product to modify, as retreived from Catalogue->getProductData
+	 * @param array $option  option to apply, as retrieved from Catalogue->getOptionData
+	 * @return modified product array
+	 */
+	private function _updateProductDataForOption(array $product, array $option) {
+		if ($option['option_price'] > 0) {
+			if ($option['absolute_price']) {
+				$product['price'] = $option['option_price'];
+			} elseif (empty($option['option_negative'])) {
+				$product['price'] += $option['option_price'];
+				$product['sale_price'] += $option['option_price'];
+			} else {
+				$product['price'] -= $option['option_price'];
+				$product['sale_price'] -= $option['option_price'];
+			}
+		}
+		$product['product_weight'] += (isset($option['option_weight'])) ? $option['option_weight'] : 0;
+		return $product;
 	}
 }

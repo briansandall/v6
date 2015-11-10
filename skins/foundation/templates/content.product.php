@@ -112,27 +112,42 @@
             <p>(<a href="#quantity_discounts">{$LANG.catalogue.bulk_discount}</a>)</p>
             {/if}
             {if ($CTRL_ALLOW_PURCHASE) && (!$CATALOGUE_MODE)}
-            <div class="row collapse">
-               {if $PRODUCT.available <= 0}
-               <div class="small-12 columns">
-                  <input type="submit" value="{$LANG.common.unavailable}" class="button small disabled expand marg-top" disabled>
-               </div>
-               {else}
-               <div class="medium-2 columns show-for-medium-up">
-                  <input type="text" name="quantity" value="1" class="quantity required text-center">
-                  <input type="hidden" name="add" value="{$PRODUCT.product_id}">
-               </div>
-               <div  class="small-12 medium-10 columns">
-                  <button type="submit" value="{$LANG.catalogue.add_to_basket}" class="button postfix">{$LANG.catalogue.add_to_basket}</button>
-               </div>
-               {/if}
-            </div>
+            <div id="allow_purchase" class="row collapse">
             {else}
-            {if $CTRL_HIDE_PRICES}
-            <p class="buy_button"><strong>{$LANG.catalogue.login_to_view}</strong></p>
-            {else if $CTRL_OUT_OF_STOCK}
-            <p class="buy_button"><strong>{$LANG.catalogue.out_of_stock}</strong></p>
+            <div id="allow_purchase" class="hide row collapse">
             {/if}
+              {if $PRODUCT.available <= 0}
+              <div id="unavailable" class="small-12 columns">
+              {else}
+              <div id="unavailable" class="hide small-12 columns">
+              {/if}
+                <input type="submit" value="{$LANG.common.unavailable}" class="button small disabled expand marg-top" disabled>
+              </div>
+              {if $PRODUCT.available <= 0}
+              <div id="available_qty" class="hide medium-2 columns show-for-medium-up">
+              {else}
+              <div id="available_qty" class="medium-2 columns show-for-medium-up">
+              {/if}
+                <input type="text" name="quantity" value="1" class="quantity required text-center">
+                <input type="hidden" name="add" id="product_id" value="{$PRODUCT.product_id}">
+              </div>
+              {if $PRODUCT.available <= 0}
+              <div id="available_btn" class="hide small-12 medium-10 columns">
+              {else}
+              <div id="available_btn" class="small-12 medium-10 columns">
+              {/if}
+                <button type="submit" value="{$LANG.catalogue.add_to_basket}" class="button postfix">{$LANG.catalogue.add_to_basket}</button>
+              </div>
+            </div>
+            {if $CTRL_HIDE_PRICES}
+            <p id="login_to_view" class="buy_button"><strong>{$LANG.catalogue.login_to_view}</strong></p>
+            {else}
+            <p id="login_to_view" class="hide buy_button"><strong>{$LANG.catalogue.login_to_view}</strong></p>
+            {/if}
+            {if !$CTRL_HIDE_PRICES && $CTRL_OUT_OF_STOCK}
+            <p id="out_of_stock" class="buy_button"><strong>{$LANG.catalogue.out_of_stock}</strong></p>
+            {else}
+            <p id="out_of_stock" class="hide buy_button"><strong>{$LANG.catalogue.out_of_stock}</strong></p>
             {/if}
          </div>
       </div>
@@ -153,11 +168,11 @@
          </div>
          {/if}
          <div class="content{if empty($PRODUCT.description)} active{/if}" id="product_spec">
-            <table>
+            <table id="product_spec_table">
                <tbody>
                   <tr>
                      <td>{$LANG.catalogue.product_code}</td>
-                     <td>{$PRODUCT.product_code}</td>
+                     <td><span id="spec_product_code" data-product_code="{$PRODUCT.product_code}">{$PRODUCT.product_code}</span></td>
                   </tr>
                   {if $PRODUCT.manufacturer}
                   <tr>
@@ -166,11 +181,13 @@
                   </tr>
                   {/if}
                   {if $PRODUCT.stock_level}
-                  <tr>
+                  <tr id="stock_level_row">
+				  {else}
+				  <tr id="stock_level_row" class="hide">
+				  {/if}
                      <td>{$LANG.catalogue.stock_level}</td>
-                     <td>{$PRODUCT.stock_level}</td>
+                     <td><span id="spec_stock_level" data-stock_level="{$PRODUCT.stock_level}">{$PRODUCT.stock_level}</span></td>
                   </tr>
-                  {/if}
                   <tr>
                      <td>{$LANG.common.condition}</td>
                      <td>{$PRODUCT.condition}</td>
@@ -178,7 +195,7 @@
                   {if $PRODUCT.product_weight > 0}
                   <tr>
                      <td>{$LANG.common.weight}</td>
-                     <td>{$PRODUCT.product_weight}{$CONFIG.product_weight_unit}</td>
+                     <td><span id="spec_product_weight" data-product_weight="{$PRODUCT.product_weight}">{$PRODUCT.product_weight}</span>{$CONFIG.product_weight_unit}</td>
                   </tr>
                   {/if}
                   {if $PRODUCT.product_length > 0}
