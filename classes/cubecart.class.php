@@ -510,6 +510,8 @@ class Cubecart {
 
 		$_a = isset($_GET['redir']) ? $_GET['redir'] : 'addressbook';
 
+		$GLOBALS['smarty']->assign('REDIR', $_a);
+
 		if (isset($_POST['save'])) {
 			if (empty($_POST['description'])) {
 				if($_POST['billing']==1 && $_POST['default']==1) {
@@ -739,7 +741,8 @@ class Cubecart {
 
 			// Check shipping has been defined for tangible orders
 			if (!isset($this->_basket['digital_only']) && !isset($this->_basket['shipping'])) {
-				if(($GLOBALS['config']->get('config', 'disable_estimates')=='1' && $this->_basket['delivery_address']['user_defined']) || $GLOBALS['config']->get('config', 'disable_estimates')=='0') {
+				$de = $GLOBALS['config']->get('config', 'aaadisable_estimates');
+				if(($de == '1' && $this->_basket['delivery_address']['user_defined']) || ($de == '0' || !$de)) {
 					$GLOBALS['gui']->setError($GLOBALS['language']->checkout['error_shipping']);
 				}
 				$gatway_proceed = false;
@@ -1589,6 +1592,32 @@ class Cubecart {
 			}
 			$GLOBALS['smarty']->assign('ITEMS', array_reverse($items, true));
 
+			// Get basket total
+			if (isset($this->_basket['coupons']) && is_array($this->_basket['coupons']) || !empty($this->_basket['discount'])) {
+				if (!empty($this->_basket['discount']) && $this->_basket['discount']>0) {
+					$GLOBALS['smarty']->assign('DISCOUNT', $GLOBALS['tax']->priceFormat($this->_basket['discount']));
+				}
+
+				if (is_array($this->_basket['coupons'])) {
+					foreach ($this->_basket['coupons'] as $coupon) {
+						$coupon['remove_code'] = $coupon['voucher'];
+						if ($coupon['type'] == 'fixed') {
+							$this->_basket['discount_type'] = 'f';
+							$coupon['value'] = $GLOBALS['tax']->priceFormat($coupon['value_display'], true);
+							$coupons[] = $coupon;
+						} else if ($coupon['type'] == 'percent') {
+								$this->_basket['discount_type'] = $coupon['products'] ? 'pp' : 'p';
+								$coupon['voucher'] .= ' ('.$coupon['value'].'%)';
+								$coupon['value'] = $GLOBALS['tax']->priceFormat($coupon['value_display'], true);
+								$coupons[] = $coupon;
+							}
+					}
+					$GLOBALS['smarty']->assign('COUPONS', $coupons);
+				}
+			}
+
+			foreach ($GLOBALS['hooks']->load('class.cubecart.post_coupon') as $hook) include $hook;
+
 			// Shipping Calculations
 			if (($shipping = $GLOBALS['cart']->loadShippingModules()) !== false) {
 				$offset = 1;
@@ -1683,29 +1712,7 @@ class Cubecart {
 			if (!$digital_only && $shipping) {
 				$GLOBALS['smarty']->assign('SHIPPING', $shipping_list);
 			}
-			// Get basket total
-			if (isset($this->_basket['coupons']) && is_array($this->_basket['coupons']) || !empty($this->_basket['discount'])) {
-				if (!empty($this->_basket['discount']) && $this->_basket['discount']>0) {
-					$GLOBALS['smarty']->assign('DISCOUNT', $GLOBALS['tax']->priceFormat($this->_basket['discount']));
-				}
-
-				if (is_array($this->_basket['coupons'])) {
-					foreach ($this->_basket['coupons'] as $coupon) {
-						$coupon['remove_code'] = $coupon['voucher'];
-						if ($coupon['type'] == 'fixed') {
-							$this->_basket['discount_type'] = 'f';
-							$coupon['value'] = $GLOBALS['tax']->priceFormat($coupon['value_display'], true);
-							$coupons[] = $coupon;
-						} else if ($coupon['type'] == 'percent') {
-								$this->_basket['discount_type'] = $coupon['products'] ? 'pp' : 'p';
-								$coupon['voucher'] .= ' ('.$coupon['value'].'%)';
-								$coupon['value'] = $GLOBALS['tax']->priceFormat($coupon['value_display'], true);
-								$coupons[] = $coupon;
-							}
-					}
-					$GLOBALS['smarty']->assign('COUPONS', $coupons);
-				}
-			}
+			
 			$GLOBALS['smarty']->assign('SUBTOTAL', $GLOBALS['tax']->priceFormat($GLOBALS['cart']->getSubTotal()));
 
 			$GLOBALS['tax']->displayTaxes();

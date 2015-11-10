@@ -215,6 +215,7 @@
       </div>
    </form>
    {if $SHARE}
+   <hr>
    {foreach from=$SHARE item=html}
    {$html}
    {/foreach}

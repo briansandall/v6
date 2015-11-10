@@ -536,7 +536,6 @@ class User {
 
 	/**
 	 * Get customer_id
-	 *
 	 * @return customer_id/0
 	 */
 	public function getId() {
@@ -545,6 +544,21 @@ class User {
 		} else {
 			return $this->_user_data['customer_id'];
 		}
+	}
+
+	/**
+	 * Get customer group memberships
+	 * @param int $customer_id
+	 * @return false/array
+	 */
+	public function getMemberships($customer_id = null) {
+		if(is_null($customer_id)) {
+			$customer_id = $this->getId();
+		}
+		if($customer_id>0) {
+			return $GLOBALS['db']->select('CubeCart_customer_membership', false, array('customer_id' => $customer_id));
+		}
+		return false;
 	}
 
 	/**

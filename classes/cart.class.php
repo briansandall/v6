@@ -581,7 +581,7 @@ class Cart {
 	 */
 	public function discountRemove($code) {
 		if ($code && isset($this->basket['coupons'][strtoupper($code)])) {
-			unset($this->basket['coupons'][strtoupper($code)]);
+			unset($this->basket['coupons'][strtoupper($code)], $this->basket['discount_type']);
 			$this->save();
 			return true;
 		}
@@ -634,6 +634,7 @@ class Cart {
 				// Basket Contents
 				if (is_numeric($item['id'])) {
 
+					$item['options_identifier'] = isset($item['options_identifier']) ? $item['options_identifier'] : '';
 					$product = $GLOBALS['catalogue']->getProductData($item['id'], $item['quantity'], false, 10, 1, false, $item['options_identifier']);
 					
 					if(!$product) {

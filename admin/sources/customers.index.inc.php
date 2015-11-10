@@ -98,6 +98,10 @@ if (isset($_POST['customer']) && is_array($_POST['customer']) && Admin::getInsta
 		$required = array('first_name', 'last_name', 'email');
 		$customer['registered'] = time();
 		foreach ($customer as $field => $value) {
+			if($field == 'email' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+				$GLOBALS['main']->setACPWarning($lang['common']['error_email_invalid']);
+				$error = true;
+			}
 			if (in_array($field, $required) && empty($value)) {
 				$error = true;
 			}
@@ -461,8 +465,10 @@ if (isset($_GET['action']) && Admin::getInstance()->permissions('customers', CC_
 	// Start classes for external reports
 	if (($module = $GLOBALS['db']->select('CubeCart_modules', 'folder', array('module' => 'external', 'status' => '1'))) !== false) {
 		foreach ($module as $module_data) {
-			$module_data['description'] = ucfirst($module_data['folder']);
-			$smarty_data['customers_export_list'][] = $module_data;
+			if(file_exists(CC_ROOT_DIR.'/modules/external/'.$module_data['folder'])) {
+				$module_data['description'] = ucfirst($module_data['folder']);
+				$smarty_data['customers_export_list'][] = $module_data;
+			}
 		}
 		$GLOBALS['smarty']->assign('CUSTOMER_EXPORT_LIST', $smarty_data['customers_export_list']);
 	}
