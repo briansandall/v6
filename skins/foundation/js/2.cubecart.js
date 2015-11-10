@@ -277,10 +277,8 @@ jQuery(document).ready(function() {
     }
 
     if($('#ptp').length > 0 && $('[name^=productOptions]').length > 0) {
-        price_inc_options();
 		specification_inc_options();
         $("[name^=productOptions]").change(function() {
-            price_inc_options();
 			specification_inc_options();
         });
     }
@@ -369,12 +367,12 @@ function price_inc_options() {
 function specification_inc_options() {
 	var options = [];
 	$("[name^=productOptions]").each(function (index, element) {
-		// skip processing if even one option not yet chosen
 		if (!$(this).val() || ($(this).is('input:radio') && $("input[name='" + element.name + "']:checked").length < 1)) {
-			options = false;
-			return false;
-		}
-		if ($(this).is('input:radio')) {
+		} else if ($(this).is('input:radio')) {
+			// Prevent empty radio selections from adding multiple entries
+			if (!$(this).is('input:radio') || $.inArray(element.name + '=0', options) === -1) {
+				options.push(element.name + '=0');
+			}
 			if ($(this).is(':checked')) {
 				options.push(element.name + '=' + $(this).val());
 			}
@@ -386,7 +384,11 @@ function specification_inc_options() {
 			options.push(element.name + '=' + $(this).val());
 		}
     });
-	if (options) {
+	if (options.length > 0) {
+		var product_id = document.getElementById('product_id');
+		if (product_id && product_id.tagName === 'INPUT') {
+			options.push('product_id=' + product_id.value);
+		}
 		var action = $('form.add_to_basket').attr('action');
 		var parts = action.split("?");
 		action += (parts.length > 1 ? '&' : '?') + '_g=ajax_update_product_data&';
@@ -397,18 +399,53 @@ function specification_inc_options() {
             complete: function(returned) {
                 var data = $.parseJSON(returned.responseText);
                 for (var key in data) {
-					var id = '#spec_' + key;
-					if (data.hasOwnProperty(key) && $(id).length) {
-						$(id).html(data[key]);
+					switch (key) {
+					case 'price':
+						$('#fbp').html(data[key]);
+					break;
+					case 'sale_price':
+						$('#ptp').html(data[key]);
+					break;
+					case 'use_stock_level':
+						var rows = $('table#product_spec_table tr');
+						if (data[key] == 1) {
+							rows.filter('#stock_level_row').show();
+							rows.filter('.hidden_row').remove();
+						} else {
+							rows.filter('#stock_level_row').hide();
+							if (rows.filter('.hidden_row').length == 0) {
+								rows.filter('#stock_level_row').after('<tr class="hide hidden_row"><td></td><td></td></tr>');
+							}
+						}
+					break;
+					case 'CTRL_SETTINGS':
+						if (data[key]['CTRL_ALLOW_PURCHASE'] && !data[key]['CATALOGUE_MODE']) {
+							$('#allow_purchase').show();
+							$('#login_to_view').hide();
+							$('#out_of_stock').hide();
+						} else {
+							$('#allow_purchase').hide();
+							if (data[key]['CTRL_HIDE_PRICES']) {
+								$('#login_to_view').show();
+							} else {
+								$('#login_to_view').hide();
+							}
+							if (!data[key]['CTRL_HIDE_PRICES'] && data[key]['CTRL_OUT_OF_STOCK']) {
+								$('#out_of_stock').show();
+							} else {
+								$('#out_of_stock').hide();
+							}
+						}
+					break;
+					default: // update product specifications
+						var id = '#spec_' + key;
+						if (data.hasOwnProperty(key) && $(id).length) {
+							$(id).html(data[key]);
+						}
 					}
 				}
             }
         });
-	} else { // revert to original values
-		$("[id^=spec_]").each(function (index, element) {
-			var name = element.id.substr(5);
-			$(this).html($(this).attr('data-' + name));
-		});
 	}
 }
 
