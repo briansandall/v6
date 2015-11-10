@@ -276,7 +276,11 @@ class Cubecart {
 						}
 						$product['price'] = $GLOBALS['tax']->priceFormat($product['price']);
 						$product['sale_price'] = $GLOBALS['tax']->priceFormat($product['sale_price']);
-						$product['product_weight'] = sprintf('%.3F', $product['product_weight']);
+						// Format the following entries to 3-decimal precision
+						$thousands = array('product_weight','product_length','product_height','product_width');
+						foreach ($thousands as $key) {
+							$product[$key] = sprintf('%.3F', $product[$key]);
+						}
 						
 						// Add settings to determine which GUI elements to display / hide (replicates variables / logic in Catalogue#displayProduct)
 						$product['CTRL_SETTINGS'] = array(
