@@ -225,7 +225,7 @@ class Cubecart {
 					}
 					if ($options) {
 						$options_identifier_string = $GLOBALS['catalogue']->defineOptionsIdentifier($options);
-						$result = $GLOBALS['db']->select('CubeCart_option_matrix', 'product_id, use_stock as use_stock_level, stock_level, product_code, upc, ean, jan, isbn', array('options_identifier' => $options_identifier_string));
+						$result = $GLOBALS['db']->select('CubeCart_option_matrix', 'product_id, use_stock as use_stock_level, stock_level, product_code, upc, ean, jan, isbn', array('status' => 1, 'options_identifier' => $options_identifier_string));
 						$matrix = ($result ? array_pop($result) : false);
 						if (is_array($matrix) && filter_var($matrix['product_id'], FILTER_VALIDATE_INT)) {
 							if (!$product) {
