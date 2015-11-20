@@ -729,13 +729,8 @@ class Cart {
 					$this->basket_digital = true;
 				}
 
-				if(!empty($product['absolute_price'])) {
-					$product['line_price_display'] = $product['option_price_ignoring_tax'];
-					$product['price_display']  = $product['option_price_ignoring_tax']*$item['quantity'];
-				} else {
-					$product['line_price_display'] = $product['price_display']+$product['option_price_ignoring_tax'];
-					$product['price_display']  = ($product['price_display']+$product['option_price_ignoring_tax'])*$item['quantity'];
-				}
+				$product['line_price_display'] = $product['price'];
+				$product['price_display'] = $product['price']*$item['quantity'];
 
 
 				## Update Subtotals
