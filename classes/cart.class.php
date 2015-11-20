@@ -690,6 +690,15 @@ class Cart {
 					} else {
 						$product['options'] = false;
 					}
+					// Update product based on values in matrix entry, if any
+					if ($item['options_identifier']) {
+						$matrix_fields = array('product_id', 'use_stock as use_stock_level', 'stock_level', 'product_code', 'image');
+						$matrix_where = array('product_id' => $item['id'], 'options_identifier' => $item['options_identifier'], 'status' => 1);
+						$matrix = $GLOBALS['db']->select('CubeCart_option_matrix', $matrix_fields, $matrix_where);
+						if ($matrix) {
+							Cart::applyProductMatrix($product, array_pop($matrix));
+						}
+					}
 					// Check for sale after prices fully updated
 					if ($GLOBALS['tax']->salePrice($product['price'], $product['sale_price']) && $product['sale_price'] < $product['price']) {
 						$product['price'] = $product['sale_price'];
