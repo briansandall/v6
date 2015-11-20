@@ -261,14 +261,7 @@ class Cubecart {
 								}
 							}
 							if (is_array($matrix)) {
-								// These values should be overwritten even if 'empty'
-								$overwrite = array('use_stock_level', 'stock_level');
-								// Matrix values always overwrite matching product values
-								foreach ($matrix as $k => $v) {
-									if (!empty($v) || array_search($k, $overwrite) !== false) {
-										$product[$k] = $v;
-									}
-								}
+								Cart::applyProductMatrix($product, $matrix);
 							}
 						}
 					}
