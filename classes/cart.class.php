@@ -651,9 +651,6 @@ class Cart {
 					$product['option_price_ignoring_tax_modifier'] = 0.00;
 
 					$product['quantity'] = $item['quantity'];
-					if ($GLOBALS['tax']->salePrice($product['price'], $product['sale_price'])) {
-						$product['price'] = $product['sale_price'];
-					}
 					$product['price_display'] = $product['price'];
 					$product['base_price_display'] = $GLOBALS['tax']->priceFormat($product['price'], true);
 					$product['remove_options_tax'] = false;
@@ -692,6 +689,11 @@ class Cart {
 						}
 					} else {
 						$product['options'] = false;
+					}
+					// Check for sale after prices fully updated
+					if ($GLOBALS['tax']->salePrice($product['price'], $product['sale_price']) && $product['sale_price'] < $product['price']) {
+						$product['price'] = $product['sale_price'];
+						$product['ctrl_sale'] = true;
 					}
 
 					$product['price'] = sprintf("%0.2F",$product['price']);
