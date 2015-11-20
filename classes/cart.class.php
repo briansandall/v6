@@ -1275,11 +1275,11 @@ class Cart {
 			$price_value = $option['option_price'] * (isset($option['option_negative']) && $option['option_negative'] ? -1 : 1);
 			$display_option_tax *= (isset($option['option_negative']) && $option['option_negative'] ? -1 : 1);
 			if ($option['absolute_price']) {
-				$product['price'] = $price_value;
+				$product['price'] = (empty($product['absolute_price']) ? $price_value : max($product['price'] - $product['price_total_modifier'], $price_value));
 				$product['price'] += $product['price_total_modifier'];
 				$product['sale_price'] = $product['price'];
 				$product['option_line_price'] = $price_value;
-				$product['option_price_ignoring_tax'] = $display_option_tax;
+				$product['option_price_ignoring_tax'] = (empty($product['absolute_price']) ? $display_option_tax : max($product['option_price_ignoring_tax'] - $product['option_price_ignoring_tax_modifier'], $display_option_tax));
 				$product['option_price_ignoring_tax'] += $product['option_price_ignoring_tax_modifier'];
 				$product['absolute_price'] = true;
 			} else {
