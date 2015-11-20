@@ -277,6 +277,7 @@ class Cubecart {
 						if ($product['price'] < $product['sale_price']) {
 							$product['sale_price'] = $product['price'];
 						}
+						$product['ctrl_sale'] = ($product['sale_price'] > 0 && $product['sale_price'] < $product['price'] ? true : false);
 						$product['price'] = $GLOBALS['tax']->priceFormat($product['price']);
 						$product['sale_price'] = $GLOBALS['tax']->priceFormat($product['sale_price']);
 						$product['product_weight'] = sprintf('%.3F', $product['product_weight']);
