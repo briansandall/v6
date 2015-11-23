@@ -646,6 +646,9 @@ class Cart {
 						unset($this->basket['contents'][$hash]);
 						continue;
 					}
+					// running totals of price modifiers for dealing with multiple absolute pricing options
+					$product['price_total_modifier'] = 0.00;
+					$product['option_price_ignoring_tax_modifier'] = 0.00;
 
 					$product['quantity'] = $item['quantity'];
 					if ($GLOBALS['tax']->salePrice($product['price'], $product['sale_price'])) {

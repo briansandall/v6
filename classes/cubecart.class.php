@@ -236,6 +236,9 @@ class Cubecart {
 							}
 						}
 						if ($product) {
+							// running totals of price modifiers for dealing with multiple absolute pricing options
+							$product['price_total_modifier'] = 0.00;
+							$product['option_price_ignoring_tax_modifier'] = 0.00;
 							// Modify product specifications based on each option
 							foreach ($options as $option_id => $option_data) {
 								if (is_array($option_data)) {
