@@ -700,6 +700,17 @@ class Cart {
 							Cart::applyProductMatrix($product, array_pop($matrix));
 						}
 					}
+					// Prevent purchase of disabled option combinations
+					if (!$product['set_enabled']) {
+						// Warn that the product has been removed
+						if (!empty($item['name'])) {
+							$GLOBALS['gui']->setError(sprintf($GLOBALS['language']->checkout['error_item_not_available'], $item['name']));
+						}
+						unset($this->basket['contents'][$hash]);
+						unset($product);
+						continue;
+					}
+
 					// Check for sale after prices fully updated
 					if ($product['ctrl_sale']) { // this item is supposed to be on sale
 						if ($GLOBALS['tax']->salePrice($product['price'], $product['sale_price']) && $product['sale_price'] < $product['price']) {
