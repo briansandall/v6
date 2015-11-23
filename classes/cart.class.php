@@ -701,9 +701,12 @@ class Cart {
 						}
 					}
 					// Check for sale after prices fully updated
-					if ($GLOBALS['tax']->salePrice($product['price'], $product['sale_price']) && $product['sale_price'] < $product['price']) {
-						$product['price'] = $product['sale_price'];
-						$product['ctrl_sale'] = true;
+					if ($product['ctrl_sale']) { // this item is supposed to be on sale
+						if ($GLOBALS['tax']->salePrice($product['price'], $product['sale_price']) && $product['sale_price'] < $product['price']) {
+							$product['price'] = $product['sale_price'];
+						} else {
+							$product['ctrl_sale'] = false;
+						}
 					}
 
 					$product['price'] = sprintf("%0.2F",$product['price']);
