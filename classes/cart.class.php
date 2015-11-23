@@ -692,7 +692,7 @@ class Cart {
 					}
 					// Update product based on values in matrix entry, if any
 					if ($item['options_identifier']) {
-						$matrix_fields = array('product_id', 'use_stock as use_stock_level', 'stock_level', 'product_code', 'image');
+						$matrix_fields = array('product_id', 'price', 'sale_price', 'use_stock as use_stock_level', 'stock_level', 'product_code', 'image');
 						$matrix_where = array('product_id' => $item['id'], 'options_identifier' => $item['options_identifier'], 'status' => 1);
 						$matrix = $GLOBALS['db']->select('CubeCart_option_matrix', $matrix_fields, $matrix_where);
 						if ($matrix) {
@@ -1259,6 +1259,7 @@ class Cart {
 	 *        Elements modified:
 	 *        'price' => option price modifiers are applied, with absolute pricing taking precedence over any previous modifiers
 	 *        'price_total_modifier' => sum of all price adjustments from all non-absolute options
+	 *        'price_optional_modifier' => sum of price adjustments from all options not included in the matrix
 	 *        'option_line_price' => calculated the same as 'price'
 	 *        'option_price_ignoring_tax' => calculated the same as 'price' but does not remove any included tax
 	 *        'option_price_ignoring_tax_modifier' => sum of all price adjustments to 'option_price_ignoring_tax' from all non-absolute options
@@ -1293,6 +1294,7 @@ class Cart {
 				$product['option_line_price'] += $price_value;
 				$product['option_price_ignoring_tax'] += $display_option_tax;
 				$product['option_price_ignoring_tax_modifier'] += $display_option_tax;
+				$product['price_optional_modifier'] += ($option['matrix_include'] == 0 ? $price_value : 0);
 				$option['price_display'] = ($price_value < 0 ? '-' : '+');
 			}
 			$option['price_display'] .= $GLOBALS['tax']->priceFormat(abs($display_option_tax), true);
@@ -1304,6 +1306,7 @@ class Cart {
 	 * Updates the product array with non-empty values from the matrix.
 	 * Exceptions (i.e. these update the product value even when empty):
 	 *     'use_stock_level', 'stock_level'
+	 * 'price' and 'sale_price' include any $product['price_optional_modifier']
 	 *
 	 * @param array $product Updated to contain the most authoritative version of any field, e.g. 'stock_level'
 	 */
@@ -1316,6 +1319,22 @@ class Cart {
 		$overwrite = array('use_stock_level', 'stock_level');
 		foreach ($matrix as $k => $v) {
 			switch ($k) {
+			case 'price': // Fall through to 'sale_price'
+			case 'sale_price':
+				// Don't overwrite prices if they are any kind of '0.00'
+				if (preg_match('/^(0+|0+\.0+)$/', $v)) {
+					continue;
+				}
+				// Account for possibility of non-matrix option with absolute pricing
+				if (!empty($product['absolute_price'])) {
+					$v = max($v, $product[$k] - $product['price_total_modifier']);
+				}
+				// Add total of any non-matrix option price modifiers
+				$v += $product['price_optional_modifier'];
+				if ($v < 0.01) {
+					$v = 0;
+				}
+				// Fall through to default case
 			default:
 				if (!empty($v) || array_search($k, $overwrite) !== false) {
 					$product[$k] = $v;

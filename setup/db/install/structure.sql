@@ -554,6 +554,8 @@ CREATE TABLE IF NOT EXISTS `CubeCart_option_matrix` (
   `product_id` int(11) unsigned NOT NULL,
   `options_identifier` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   `cached_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `price` decimal(16,2) unsigned NULL DEFAULT NULL COMMENT 'Retail Price for this option combination',
+  `sale_price` decimal(16,2) unsigned NULL DEFAULT NULL COMMENT 'Sale Price for this option combination',
   `stock_level` int(11) NOT NULL,
   `use_stock` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `product_code` varchar(60) COLLATE utf8_unicode_ci DEFAULT NULL,

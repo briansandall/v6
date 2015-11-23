@@ -1,1 +1,3 @@
+ALTER TABLE `CubeCart_option_matrix` ADD COLUMN `price` decimal(16,2) unsigned NULL DEFAULT NULL COMMENT 'Retail Price for this option combination' AFTER `cached_name`;
+ALTER TABLE `CubeCart_option_matrix` ADD COLUMN `sale_price` decimal(16,2) unsigned NULL DEFAULT NULL COMMENT 'Sale Price for this option combination' AFTER `price`;
 ALTER TABLE `CubeCart_order_summary` ADD `weight` DECIMAL(16,3) NOT NULL DEFAULT '0.000' AFTER `ship_method`; #EOQ
