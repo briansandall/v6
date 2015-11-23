@@ -649,6 +649,7 @@ class Cart {
 					// running totals of price modifiers for dealing with multiple absolute pricing options
 					$product['price_total_modifier'] = 0.00;
 					$product['option_price_ignoring_tax_modifier'] = 0.00;
+					$product['price_optional_modifier'] = 0.00; // total price modifier of all non-matrix options
 
 					$product['quantity'] = $item['quantity'];
 					$product['price_display'] = $product['price'];
