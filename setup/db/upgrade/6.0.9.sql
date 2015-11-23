@@ -1,3 +1,4 @@
 ALTER TABLE `CubeCart_option_matrix` ADD COLUMN `price` decimal(16,2) unsigned NULL DEFAULT NULL COMMENT 'Retail Price for this option combination' AFTER `cached_name`;
 ALTER TABLE `CubeCart_option_matrix` ADD COLUMN `sale_price` decimal(16,2) unsigned NULL DEFAULT NULL COMMENT 'Sale Price for this option combination' AFTER `price`;
+ALTER TABLE `CubeCart_option_matrix` ADD COLUMN `set_enabled` TINYINT(1) unsigned NOT NULL DEFAULT 1 COMMENT 'Whether this combination is enabled' AFTER `cached_name`;
 ALTER TABLE `CubeCart_order_summary` ADD `weight` DECIMAL(16,3) NOT NULL DEFAULT '0.000' AFTER `ship_method`; #EOQ

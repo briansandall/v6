@@ -247,6 +247,7 @@
     <string name="category_primary" introduced="5.0.0"><![CDATA[Primary]]></string>
     <string name="checkout_latest_products" introduced="5.0.0"><![CDATA[Check out these great products...]]></string>
     <string name="click_enlarge" introduced="5.0.0"><![CDATA[Click to enlarge]]></string>
+	<string name="combination_unavailable" introduced="6.1.0"><![CDATA[Sorry, the combination you have chosen is not available]]></string>
     <string name="condition" introduced="5.0.0"><![CDATA[Condition]]></string>
     <string name="condition_new" introduced="5.0.0"><![CDATA[New]]></string>
     <string name="condition_used" introduced="5.0.0"><![CDATA[Used]]></string>

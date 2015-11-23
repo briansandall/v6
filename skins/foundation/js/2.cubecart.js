@@ -412,17 +412,29 @@ function specification_inc_options() {
 					break;
 					case 'CTRL_SETTINGS':
 						if (data[key]['CTRL_ALLOW_PURCHASE'] && !data[key]['CATALOGUE_MODE']) {
-							$('#allow_purchase').show();
+							if (data['set_enabled'] == 1) {
+								$('#allow_purchase').show();
+								$('#combination_unavailable').hide();
+							} else {
+								$('#allow_purchase').hide();
+								$('#combination_unavailable').show();
+							}
 							$('#login_to_view').hide();
 							$('#out_of_stock').hide();
 						} else {
-							$('#allow_purchase').hide();
-							if (data[key]['CTRL_HIDE_PRICES']) {
+							if (data['set_enabled'] == 1) {
+								$('#allow_purchase').show();
+								$('#combination_unavailable').hide();
+							} else {
+								$('#allow_purchase').hide();
+								$('#combination_unavailable').show();
+							}
+							if (data['set_enabled'] == 1 && data[key]['CTRL_HIDE_PRICES']) {
 								$('#login_to_view').show();
 							} else {
 								$('#login_to_view').hide();
 							}
-							if (!data[key]['CTRL_HIDE_PRICES'] && data[key]['CTRL_OUT_OF_STOCK']) {
+							if (data['set_enabled'] == 1 && !data[key]['CTRL_HIDE_PRICES'] && data[key]['CTRL_OUT_OF_STOCK']) {
 								$('#out_of_stock').show();
 							} else {
 								$('#out_of_stock').hide();
@@ -437,12 +449,18 @@ function specification_inc_options() {
 					}
 				}
 				// Handle after loop so elements are properly displayed / hidden
-				if (data['ctrl_sale']) {
-					$('#fbp').show();
-					$('#ptp').addClass('sale_price');
+				if (data['set_enabled'] == 1) {
+					$('#ptp').show();
+					if (data['ctrl_sale']) {
+						$('#fbp').show();
+						$('#ptp').addClass('sale_price');
+					} else {
+						$('#fbp').hide();
+						$('#ptp').removeClass('sale_price');
+					}
 				} else {
 					$('#fbp').hide();
-					$('#ptp').removeClass('sale_price');
+					$('#ptp').hide();
 				}
             }
         });

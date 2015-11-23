@@ -225,7 +225,7 @@ class Cubecart {
 					}
 					if ($options) {
 						$options_identifier_string = $GLOBALS['catalogue']->defineOptionsIdentifier($options);
-						$result = $GLOBALS['db']->select('CubeCart_option_matrix', 'product_id, price, sale_price, use_stock as use_stock_level, stock_level, product_code, upc, ean, jan, isbn', array('status' => 1, 'options_identifier' => $options_identifier_string));
+						$result = $GLOBALS['db']->select('CubeCart_option_matrix', 'product_id, set_enabled, price, sale_price, use_stock as use_stock_level, stock_level, product_code, upc, ean, jan, isbn', array('status' => 1, 'options_identifier' => $options_identifier_string));
 						$matrix = ($result ? array_pop($result) : false);
 						if (is_array($matrix) && filter_var($matrix['product_id'], FILTER_VALIDATE_INT)) {
 							if (!$product) {
@@ -241,6 +241,7 @@ class Cubecart {
 							$product['option_price_ignoring_tax_modifier'] = 0.00;
 							$product['price_optional_modifier'] = 0.00; // total price modifier of all non-matrix options
 							// Modify product specifications based on each option
+							$product['set_enabled'] = true; // default product, i.e. no options selected, should not show 'unavailable' message
 							foreach ($options as $option_id => $option_data) {
 								if (is_array($option_data)) {
 									// Text option

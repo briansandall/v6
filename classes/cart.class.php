@@ -693,7 +693,7 @@ class Cart {
 					}
 					// Update product based on values in matrix entry, if any
 					if ($item['options_identifier']) {
-						$matrix_fields = array('product_id', 'price', 'sale_price', 'use_stock as use_stock_level', 'stock_level', 'product_code', 'image');
+						$matrix_fields = array('product_id', 'set_enabled', 'price', 'sale_price', 'use_stock as use_stock_level', 'stock_level', 'product_code', 'image');
 						$matrix_where = array('product_id' => $item['id'], 'options_identifier' => $item['options_identifier'], 'status' => 1);
 						$matrix = $GLOBALS['db']->select('CubeCart_option_matrix', $matrix_fields, $matrix_where);
 						if ($matrix) {
@@ -1309,7 +1309,7 @@ class Cart {
 	/**
 	 * Updates the product array with non-empty values from the matrix.
 	 * Exceptions (i.e. these update the product value even when empty):
-	 *     'use_stock_level', 'stock_level'
+	 *     'set_enabled', 'use_stock_level', 'stock_level'
 	 * 'price' and 'sale_price' include any $product['price_optional_modifier']
 	 *
 	 * @param array $product Updated to contain the most authoritative version of any field, e.g. 'stock_level'
@@ -1320,7 +1320,7 @@ class Cart {
 			$matrix['use_stock_level'] = 0;
 		}
 		// These values should be overwritten even if 'empty'
-		$overwrite = array('use_stock_level', 'stock_level');
+		$overwrite = array('set_enabled', 'use_stock_level', 'stock_level');
 		foreach ($matrix as $k => $v) {
 			switch ($k) {
 			case 'price': // Fall through to 'sale_price'
