@@ -1249,8 +1249,10 @@ class Cart {
 	 * @param array $product product to modify, as retreived from Catalogue->getProductData
 	 *        Elements modified:
 	 *        'price' => option price modifiers are applied, with absolute pricing taking precedence over any previous modifiers
+	 *        'price_total_modifier' => sum of all price adjustments from all non-absolute options
 	 *        'option_line_price' => calculated the same as 'price'
 	 *        'option_price_ignoring_tax' => calculated the same as 'price' but does not remove any included tax
+	 *        'option_price_ignoring_tax_modifier' => sum of all price adjustments to 'option_price_ignoring_tax' from all non-absolute options
 	 *        'absolute_price' => added and set to true if any option uses absolute pricing
 	 *        'product_weight' => option modifier (may be negative), if any, is added to product weight
 	 *
@@ -1269,13 +1271,17 @@ class Cart {
 			$display_option_tax *= (isset($option['option_negative']) && $option['option_negative'] ? -1 : 1);
 			if ($option['absolute_price']) {
 				$product['price'] = $price_value;
+				$product['price'] += $product['price_total_modifier'];
 				$product['option_line_price'] = $price_value;
 				$product['option_price_ignoring_tax'] = $display_option_tax;
+				$product['option_price_ignoring_tax'] += $product['option_price_ignoring_tax_modifier'];
 				$product['absolute_price'] = true;
 			} else {
 				$product['price'] += $price_value;
+				$product['price_total_modifier'] += $price_value;
 				$product['option_line_price'] += $price_value;
 				$product['option_price_ignoring_tax'] += $display_option_tax;
+				$product['option_price_ignoring_tax_modifier'] += $display_option_tax;
 				$option['price_display'] = ($price_value < 0 ? '-' : '+');
 			}
 			$option['price_display'] .= $GLOBALS['tax']->priceFormat(abs($display_option_tax), true);
