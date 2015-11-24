@@ -518,7 +518,7 @@
             {foreach from=$OPTIONS_MATRIX.all_possible item=row}
             <tr>
                <td>{$row.options_values}</td>
-               <td align="center"><input type="hidden" id="set_enabled_{$row.options_identifier}" name="option_matrix[{$row.options_identifier}][set_enabled]" value="{$OPTIONS_MATRIX.existing.{$row.options_identifier}.set_enabled}" class="toggle"></td>
+               <td align="center"><input type="hidden" id="set_enabled_{$row.options_identifier}" name="option_matrix[{$row.options_identifier}][set_enabled]" value="{if isset($OPTIONS_MATRIX.existing.{$row.options_identifier})}{$OPTIONS_MATRIX.existing.{$row.options_identifier}.set_enabled}{else}1{/if}" class="toggle"></td>
                <td><input type="text" name="option_matrix[{$row.options_identifier}][price]" class="textbox number-right" value="{$OPTIONS_MATRIX.existing.{$row.options_identifier}.price}"></td>
                <td><input type="text" name="option_matrix[{$row.options_identifier}][sale_price]" class="textbox number-right" value="{$OPTIONS_MATRIX.existing.{$row.options_identifier}.sale_price}"></td>
                <td align="center"><input type="hidden" id="use_stock_{$row.options_identifier}" name="option_matrix[{$row.options_identifier}][use_stock]" value="{$OPTIONS_MATRIX.existing.{$row.options_identifier}.use_stock}" class="toggle"></td>
