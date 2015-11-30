@@ -225,15 +225,6 @@ class Cubecart {
 					$options = (isset($_GET['productOptions']) && is_array($_GET['productOptions']) ? $_GET['productOptions'] : false);
 					$product = $GLOBALS['catalogue']->getProductData($product_id, 1, false, 10, 1, false, null);
 					if ($product && $options) {
-						$options_identifier_string = $GLOBALS['catalogue']->defineOptionsIdentifier($options);
-						$result = $GLOBALS['db']->select('CubeCart_option_matrix', 'product_id, set_enabled, price, sale_price, use_stock as use_stock_level, stock_level, product_code, upc, ean, jan, isbn', array('product_id' => $product_id, 'status' => 1, 'options_identifier' => $options_identifier_string));
-						$matrix = ($result ? array_pop($result) : false);
-						if (is_array($matrix) && filter_var($matrix['product_id'], FILTER_VALIDATE_INT)) {
-							if ($product['product_id'] != $matrix['product_id']) {
-								// product id mismatch can happen if one or more options missing a valid value
-								die(json_encode($product)); // show default product data
-							}
-						}
 						// running totals of price modifiers for dealing with multiple absolute pricing options
 						$product['price_total_modifier'] = 0.00;
 						$product['option_price_ignoring_tax_modifier'] = 0.00;
@@ -260,8 +251,11 @@ class Cubecart {
 								}
 							}
 						}
-						if (is_array($matrix)) {
-							Cart::applyProductMatrix($product, $matrix);
+						// Apply option matrix modifiers, if any
+						$options_identifier_string = $GLOBALS['catalogue']->defineOptionsIdentifier($options);
+						$result = $GLOBALS['db']->select('CubeCart_option_matrix', 'product_id, set_enabled, price, sale_price, use_stock as use_stock_level, stock_level, product_code, upc, ean, jan, isbn', array('product_id' => $product_id, 'status' => 1, 'options_identifier' => $options_identifier_string));
+						if ($result) {
+							Cart::applyProductMatrix($product, $result[0]);
 						}
 					}
 					// Finally, format product values for display
