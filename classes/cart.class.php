@@ -513,15 +513,17 @@ class Cart {
 
 				$proceed = false;
 
-				$qualifying_products = unserialize($coupon['product_id']);
+				if (!empty($coupon['product_id'])) {
+                    $qualifying_products = unserialize($coupon['product_id']);
 
-				// pull the first item off as it's our orders to be inclusive or exclusive
-				$incexc = array_shift($qualifying_products);
-				// this will handle legacy coupons so we don't lose any products from them
-				if (is_numeric($incexc)) {
-					array_unshift($qualifying_products, $incexc);
-					$incexc = 'include';
-				}
+                    // pull the first item off as it's our orders to be inclusive or exclusive
+                    $incexc = array_shift($qualifying_products);
+                    // this will handle legacy coupons so we don't lose any products from them
+                    if (is_numeric($incexc)) {
+                        array_unshift($qualifying_products, $incexc);
+                        $incexc = 'include';
+                    }
+                }
 
 				if (is_array($qualifying_products) && count($qualifying_products)>0) {
 
@@ -1167,9 +1169,13 @@ class Cart {
 					
 					$coupon = true;
 
-					$products = unserialize($data['product']);
-					$incexc = array_shift($products);
-					$product_count = count($products);
+					if (!empty($data['product'])) {
+                        $products = unserialize($data['product']);
+                        $incexc = array_shift($products);
+                        $product_count = count($products);
+                    } else {
+                        $product_count = 0;
+                    }
 			
 					foreach ($this->basket['contents'] as $hash => $item) {
 						if ($product_count==0 || $incexc == 'include' && in_array($item['id'], $products) || $incexc == 'exclude' && !in_array($item['id'], $products)) {
@@ -1290,6 +1296,8 @@ class Cart {
 			$ave_tax_rate = sprintf('%.4F',$ave_tax_rate);
 			$tax = ($subtotal>0) ? ($subtotal*$ave_tax_rate) : 0;
 			$GLOBALS['tax']->adjustTax($tax);
+
+			foreach ($GLOBALS['hooks']->load('class.cart.apply_discounts') as $hook) include $hook;
 
 			$this->save();
 			return true;
