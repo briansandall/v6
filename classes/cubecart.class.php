@@ -218,53 +218,50 @@ class Cubecart {
 				break;
 				case 'ajax_update_product_data':
 					$GLOBALS['debug']->supress();
-					$options = (isset($_GET['productOptions']) && is_array($_GET['productOptions']) ? $_GET['productOptions'] : false);
-					$product = false;
-					if (filter_var($_GET['product_id'], FILTER_VALIDATE_INT)) {
-						$product = $GLOBALS['catalogue']->getProductData($_GET['product_id'], 1, false, 10, 1, false, null);
+					$product_id = filter_var($_GET['product_id'], FILTER_VALIDATE_INT);
+					if (!is_int($product_id)) {
+						die(json_encode(false));
 					}
-					if ($options) {
+					$options = (isset($_GET['productOptions']) && is_array($_GET['productOptions']) ? $_GET['productOptions'] : false);
+					$product = $GLOBALS['catalogue']->getProductData($product_id, 1, false, 10, 1, false, null);
+					if ($product && $options) {
 						$options_identifier_string = $GLOBALS['catalogue']->defineOptionsIdentifier($options);
-						$result = $GLOBALS['db']->select('CubeCart_option_matrix', 'product_id, set_enabled, price, sale_price, use_stock as use_stock_level, stock_level, product_code, upc, ean, jan, isbn', array('status' => 1, 'options_identifier' => $options_identifier_string));
+						$result = $GLOBALS['db']->select('CubeCart_option_matrix', 'product_id, set_enabled, price, sale_price, use_stock as use_stock_level, stock_level, product_code, upc, ean, jan, isbn', array('product_id' => $product_id, 'status' => 1, 'options_identifier' => $options_identifier_string));
 						$matrix = ($result ? array_pop($result) : false);
 						if (is_array($matrix) && filter_var($matrix['product_id'], FILTER_VALIDATE_INT)) {
-							if (!$product) {
-								$product = $GLOBALS['catalogue']->getProductData($matrix['product_id'], 1, false, 10, 1, false, $options_identifier_string);
-							} elseif ($product['product_id'] != $matrix['product_id']) {
+							if ($product['product_id'] != $matrix['product_id']) {
 								// product id mismatch can happen if one or more options missing a valid value
 								die(json_encode($product)); // show default product data
 							}
 						}
-						if ($product) {
-							// running totals of price modifiers for dealing with multiple absolute pricing options
-							$product['price_total_modifier'] = 0.00;
-							$product['option_price_ignoring_tax_modifier'] = 0.00;
-							$product['price_optional_modifier'] = 0.00; // total price modifier of all non-matrix options
-							// Modify product specifications based on each option
-							$product['set_enabled'] = true; // default product, i.e. no options selected, should not show 'unavailable' message
-							foreach ($options as $option_id => $option_data) {
-								if (is_array($option_data)) {
-									// Text option
-									foreach ($option_data as $trash => $option_value) {
-										if (($assign_id = $GLOBALS['db']->select('CubeCart_option_assign', false, array('product' => $matrix['product_id'], 'option_id' => $option_id))) !== false) {
-											$assign_id = $assign_id[0]['assign_id'];
-										} else {
-											$assign_id = 0;
-										}
-										$value = $GLOBALS['catalogue']->getOptionData((int)$option_id, $assign_id);
-										if ($value) {
-											Cart::updateProductDataWithOption($product, $value);
-										}
+						// running totals of price modifiers for dealing with multiple absolute pricing options
+						$product['price_total_modifier'] = 0.00;
+						$product['option_price_ignoring_tax_modifier'] = 0.00;
+						$product['price_optional_modifier'] = 0.00; // total price modifier of all non-matrix options
+						// Modify product specifications based on each option
+						$product['set_enabled'] = true; // default product, i.e. no options selected, should not show 'unavailable' message
+						foreach ($options as $option_id => $option_data) {
+							if (is_array($option_data)) {
+								// Text option
+								foreach ($option_data as $trash => $option_value) {
+									if (($assign_id = $GLOBALS['db']->select('CubeCart_option_assign', false, array('product' => $product_id, 'option_id' => $option_id))) !== false) {
+										$assign_id = $assign_id[0]['assign_id'];
+									} else {
+										$assign_id = 0;
 									}
-								} elseif (is_numeric($option_data)) {
-									if (($value = $GLOBALS['catalogue']->getOptionData((int)$option_id, (int)$option_data)) !== false) {
+									$value = $GLOBALS['catalogue']->getOptionData((int)$option_id, $assign_id);
+									if ($value) {
 										Cart::updateProductDataWithOption($product, $value);
 									}
 								}
+							} elseif (is_numeric($option_data)) {
+								if (($value = $GLOBALS['catalogue']->getOptionData((int)$option_id, (int)$option_data)) !== false) {
+									Cart::updateProductDataWithOption($product, $value);
+								}
 							}
-							if (is_array($matrix)) {
-								Cart::applyProductMatrix($product, $matrix);
-							}
+						}
+						if (is_array($matrix)) {
+							Cart::applyProductMatrix($product, $matrix);
 						}
 					}
 					// Finally, format product values for display
@@ -275,7 +272,11 @@ class Cubecart {
 						$product['ctrl_sale'] = ($product['sale_price'] > 0 && $product['sale_price'] < $product['price'] ? true : false);
 						$product['price'] = $GLOBALS['tax']->priceFormat($product['price']);
 						$product['sale_price'] = $GLOBALS['tax']->priceFormat($product['sale_price']);
-						$product['product_weight'] = sprintf('%.3F', $product['product_weight']);
+						// Format the following entries to 3-decimal precision
+						$thousands = array('product_weight','product_length','product_height','product_width');
+						foreach ($thousands as $key) {
+							$product[$key] = sprintf('%.3F', $product[$key]);
+						}
 						
 						// Add settings to determine which GUI elements to display / hide (replicates variables / logic in Catalogue#displayProduct)
 						$product['CTRL_SETTINGS'] = array(
