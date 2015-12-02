@@ -622,7 +622,7 @@
     <string name="decision_remove" introduced="5.0.0"><![CDATA[Are you sure you want to remove this?]]></string>
     <string name="desktop_site" introduced="5.1.1"><![CDATA[Desktop Site]]></string>
     <string name="details" introduced="5.0.0"><![CDATA[Details]]></string>
-    <string name="dimensions" introduced="6.0.9"><![CDATA[Dimensions]]></string>
+    <string name="dimensions" introduced="6.0.9"><![CDATA[Shipping Dimensions]]></string>
     <string name="disable" introduced="5.0.0"><![CDATA[Disable]]></string>
     <string name="disabled" introduced="5.0.0"><![CDATA[Disabled]]></string>
     <string name="display" introduced="5.0.0"><![CDATA[Display]]></string>
@@ -740,7 +740,7 @@
     <string name="view_all" introduced="5.0.0"><![CDATA[View All]]></string>
     <string name="view_details" introduced="5.0.0"><![CDATA[View Details]]></string>
     <string name="visible" introduced="5.0.0"><![CDATA[Visible]]></string>
-    <string name="weight" introduced="5.0.0"><![CDATA[Weight]]></string>
+    <string name="weight" introduced="5.0.0"><![CDATA[Shipping Weight]]></string>
     <string name="whats_this" introduced="5.0.0"><![CDATA[(What's this?)]]></string>
     <string name="width" introduced="5.0.0"><![CDATA[Width]]></string>
     <string name="writable" introduced="5.0.0"><![CDATA[Writable]]></string>
