@@ -10,7 +10,7 @@ This branch of this CubeCart fork is solely for developing Lineman's Equipment.
 
 	> git checkout -b feature_branch
 
-* Create a new branch based off of the 'installed' branch for each feature
+* Create a new branch based off of the 'master' branch for each feature
   unless it depends on an earlier feature not yet merged
 
 3. Make changes to the feature_branch and commit them
@@ -23,7 +23,7 @@ This branch of this CubeCart fork is solely for developing Lineman's Equipment.
 
 	> git push origin feature_branch
 
-5. After review, your changes will be merged into the main branch ('installed') and you can delete your branch
+5. After review, your changes will be merged into the main branch ('master') and you can delete your branch
 
 ## Installation
 
@@ -31,9 +31,9 @@ This branch of this CubeCart fork is solely for developing Lineman's Equipment.
 
 	> Open git shell or command prompt in /webroot/git/ directory (parent of where cc will install)
 	
-	> git clone https://bitbucket.org/nldeveloper/cc.git --branch installed --single-branch
+	> git clone https://bitbucket.org/nldeveloper/cc.git --branch master --single-branch
 	
-	> /webroot/path/to/cc will now contain the branch 'installed'
+	> /webroot/path/to/cc will now contain the branch 'master'
 
 2. Set up a database and user for CubeCart in your local MySQL instance
 
