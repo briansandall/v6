@@ -50,15 +50,25 @@
          <div class="inner-wrap">
             {include file='templates/box.off_canvas.left.php'}
             {include file='templates/box.eu_cookie.php'}
-            <div class="row marg-top" id="top_header">
-               <div class="small-4 large-3 columns">
-                  <a href="{$STORE_URL}" class="main-logo"><img src="{$STORE_LOGO}" alt="{$META_TITLE}"></a>
+            <div class="small-12 columns">
+               <div class="leftcontact2">
+                  <div class="show-for-medium-up">
+                     <u1 class = "callus">
+                        <i class="fa fa-phone-square">&nbsp;&nbsp;(360)626-9028&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i>
+                     </u1>
+                     <u1 class ="faxus">
+                        <i class="fa fa-fax">&nbsp;&nbsp;(206)694-2723</i>
+                     </u1>
+                  </div>
                </div>
+			</div>
+            <div class="right text-center show-for-small"><a class="left-off-canvas-toggle button white tiny" href="#"><i class="fa fa-bars fa-2x"></i></a></div>
+            <div class="right text-right show-for-medium-up">{include file='templates/box.session.php'}</div>
+            <div class="row marg-top" id="top_headercheckout">
                <div class="small-8 large-9 columns">
                   <div class="row" id="nav-actions">
-                     <div class="small-12 columns">
-                        <div class="right text-center show-for-small"><a class="left-off-canvas-toggle button white tiny" href="#"><i class="fa fa-bars fa-2x"></i></a></div>
-                        <div class="right text-right show-for-medium-up">{include file='templates/box.session.php'}</div>
+                     <div class="icon2">
+                        <a href="{$STORE_URL}" class="main-logo"><img src="/git/cc/images/logos/logo2.png" alt="{$META_TITLE}"></a>
                      </div>
                   </div>
                </div>
@@ -74,17 +84,9 @@
             </div>
             <footer>
                <div class="row">
-                  <div class="medium-7 large-7 columns">
+                  <div class="checkoutfooter">
                      {include file='templates/box.documents.php'}
                      <span class="show-for-medium-up">{$COPYRIGHT}</span>
-                  </div>
-                  <div class="medium-5 large-5 columns">
-                     {$SOCIAL_LIST}
-                     <div class="show-for-small-only row collapse">
-                        <div class="large-12 columns">
-                           {$COPYRIGHT}
-                        </div>
-                     </div>
                   </div>
                </div>
             </footer>

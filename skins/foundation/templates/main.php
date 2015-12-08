@@ -56,12 +56,18 @@
             {include file='templates/box.off_canvas.left.php'}
             {include file='templates/box.eu_cookie.php'}
             <div class="row marg-top" id="top_header">
-               <div class="small-4 large-3 columns">
-                  <a href="{$STORE_URL}" class="main-logo"><img src="{$STORE_LOGO}" alt="{$META_TITLE}"></a>
-               </div>
-               <div class="small-8 large-9 columns nav-boxes">
                   <div class="row" id="nav-actions">
                      <div class="small-12 columns">
+                        <div class="leftcontact">
+                            <div class="show-for-medium-up">
+                           <u1 class = "callus">
+                           <i class="fa fa-phone-square">&nbsp;&nbsp;(360)626-9028&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i>
+                        </u1>
+                           <u1 class ="faxus">
+                              <i class="fa fa-fax">&nbsp;&nbsp;(206)694-2723</i>
+                           </u1>
+                     </div>
+                        </div>
                         <div class="right text-center">{include file='templates/box.basket.php'}</div>
                         <div class="right text-center show-for-small"><a class="left-off-canvas-toggle button white tiny" href="#"><i class="fa fa-bars fa-2x"></i></a> <a class="button white tiny show-small-search" href="#"><i class="fa fa-search fa-2x"></i></a></div>
                         {include file='templates/box.currency.php'}
@@ -69,11 +75,12 @@
                         {include file='templates/box.session.php'}
                      </div>
                   </div>
-                  <div class="row show-for-medium-up">
-                     <div class="small-12 columns">{include file='templates/box.search.php'}</div>
-                  </div>
+                      <div class="small-8 large-9 columns nav-boxes">
                </div>
             </div>
+            <ul class ="logo">
+                  <a href="{$STORE_URL}" class="main-logo"><img src="{$STORE_LOGO}" alt="{$META_TITLE}"></a>
+            </ul>
             <div class="row hide" id="small-search">
                <div class="small-12 columns">
                   {include file='templates/box.search.php'}

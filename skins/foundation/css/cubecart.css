@@ -58,18 +58,24 @@ div.star-rating {
     overflow: hidden!important;
 }
 /* End Star Rating */
+@media only screen and (min-width: 68.75em) {
 .top-bar-section .left {
     background-color: #333;
+    margin-left:64em;
+    }
+}
+.top-bar-section .right {
+    margin-right:64em;
 }
 footer {
-    background-color: #000;
-    color: #fff;
+    background-color: #393E41;
+    color: #EDFFEE;
 }
 footer h3 {
     color: #fff;
 }
 div.alert-box a {
-	color: #fff;
+	color: #EDFFEE;
 	text-decoration: underline;
 }
 
@@ -89,12 +95,12 @@ div.alert-box a {
     top: 40%;
     background-color: #397D02;
     border: none;
-    color: #fff;
+    color: #EDFFEE;
     font-weight: bold;
 }
 .mini-basket-title {
     background-color: #000;
-    color: #fff;
+    color: #EDFFEE;
 }
 .basket-detail {
     background-color: #F2F2F2;
@@ -125,7 +131,17 @@ input.quantity {
     text-align: center;
 }
 div#nav-actions {
-   font-size: 0.8125rem;
+	font-size: 0.8125rem;
+	background: repeating-linear-gradient(
+		-55deg,
+		#222,
+		#222 10px,
+		#333 10px,
+		#333 20px
+	);
+	height:2em;
+	border-style: outset;
+	border-color: #333;
 }
 
 /* Start Checkout Progress */
@@ -147,7 +163,7 @@ div#nav-actions {
     text-decoration: none;
 }
 .checkout-progress.previous a,.checkout-progress.current a {
-    color: #FFF;
+    color: #EDFFEE;
     text-decoration: none;
 }
 
@@ -164,7 +180,7 @@ ul.item_options {
     z-index: 100;
 }
 .skin_selector h4, .skin_selector h4 a {
-    color: #fff;
+    color: #EDFFEE;
 }
 #currency_menu, #language_menu {
 	position: absolute; 
@@ -180,7 +196,7 @@ ul.item_options {
 }
 #currency_menu h5, #language_menu h5, #currency_menu a, #language_menu a {
 	font-weight: bold;
-	color: #fff;
+	color: #EDFFEE;
 }
 #box-currency, #box-language {
     margin-left: 60px;
@@ -222,8 +238,9 @@ a.back-to-top, a.back-to-top:hover, a.back-to-top:active, a.back-to-top:visited 
     color: #000 !important;
 }
 .button.white {
-	background-color: #fff;
-	color: #666;
+	background-color: transparent;
+	color: #fff;
+    margin-top:-10px;
 }
 textarea#contact_enquiry {
     height: 150px;
