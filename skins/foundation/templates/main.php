@@ -61,7 +61,7 @@
                         <div class="leftcontact">
                             <div class="show-for-medium-up">
                            <u1 class = "callus">
-                           <i class="fa fa-phone-square">&nbsp;&nbsp;(360)626-9028&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i>
+                           <i class="fa fa-phone">&nbsp;&nbsp;(360)626-9028&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i>
                         </u1>
                            <u1 class ="faxus">
                               <i class="fa fa-fax">&nbsp;&nbsp;(206)694-2723</i>
