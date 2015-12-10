@@ -204,7 +204,7 @@ ul.item_options {
 #box-currency {
     padding:5px;
     margin-right:11px;
-    margin-top:0px;
+    margin-top:-9px;
     margin-left:12px;
 }
 #box-currency .button, #box-language .button {
