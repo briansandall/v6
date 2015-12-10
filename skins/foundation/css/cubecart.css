@@ -133,11 +133,11 @@ input.quantity {
 div#nav-actions {
 	font-size: 0.8125rem;
 	background: repeating-linear-gradient(
-		-55deg,
+		-50deg,
 		#222,
-		#222 10px,
-		#333 10px,
-		#333 20px
+		#222 110px,
+		#333 110px,
+		#333 201px
 	);
 	height:2em;
 	border-style: outset;
@@ -202,11 +202,15 @@ ul.item_options {
     margin-left: 60px;
 } 
 #box-currency {
-    margin-right: 32px;
+    padding:5px;
+    margin-right:11px;
+    margin-top:0px;
+    margin-left:12px;
 }
 #box-currency .button, #box-language .button {
-    padding-left: 0px;
-    padding-right: 0px;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-top:-4px;
 }
 span.flag {
     display: inline-block;
@@ -240,7 +244,7 @@ a.back-to-top, a.back-to-top:hover, a.back-to-top:active, a.back-to-top:visited 
 .button.white {
 	background-color: transparent;
 	color: #fff;
-    margin-top:-10px;
+    margin-top:0px;
 }
 textarea#contact_enquiry {
     height: 150px;
@@ -258,7 +262,9 @@ form.add_to_basket input, form.add_to_basket button {
     margin: 0 !important;
 }
 button.small, .button.small {
-    padding: 0 !important;
+    padding-bottom:10px;
+    padding-left: 10px;
+    padding-right:10px;
 }
 #getEstimateSmall {
     text-align: left;
@@ -299,6 +305,6 @@ span.button {
 /* Medium viewport and above */
 @media only screen and (min-width: 40.0625em) {
     #mini-basket {
-        min-width: 100px;
+        min-width: inherit;
     }
 }
