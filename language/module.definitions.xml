@@ -33,6 +33,7 @@
   <string name="default_package_width"><![CDATA[Default Package Width]]></string>
   <string name="default_package_height"><![CDATA[Default Package Height]]></string>
   <string name="package_weight"><![CDATA[Packaging Weight]]></string>
+  <string name="info_package_weight"><![CDATA[Additional amount added to the weight of each package to account for packaging material]]></string>
   <string name="pack_custom"><![CDATA[Custom Packaging]]></string>
   <string name="pack_envelope"><![CDATA[UPS Letter Envelope]]></string>
   <string name="pack_tube"><![CDATA[UPS Tube]]></string>
@@ -62,6 +63,10 @@
   <string name="test_mode"><![CDATA[Test Mode]]></string>
   <string name="title_account_info"><![CDATA[UPS Account Info]]></string>
   <string name="title_address"><![CDATA[Destination Address Type]]></string>
+  <string name="title_handling_package"><![CDATA[Additional Handling Cost (per package)]]></string>
+  <string name="info_handling_package"><![CDATA[Flat amount added to the shipping cost of each package]]></string>
+  <string name="title_handling_rate"><![CDATA[Shipping Rate Modifier (per shipment)]]></string>
+  <string name="info_handling_rate"><![CDATA[Percentage of the original cost added to the total shipping cost, e.g. a $10 shipment adjusted by 0.05 adds $0.50 to the total cost. Note that negative values are allowed in order to provide discounted shipping.]]></string>
   <string name="title_package_info"><![CDATA[Packaging Type]]></string>
   <string name="title_products"><![CDATA[UPS Products]]></string>
   <string name="title_pickup_type"><![CDATA[Pickup Type]]></string>
