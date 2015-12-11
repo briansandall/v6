@@ -204,13 +204,12 @@ ul.item_options {
 #box-currency {
     padding:5px;
     margin-right:11px;
-    margin-top:-9px;
     margin-left:12px;
 }
 #box-currency .button, #box-language .button {
     padding-left: 5px;
     padding-right: 5px;
-    margin-top:-4px;
+    margin-top:2px;
 }
 span.flag {
     display: inline-block;

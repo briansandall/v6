@@ -6236,7 +6236,7 @@ box-shadow: 2px 0px 27px -5px rgba(0,0,0,0.75);
 }
 
 #box-session{
-  height:198.2%;
+  height:150%;
   float:left;
   color: #fff;
   margin-bottom:0%;
@@ -6252,16 +6252,14 @@ box-shadow: 2px 0px 27px -5px rgba(0,0,0,0.75);
   cursor:pointer;
   color:#FFFFFF;
   font-weight:bold;
-  padding:0px 9px 1px 10px;
+  padding:5px 3px 0px 3px;
   text-decoration:none;
   text-shadow:0px 1px 0px #3d768a;
-  margin-top:-9px;
 }
 #box-currency{
   color: #fff;
-  margin-bottom:0%;
   font-size:10px;
-    -moz-box-shadow: 0px 10px 14px -7px #000;
+  -moz-box-shadow: 0px 10px 14px -7px #000;
   -webkit-box-shadow: 0px 10px 14px -7px #000;
   box-shadow: 5px 8px 1px 0px #000;
   background-color:#E7BB41;
@@ -6274,7 +6272,7 @@ box-shadow: 2px 0px 27px -5px rgba(0,0,0,0.75);
   font-weight:bold;
   text-decoration:none;
   text-shadow:0px 1px 0px #333;
-  height:3.99em
+  height:2.99em;
 }
 
 #basket-summary{
@@ -6292,5 +6290,5 @@ box-shadow: 2px 0px 27px -5px rgba(0,0,0,0.75);
   font-weight:bold;
   text-decoration:none;
   text-shadow:0px 1px 0px #3d768a;
-  margin-top:-10px;
+  padding:0.45em !important;
 }
