@@ -58,7 +58,7 @@ body {
   font-size: 100%; }
 
 body {
-  background: #fff url("https://127.0.0.1/git/cc/skins/foundation/images/bg.gif") repeat scroll 0% 0%;
+  background: #fff url("//127.0.0.1/git/cc/skins/foundation/images/bg.gif") repeat scroll 0% 0%;
   cursor: auto;
   font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
   font-style: normal;
@@ -2063,7 +2063,7 @@ meta.foundation-mq-topbar {
       .top-bar-section .dropdown li button {
         top: auto; }
     .top-bar-section .dropdown label {
-      color: #777777;
+      color: #FFF;
       font-size: 0.625rem;
       font-weight: bold;
       margin-bottom: 0;
