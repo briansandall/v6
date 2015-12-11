@@ -50,23 +50,22 @@
          <div class="inner-wrap">
             {include file='templates/box.off_canvas.left.php'}
             {include file='templates/box.eu_cookie.php'}
-            <div class="small-12 columns">
-               <div class="leftcontact2">
-                  <div class="show-for-medium-up">
-                     <u1 class = "callus">
-                        <i class="fa fa-phone-square">&nbsp;&nbsp;(360)626-9028&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i>
-                     </u1>
-                     <u1 class ="faxus">
-                        <i class="fa fa-fax">&nbsp;&nbsp;(206)694-2723</i>
-                     </u1>
-                  </div>
-               </div>
-			</div>
             <div class="right text-center show-for-small"><a class="left-off-canvas-toggle button white tiny" href="#"><i class="fa fa-bars fa-2x"></i></a></div>
-            <div class="right text-right show-for-medium-up">{include file='templates/box.session.php'}</div>
             <div class="row marg-top" id="top_headercheckout">
+            <div class="right text-right show-for-medium-up2">{include file='templates/box.session2.php'}</div>
                <div class="small-8 large-9 columns">
-                  <div class="row" id="nav-actions">
+                  <div class="show-for-medium-up">
+                     <div class="small-12 columns">
+                         <div class="leftcontact2">
+                             <u1 class = "callus">
+                                <i class="fa fa-phone-square">&nbsp;&nbsp;(360)626-9028&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i>
+                             </u1>
+                             <u1 class ="faxus">
+                                <i class="fa fa-fax">&nbsp;&nbsp;(206)694-2723</i>
+                             </u1>
+                         </div>
+                      </div>
+                  </div>
                      <div class="icon2">
                         <a href="{$STORE_URL}" class="main-logo"><img src="/git/cc/images/logos/logo2.png" alt="{$META_TITLE}"></a>
                      </div>
