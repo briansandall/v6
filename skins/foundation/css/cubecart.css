@@ -262,9 +262,7 @@ form.add_to_basket input, form.add_to_basket button {
     margin: 0 !important;
 }
 button.small, .button.small {
-    padding-bottom:10px;
-    padding-left: 10px;
-    padding-right:10px;
+    padding:0px !important;
 }
 #getEstimateSmall {
     text-align: left;
