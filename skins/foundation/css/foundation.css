@@ -123,7 +123,6 @@ textarea {
 select {
   width: 100%; }
 
-}
 .large-5 {
   background-color: #000;
 }
@@ -2071,7 +2070,6 @@ meta.foundation-mq-topbar {
       padding: 8px 0.9375rem 2px;
       text-transform: uppercase; }
 
-}
 .js-generated {
   display: block; }
 /* top-bar nav 1 */
@@ -6106,7 +6104,8 @@ th.hide-for-touch {
     display: none !important; }
 
   .show-for-print {
-    display: inherit !important; } }
+    display: inherit !important; }
+}
 /* Print visibility */
 @media print {
   .show-for-print {
