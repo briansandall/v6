@@ -98,8 +98,9 @@
 					</select>
 				</span>
 			</div>
-			<div><label for="packagingWeight">{$LANG.awsp_ups.package_weight}</label><span><input name="module[packagingWeight]" id="packagingWeight" class="textbox number" type="text" value="{$MODULE.packagingWeight}" /></span></div>
-			<div><label for="handling">{$LANG.basket.shipping_handling}</label><span><input name="module[handling]" id="handling" class="textbox number" type="text" value="{$MODULE.handling}" /></span></div>
+			<div><label for="packagingWeight" title="{$LANG.awsp_ups.info_package_weight}">{$LANG.awsp_ups.package_weight}</label><span><input name="module[packagingWeight]" id="packagingWeight" class="textbox number" type="text" value="{$MODULE.packagingWeight}" /></span></div>
+			<div><label for="handling" title="{$LANG.awsp_ups.info_handling_package}">{$LANG.awsp_ups.title_handling_package}</label><span><input name="module[handling]" id="handling" class="textbox number" type="text" value="{$MODULE.handling}" /></span></div>
+			<div><label for="handling_rate" title="{$LANG.awsp_ups.info_handling_rate}">{$LANG.awsp_ups.title_handling_rate}</label><span><input name="module[handling_rate]" id="handling_rate" class="textbox number" type="text" value="{$MODULE.handling_rate}" placeholder="e.g. 0.02"/></span></div>
 			<div><label for="defaultPackageLength">{$LANG.awsp_ups.default_package_length}</label><span><input name="module[defaultPackageLength]" id="defaultPackageLength" class="textbox number" type="text" value="{$MODULE.defaultPackageLength}" required="required" /></span></div>
 			<div><label for="defaultPackageWidth">{$LANG.awsp_ups.default_package_width}</label><span><input name="module[defaultPackageWidth]" id="defaultPackageWidth" class="textbox number" type="text" value="{$MODULE.defaultPackageWidth}" required="required" /></span></div>
 			<div><label for="defaultPackageHeight">{$LANG.awsp_ups.default_package_height}</label><span><input name="module[defaultPackageHeight]" id="defaultPackageHeight" class="textbox number" type="text" value="{$MODULE.defaultPackageHeight}" required="required" /></span></div>
