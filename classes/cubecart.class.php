@@ -260,7 +260,7 @@ class Cubecart {
 					}
 					// Finally, format product values for display
 					if (is_array($product)) {
-						if ($product['price'] < $product['sale_price']) {
+						if ($product['sale_price'] == 0 || $product['price'] < $product['sale_price']) {
 							$product['sale_price'] = $product['price'];
 						}
 						$product['ctrl_sale'] = ($product['sale_price'] > 0 && $product['sale_price'] < $product['price'] ? true : false);
