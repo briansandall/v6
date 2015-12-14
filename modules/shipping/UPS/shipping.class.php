@@ -221,6 +221,15 @@ class UPS {
 		} elseif ($rates->status != 'Success') {
 			return false;
 		}
+		if (false === filter_var($this->_settings['handling'], FILTER_VALIDATE_FLOAT)) {
+			$message = "Invalid value for AWSP UPS module Additional Handling Cost setting: {$this->_settings['handling']}";
+			Database::getInstance()->insert('CubeCart_system_error_log', array('message' => $message, 'time' => time()));
+			return false;
+		} elseif (false === filter_var($this->_settings['handling_rate'], FILTER_VALIDATE_FLOAT)) {
+			$message = "Invalid value for AWSP UPS module Shipping Rate Modifier setting: {$this->_settings['handling_rate']}";
+			Database::getInstance()->insert('CubeCart_system_error_log', array('message' => $message, 'time' => time()));
+			return false;
+		}
 		foreach ($rates->services as $service) {
 			$code = $service['service_code'];
 			$cost = $service['total_cost'];
@@ -229,6 +238,8 @@ class UPS {
 			}
 			// Apply handling per package:
 			$cost += ($this->_settings['handling'] > 0) ? ($service['package_count'] * $this->_settings['handling']) : 0;
+			// Apply handling rate modifier (may be negative for a discount):
+			$cost += $this->round_up($cost * $this->_settings['handling_rate'], 2);
 			$currency = $service['currency_code'];
 			// Set quote data for display:
 			if ($this->isServiceEnabled($code)) {
@@ -241,6 +252,12 @@ class UPS {
 			}
 		}
 		return $quote_data;
+	}
+
+	/** @author mvds from http://stackoverflow.com/questions/8771842/always-rounding-decimals-up-to-specified-precision */
+	function round_up($in, $prec) {
+		$fact = pow(10, $prec);
+		return ceil($fact * $in) / $fact;
 	}
 }
 ?>

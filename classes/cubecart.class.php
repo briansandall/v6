@@ -778,7 +778,7 @@ class Cubecart {
 
 			// Check shipping has been defined for tangible orders
 			if (!isset($this->_basket['digital_only']) && !isset($this->_basket['shipping'])) {
-				$de = $GLOBALS['config']->get('config', 'aaadisable_estimates');
+				$de = $GLOBALS['config']->get('config', 'disable_estimates');
 				if(($de == '1' && $this->_basket['delivery_address']['user_defined']) || ($de == '0' || !$de)) {
 					$GLOBALS['gui']->setError($GLOBALS['language']->checkout['error_shipping']);
 				}
@@ -1178,13 +1178,13 @@ class Cubecart {
 			if (($countries = $GLOBALS['db']->select('CubeCart_geo_country', array('numcode', 'name'), array('status' => 1), array('name' => 'ASC'))) !== false) {
 				foreach ($countries as $country) {
 					$country['selected'] = '';
-					if (isset($this->_basket['billing_address'])) {
+					if (isset($this->_basket['billing_address']['country_id']) && !empty($this->_basket['billing_address']['country_id']) ) {
 						if ($country['numcode'] == $this->_basket['billing_address']['country_id']) $country['selected'] = 'selected="selected"';
 					} else {
 						if ($country['numcode'] == $GLOBALS['config']->get('config', 'store_country')) $country['selected'] = 'selected="selected"';
 					}
 					$country['selected_d'] = '';
-					if (isset($this->_basket['delivery_address'])) {
+					if (isset($this->_basket['delivery_address']['country_id']) && !empty($this->_basket['delivery_address']['country_id'])) {
 						if ($country['numcode'] == $this->_basket['delivery_address']['country_id']) $country['selected_d'] = 'selected="selected"';
 					} else {
 						if ($country['numcode'] == $GLOBALS['config']->get('config', 'store_country')) $country['selected_d'] = 'selected="selected"';
@@ -2230,11 +2230,13 @@ class Cubecart {
 			if (isset($_POST['subscribe'])) {
 				if ($newsletter->subscribe($_POST['subscribe'])) {
 					$GLOBALS['gui']->setNotify($GLOBALS['language']->newsletter['notify_subscribed']);
+					httpredir('?_a=unsubscribe');
 				} else if ($GLOBALS['user']->is()) {
 						$GLOBALS['gui']->setError($GLOBALS['language']->common['error_email_invalid']);
 					} else {
 					if ($newsletter->unsubscribe($_POST['subscribe'])) {
 						$GLOBALS['gui']->setNotify($GLOBALS['language']->newsletter['notify_unsubscribed']);
+						httpredir('?_a=newsletter');
 					} else {
 						$GLOBALS['gui']->setError($GLOBALS['language']->common['error_email_invalid']);
 					}
@@ -2242,10 +2244,10 @@ class Cubecart {
 				httpredir(currentPage());
 			}
 
-			if (isset($_GET['unsubscribe']) && filter_var($_GET['unsubscribe'], FILTER_VALIDATE_EMAIL)) {
-				if ($newsletter->unsubscribe($_GET['unsubscribe'])) {
+			if (isset($_REQUEST['unsubscribe']) && filter_var($_REQUEST['unsubscribe'], FILTER_VALIDATE_EMAIL)) {
+				if ($newsletter->unsubscribe($_REQUEST['unsubscribe'])) {
 					$GLOBALS['gui']->setNotify($GLOBALS['language']->newsletter['notify_unsubscribed']);
-					httpredir(currentPage(array('unsubscribe')));
+					httpredir('?_a=newsletter');
 				}
 			}
 			if (isset($_GET['verify'])) {
@@ -2289,8 +2291,19 @@ class Cubecart {
 				$GLOBALS['smarty']->assign('NEWSLETTERS', $vars['newsletters']);
 			}
 		}
-		$content = $GLOBALS['smarty']->fetch('templates/content.newsletter.php');
+		
+		if($_GET['_a'] == 'unsubscribe') {
+			$form_id 	= 'newsletter_form_unsubscribe';
+			$mode 		= 'unsubscribe';
+		} else {
+			$form_id 	= 'newsletter_form';
+			$mode 		= 'subscribe';
+		}
+		$GLOBALS['smarty']->assign('FORM_ID', $form_id);
+		$GLOBALS['smarty']->assign('SUBSCRIBE_MODE', $mode);
+		$GLOBALS['smarty']->assign('DISABLE_BOX_NEWSLETTER', true);
 		$GLOBALS['smarty']->assign('SECTION_NAME', 'account');
+		$content = $GLOBALS['smarty']->fetch('templates/content.newsletter.php');
 		$GLOBALS['smarty']->assign('PAGE_CONTENT', $content);
 	}
 
