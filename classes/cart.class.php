@@ -646,6 +646,8 @@ class Cart {
 						unset($this->basket['contents'][$hash]);
 						continue;
 					}
+					// Product should start out as 'enabled' if it is listed as available
+					$product['set_enabled'] = ($product['available'] === '1');
 					// running totals of price modifiers for dealing with multiple absolute pricing options
 					$product['price_total_modifier'] = 0.00;
 					$product['option_price_ignoring_tax_modifier'] = 0.00;
