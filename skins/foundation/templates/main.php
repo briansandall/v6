@@ -60,13 +60,16 @@
                      <div class="small-12 columns">
                         <div class="leftcontact">
                             <div class="show-for-medium-up">
-                           <u1 class = "callus">
-                           <i class="fa fa-phone">&nbsp;&nbsp;(360)626-9028&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i>
-                        </u1>
-                           <u1 class ="faxus">
-                              <i class="fa fa-fax">&nbsp;&nbsp;(206)694-2723</i>
-                           </u1>
-                     </div>
+                              <u1 class = "callus">
+                                 <i class="fa fa-phone"></i><h8>&nbsp;&nbsp;(360)626-9028&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h8>
+                              </u1>
+                              <u1 class ="faxus">
+                                 <i class="fa fa-fax"></i><h8>&nbsp;&nbsp;(206)694-272&nbsp;&nbsp;&nbsp;</h8>
+                              </u1>
+                              <u1 class = "emailus">
+                                 <i class="fa fa-envelope"></i><h8>&nbsp;info@linemansequiptment.com</h8>
+                              </u1>
+                           </div>
                         </div>
                         <div class="right text-center">{include file='templates/box.basket.php'}</div>
                         <div class="right text-center show-for-small"><a class="left-off-canvas-toggle button white tiny" href="#"><i class="fa fa-bars fa-2x"></i></a> <a class="button white tiny show-small-search" href="#"><i class="fa fa-search fa-2x"></i></a></div>

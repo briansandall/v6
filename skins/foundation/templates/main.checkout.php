@@ -58,10 +58,13 @@
                      <div class="small-12 columns">
                          <div class="leftcontact2">
                              <u1 class = "callus">
-                                <i class="fa fa-phone-square">&nbsp;&nbsp;(360)626-9028&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i>
+                                <i class="fa fa-phone-square"></i><h8>&nbsp;&nbsp;(360)626-9028&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h8>
                              </u1>
                              <u1 class ="faxus">
-                                <i class="fa fa-fax">&nbsp;&nbsp;(206)694-2723</i>
+                                <i class="fa fa-fax"></i><h8>&nbsp;&nbsp;(206)694-272&nbsp;&nbsp;&nbsp;</h8>
+                             </u1>
+                             <u1 class = "emailus">
+                                <i class="fa fa-envelope"></i><h8>&nbsp;info@linemansequiptment.com</h8>
                              </u1>
                          </div>
                       </div>

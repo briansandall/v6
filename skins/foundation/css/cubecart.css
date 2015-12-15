@@ -242,7 +242,7 @@ a.back-to-top, a.back-to-top:hover, a.back-to-top:active, a.back-to-top:visited 
 }
 .button.white {
 	background-color: transparent;
-	color: #fff;
+	color: #000;
     margin-top:0px;
 }
 textarea#contact_enquiry {
