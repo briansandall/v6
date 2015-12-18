@@ -5,7 +5,8 @@
 	</note>
 *}
 <div class="row" id="ccpower">
-	<div class="large-12 columns text-center">
-		<p>eCommerce by <a href="http://www.cubecart.com">CubeCart</a></p>
+	<div class="ccpowered">
+		<img src="/git/cc/images/logos/paypal.gif">
+		<p>Payment Powered by <a href="http://www.paypal.com">PayPal </a></p>
 	</div>
 </div>
