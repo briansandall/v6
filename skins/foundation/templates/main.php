@@ -58,16 +58,16 @@
             <div class="row marg-top" id="top_header">
                   <div class="row" id="nav-actions">
                      <div class="small-12 columns">
+                     <div class="show-for-medium-up" id="navcontacts">
                         <div class="leftcontact">
-                            <div class="show-for-medium-up">
-                              <u1 class = "callus">
-                                 <i class="fa fa-phone"></i><h8>&nbsp;&nbsp;(360)626-9028&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h8>
-                              </u1>
-                              <u1 class ="faxus">
-                                 <i class="fa fa-fax"></i><h8>&nbsp;&nbsp;(206)694-272&nbsp;&nbsp;&nbsp;</h8>
+                              <span class = "callus">
+                                 <i class="fa fa-phone"></i><a href="tel:+13606269028">(360)626-9028</a>
+                              </span>
+                              <span class ="faxus">
+                                 <i class="fa fa-fax"></i><a href="tel:+1206694272">(206)694-272</a>
                               </u1>
                               <u1 class = "emailus">
-                                 <i class="fa fa-envelope"></i><h8>&nbsp;info@linemansequiptment.com</h8>
+                                 <i class="fa fa-envelope"></i><a href="../cc/contact-us.html">info@linemansequiptment.com</a>
                               </u1>
                            </div>
                         </div>
