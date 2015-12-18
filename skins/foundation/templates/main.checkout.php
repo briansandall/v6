@@ -86,11 +86,16 @@
             </div>
             <footer>
                <div class="row">
-                  <div class="checkoutfooter">
+                  <div class="medium-7 large-7 columns">
                      {include file='templates/box.documents.php'}
-                     <span class="show-for-medium-up">{$COPYRIGHT}</span>
+                     <span class="show-for-medium-up">{$COPYRIGHT}<p>eCommerce by <a href="http://www.cubecart.com">CubeCart</a></p></span>
                   </div>
-               </div>
+                  <div class="medium-5 large-5 columns">
+                     {$SOCIAL_LIST}
+                     {include file='templates/ccpower.php'}
+                           <span class="show-for-small-only">{$COPYRIGHT}</span>
+                        </div>
+                     </div>
             </footer>
             <script src="{$STORE_URL}/skins/{$SKIN_FOLDER}/js/vendor/jquery.rating.min.js" type="text/javascript"></script>
             <script src="{$STORE_URL}/skins/{$SKIN_FOLDER}/js/vendor/jquery.validate.min.js" type="text/javascript"></script>
@@ -106,8 +111,8 @@
             {$DEBUG_INFO}
             {$SKIN_SELECT}
             <a class="exit-off-canvas"></a>
-            {include file='templates/ccpower.php'}
          </div>
+        <div class="borderbot"></div>
       </div>
    </body>
 </html>
