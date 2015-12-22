@@ -49,8 +49,8 @@ class Database extends Database_Contoller {
 	 * @param $config array
 	 * @return Database
 	 */
-	public static function getInstance($config = '') {
-		if (!(self::$_instance instanceof self)) {
+	public static function getInstance($config = '', $create_new = false) {
+		if (!(self::$_instance instanceof self) || $create_new) {
 			self::$_instance = new self($config);
 		}
 

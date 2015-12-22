@@ -32,6 +32,16 @@ $feed_access_key = $GLOBALS['config']->get('config','feed_access_key');
 $feed_access_key = (!$feed_access_key) ? '' : $feed_access_key;
 
 if (Admin::getInstance()->is() || (isset($_GET['_g']) && $_GET['_g']=='products' && $_GET['node']=='export' && !empty($_GET['format']) && $_GET['access']==$feed_access_key && !empty($feed_access_key))) {
+	// Re-initialize Database class with elevated privileges now that identity is established
+	$GLOBALS['db']->close(); // close previous connection
+	$GLOBALS['db'] = Database::getInstance(array(
+			'dbhost'    =>$glob['dbhost'],
+			'dbusername'=>DB_ADMIN_USER,
+			'dbpassword'=>DB_ADMIN_PASS,
+			'dbdatabase'=>$glob['dbdatabase'],
+			'dbprefix'  =>$glob['dbprefix'],
+		), true // force new instance to be created
+	);
 	include CC_ROOT_DIR.CC_DS.'controllers'.CC_DS.'controller.admin.session.true.inc.php';
 } else {
 	include CC_ROOT_DIR.CC_DS.'controllers'.CC_DS.'controller.admin.session.false.inc.php';

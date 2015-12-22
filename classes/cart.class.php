@@ -646,11 +646,14 @@ class Cart {
 						unset($this->basket['contents'][$hash]);
 						continue;
 					}
+					// Product should start out as 'enabled' if it is listed as available
+					$product['set_enabled'] = ($product['available'] === '1');
+					// running totals of price modifiers for dealing with multiple absolute pricing options
+					$product['price_total_modifier'] = 0.00;
+					$product['option_price_ignoring_tax_modifier'] = 0.00;
+					$product['price_optional_modifier'] = 0.00; // total price modifier of all non-matrix options
 
 					$product['quantity'] = $item['quantity'];
-					if ($GLOBALS['tax']->salePrice($product['price'], $product['sale_price'])) {
-						$product['price'] = $product['sale_price'];
-					}
 					$product['price_display'] = $product['price'];
 					$product['base_price_display'] = $GLOBALS['tax']->priceFormat($product['price'], true);
 					$product['remove_options_tax'] = false;
@@ -690,6 +693,34 @@ class Cart {
 					} else {
 						$product['options'] = false;
 					}
+					// Update product based on values in matrix entry, if any
+					if ($item['options_identifier']) {
+						$matrix_fields = array('product_id', 'set_enabled', 'price', 'sale_price', 'use_stock as use_stock_level', 'stock_level', 'product_code', 'image');
+						$matrix_where = array('product_id' => $item['id'], 'options_identifier' => $item['options_identifier'], 'status' => 1);
+						$matrix = $GLOBALS['db']->select('CubeCart_option_matrix', $matrix_fields, $matrix_where);
+						if ($matrix) {
+							Cart::applyProductMatrix($product, array_pop($matrix));
+						}
+					}
+					// Prevent purchase of disabled option combinations
+					if (!$product['set_enabled']) {
+						// Warn that the product has been removed
+						if (!empty($item['name'])) {
+							$GLOBALS['gui']->setError(sprintf($GLOBALS['language']->checkout['error_item_not_available'], $item['name']));
+						}
+						unset($this->basket['contents'][$hash]);
+						unset($product);
+						continue;
+					}
+
+					// Check for sale after prices fully updated
+					if ($product['ctrl_sale']) { // this item is supposed to be on sale
+						if ($GLOBALS['tax']->salePrice($product['price'], $product['sale_price']) && $product['sale_price'] < $product['price']) {
+							$product['price'] = $product['sale_price'];
+						} else {
+							$product['ctrl_sale'] = false;
+						}
+					}
 
 					$product['price'] = sprintf("%0.2F",$product['price']);
 					// Add the total product price inc options etc for payment gateways
@@ -727,13 +758,8 @@ class Cart {
 					$this->basket_digital = true;
 				}
 
-				if(!empty($product['absolute_price'])) {
-					$product['line_price_display'] = $product['option_price_ignoring_tax'];
-					$product['price_display']  = $product['option_price_ignoring_tax']*$item['quantity'];
-				} else {
-					$product['line_price_display'] = $product['price_display']+$product['option_price_ignoring_tax'];
-					$product['price_display']  = ($product['price_display']+$product['option_price_ignoring_tax'])*$item['quantity'];
-				}
+				$product['line_price_display'] = $product['price'];
+				$product['price_display'] = $product['price']*$item['quantity'];
 
 
 				## Update Subtotals
@@ -1252,8 +1278,11 @@ class Cart {
 	 * @param array $product product to modify, as retreived from Catalogue->getProductData
 	 *        Elements modified:
 	 *        'price' => option price modifiers are applied, with absolute pricing taking precedence over any previous modifiers
+	 *        'price_total_modifier' => sum of all price adjustments from all non-absolute options
+	 *        'price_optional_modifier' => sum of price adjustments from all options not included in the matrix
 	 *        'option_line_price' => calculated the same as 'price'
 	 *        'option_price_ignoring_tax' => calculated the same as 'price' but does not remove any included tax
+	 *        'option_price_ignoring_tax_modifier' => sum of all price adjustments to 'option_price_ignoring_tax' from all non-absolute options
 	 *        'absolute_price' => added and set to true if any option uses absolute pricing
 	 *        'product_weight' => option modifier (may be negative), if any, is added to product weight
 	 *
@@ -1271,21 +1300,69 @@ class Cart {
 			$price_value = $option['option_price'] * (isset($option['option_negative']) && $option['option_negative'] ? -1 : 1);
 			$display_option_tax *= (isset($option['option_negative']) && $option['option_negative'] ? -1 : 1);
 			if ($option['absolute_price']) {
-				$product['price'] = $price_value;
+				$product['price'] = (empty($product['absolute_price']) ? $price_value : max($product['price'] - $product['price_total_modifier'], $price_value));
+				$product['price'] += $product['price_total_modifier'];
+				$product['sale_price'] = $product['price'];
 				$product['option_line_price'] = $price_value;
-				$product['option_price_ignoring_tax'] = $display_option_tax;
+				$product['option_price_ignoring_tax'] = (empty($product['absolute_price']) ? $display_option_tax : max($product['option_price_ignoring_tax'] - $product['option_price_ignoring_tax_modifier'], $display_option_tax));
+				$product['option_price_ignoring_tax'] += $product['option_price_ignoring_tax_modifier'];
 				$product['absolute_price'] = true;
 			} else {
 				$product['price'] += $price_value;
+				$product['sale_price'] += $price_value;
+				$product['price_total_modifier'] += $price_value;
 				$product['option_line_price'] += $price_value;
 				$product['option_price_ignoring_tax'] += $display_option_tax;
+				$product['option_price_ignoring_tax_modifier'] += $display_option_tax;
+				$product['price_optional_modifier'] += ($option['matrix_include'] == 0 ? $price_value : 0);
 				$option['price_display'] = ($price_value < 0 ? '-' : '+');
 			}
 			$option['price_display'] .= $GLOBALS['tax']->priceFormat(abs($display_option_tax), true);
 		}
 		$product['product_weight'] += (isset($option['option_weight'])) ? $option['option_weight'] : 0;
-		$product['product_length'] += (isset($value['option_length'])) ? $value['option_length'] : 0;
-		$product['product_height'] += (isset($value['option_height'])) ? $value['option_height'] : 0;
-		$product['product_width'] += (isset($value['option_width'])) ? $value['option_width'] : 0;
+		$product['product_length'] += (isset($option['option_length'])) ? $option['option_length'] : 0;
+		$product['product_height'] += (isset($option['option_height'])) ? $option['option_height'] : 0;
+		$product['product_width'] += (isset($option['option_width'])) ? $option['option_width'] : 0;
+	}
+
+	/**
+	 * Updates the product array with non-empty values from the matrix.
+	 * Exceptions (i.e. these update the product value even when empty):
+	 *     'set_enabled', 'use_stock_level', 'stock_level'
+	 * 'price' and 'sale_price' include any $product['price_optional_modifier']
+	 *
+	 * @param array $product Updated to contain the most authoritative version of any field, e.g. 'stock_level'
+	 */
+	public static function applyProductMatrix(array &$product, array $matrix) {
+		// Only allow matrix to use stock if the main product does also
+		if (empty($product['use_stock_level']) && !empty($matrix['use_stock_level'])) {
+			$matrix['use_stock_level'] = 0;
+		}
+		// These values should be overwritten even if 'empty'
+		$overwrite = array('set_enabled', 'use_stock_level', 'stock_level');
+		foreach ($matrix as $k => $v) {
+			switch ($k) {
+			case 'price': // Fall through to 'sale_price'
+			case 'sale_price':
+				// Don't overwrite prices if they are any kind of '0.00'
+				if (preg_match('/^(0+|0+\.0+)$/', $v)) {
+					continue;
+				}
+				// Account for possibility of non-matrix option with absolute pricing
+				if (!empty($product['absolute_price'])) {
+					$v = max($v, $product[$k] - $product['price_total_modifier']);
+				}
+				// Add total of any non-matrix option price modifiers
+				$v += $product['price_optional_modifier'];
+				if ($v < 0.01) {
+					$v = 0;
+				}
+				// Fall through to default case
+			default:
+				if (!empty($v) || array_search($k, $overwrite) !== false) {
+					$product[$k] = $v;
+				}
+			}
+		}
 	}
 }
