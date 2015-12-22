@@ -149,6 +149,7 @@
             {else}
             <p id="out_of_stock" class="hide buy_button"><strong>{$LANG.catalogue.out_of_stock}</strong></p>
             {/if}
+			<p id="combination_unavailable" class="hide buy_button"><strong><span class="error">{$LANG.catalogue.combination_unavailable}</span></strong></p>
          </div>
       </div>
       <hr>
