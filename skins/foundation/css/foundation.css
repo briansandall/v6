@@ -165,6 +165,8 @@ select {
       .row .row.collapse:after {
         clear: both; }
 
+footer > .row { background-color:inherit;}
+
 .column,
 .columns {
   padding-left: 0.9375em;
