@@ -1,19 +1,19 @@
 <?xml version="1.0"?>
-<skin version="3.1">
+<skin version="1.0">
   <info>
 	<!--
 	UIDs can be generated on the unix/linux command line using `uuid -v4`, or you can use any string, as long as you think it wont accidentally be picked by anyone else
 	A good example of the latter would be something like 'skin-blank@example.com'. While not necessarily an active email address, it's a pretty good approximation of a unique key
 	--> 
-	<uid>foundation-1.0@cubecart.com</uid>
+	<uid>custom@linemansequipment.com</uid>
 	<type>skin</type>
-	<name><![CDATA[foundation]]></name>
-	<display><![CDATA[Foundation]]></display>
+	<name><![CDATA[custom]]></name>
+	<display><![CDATA[Custom]]></display>
 	<version>1.0</version>
 	<minVersion>6.0.0a</minVersion>
 	<maxVersion>6.0.*</maxVersion>
-	<creator>CubeCart Limited</creator>
-	<homepage>http://www.cubecart.com</homepage>
+	<creator>David Huang</creator>
+	<homepage>https://linemansequipment.com</homepage>
 	<mobile>false</mobile>
 	<responsive>true</responsive>
   </info>
