@@ -23,26 +23,16 @@ Please see the README file in the CubeCartUtils repository for more information.
 */
 //================== USER SETTINGS ===================//
 
-// Database credentials
-DEFINE('DB_HOST', 'localhost');
-DEFINE('DB_USER', 'username');
-DEFINE('DB_PASS', 'password');
-DEFINE('DB_NAME', 'example_db');
-DEFINE('TABLE_PREFIX', ''); // enter the same prefix you used, if any, when setting up the database
-
-// Change to true if your `cubecart_option_matrix` table supports enabling
-// and disabling entries individually via the `set_enabled` column.
-// See: https://github.com/briansandall/v6/commit/b33bbca1ee0be06d5ae4b5e9b7cb9c22f42a269a
-DEFINE('MATRIX_STATUS_ON', false);
-
-// Change to false if your database tables do not support transactions
-// (e.g. they do not use the InnoDB storage engine)
+$glob = array();
+require (strpos($_SERVER['DOCUMENT_ROOT'], 'C:/wamp/www') === 0 ? 'C:/wamp/www/git/hidden/db_credentials.php' : '/home/nandl/hidden/db_credentials.php');
+DEFINE('DB_HOST', $glob['dbhost']);
+DEFINE('DB_USER', $glob['dbusername']);
+DEFINE('DB_PASS', $glob['dbpassword']);
+DEFINE('DB_NAME', $glob['dbdatabase']);
+DEFINE('TABLE_PREFIX', '');
+DEFINE('MATRIX_STATUS_ON', true);
 DEFINE('USE_TRANSACTIONS', true);
-
-// Path to the public folder on your web server where price lists are stored
-// NOTE that you should put an .htacess file in this folder with the 'deny from all'
-// directive to prevent others from viewing or downloading your files.
-DEFINE('PATH', '/home/yourname/public_html/prices/'); // make sure it ends with a '/'!!!
+DEFINE('PATH', UTILS_PATH . 'extra/prices/');
 
 //====================================================//
 ?>

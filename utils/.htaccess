@@ -5,5 +5,8 @@ IndexIgnore *
 # Prevent access to any file:
 Order Deny,Allow
 Deny From All
-# Grant access to a specific IP:
-Allow From 0.0.0.0
+# Grant access to specific IP addresses:
+# Local testing (disable for live version)
+Allow From 127.0.0.1
+# Live site
+Allow From 76.121.92.234

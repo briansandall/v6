@@ -20,19 +20,15 @@ Please see the README file in the CubeCartUtils repository for more information.
 */
 //================== USER SETTINGS ===================//
 
-// Database credentials
-DEFINE('DB_HOST', 'localhost');
-DEFINE('DB_USER', 'username');
-DEFINE('DB_PASS', 'password');
-DEFINE('DB_NAME', 'example_db');
-DEFINE('TABLE_PREFIX', ''); // enter the same prefix you used, if any, when setting up the database
-
-// Change to false if your database tables do not support transactions
-// (e.g. they do not use the InnoDB storage engine)
+$glob = array();
+require (strpos($_SERVER['DOCUMENT_ROOT'], 'C:/wamp/www') === 0 ? 'C:/wamp/www/git/hidden/db_credentials.php' : '/home/nandl/hidden/db_credentials.php');
+DEFINE('DB_HOST', $glob['dbhost']);
+DEFINE('DB_USER', $glob['dbusername']);
+DEFINE('DB_PASS', $glob['dbpassword']);
+DEFINE('DB_NAME', $glob['dbdatabase']);
+DEFINE('TABLE_PREFIX', '');
 DEFINE('USE_TRANSACTIONS', true);
-
-// Path to public folder on your web server where images are stored
-DEFINE('PATH', '/home/yourname/public_html/images/source/'); // make sure it ends with a '/'!!!
+DEFINE('PATH', ($live ? '/home/nandl/public_html/images/source/' : 'C:/wamp/www/git/cc/images/source/'));
 
 //====================================================//
 ?>
