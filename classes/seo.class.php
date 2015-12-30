@@ -727,9 +727,15 @@ class SEO {
 			// Compress the file if GZip is enabled
 			$filename = CC_ROOT_DIR.'/sitemap.xml.gz';
 			$mapdata = gzencode($sitemap, 9, FORCE_GZIP);
+			if(file_exists(CC_ROOT_DIR.'/sitemap.xml')) {
+				unlink(CC_ROOT_DIR.'/sitemap.xml');
+			}
 		} else {
 			$filename = CC_ROOT_DIR.'/sitemap.xml';
 			$mapdata = $sitemap;
+			if(file_exists(CC_ROOT_DIR.'/sitemap.xml.gz')) {
+				unlink(CC_ROOT_DIR.'/sitemap.xml.gz');
+			}
 		}
 		if($GLOBALS['config']->get('config', 'offline')=='0') {
 			if (file_put_contents($filename, $mapdata)) {
