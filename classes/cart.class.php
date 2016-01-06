@@ -1287,6 +1287,10 @@ class Cart {
 	 * @param array $overwrite Fields to set even when empty, overwriting any previous value
 	 */
 	public static function applyProductMatrix(array &$product, array $matrix, array $overwrite = array('use_stock_level', 'stock_level')) {
+		// Allow different product vs. matrix stock settings depending on store config
+		if (!$GLOBALS['config']->get('config', 'stock_allow_variants')) {
+			unset($matrix['use_stock_level']);
+		}
 		foreach ($matrix as $k => $v) {
 			if (!empty($v) || array_search($k, $overwrite) !== false) {
 				$product[$k] = $v;

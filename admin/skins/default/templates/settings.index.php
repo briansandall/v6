@@ -214,6 +214,7 @@
          <legend>{$LANG.settings.title_stock_general}</legend>
          <div><label for="stock_level">{$LANG.settings.stock_show}</label><span><input name="config[stock_level]" id="stock_level" type="hidden" class="toggle" value="{$CONFIG.stock_level}"></span></div>
          <div><label for="basket_out_of_stock_purchase">{$LANG.settings.stock_allow_oos}</label><span><input name="config[basket_out_of_stock_purchase]" id="basket_out_of_stock_purchase" type="hidden" class="toggle" value="{$CONFIG.basket_out_of_stock_purchase}"></span></div>
+		 <div><label for="stock_allow_variants">{$LANG.settings.stock_allow_variants}</label><span><input name="config[stock_allow_variants]" id="stock_allow_variants" type="hidden" class="toggle" value="{$CONFIG.stock_allow_variants}"></span></div>
          <div><label for="stock_warn_type">{$LANG.settings.stock_warning_method}</label><span><select name="config[stock_warn_type]" id="stock_warn_type" class="textbox">
             {foreach from=$OPT_STOCK_WARN_TYPE item=option}<option value="{$option.value}"{$option.selected}>{$option.title}</option>{/foreach}
             </select></span>

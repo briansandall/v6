@@ -1877,6 +1877,7 @@
     <string name="cookie_domain" introduced="6.0.0"><![CDATA[Cookie Domain]]></string>
     <string name="standard_url" introduced="5.0.0"><![CDATA[Store URL]]></string>
     <string name="stock_allow_oos" introduced="5.0.0"><![CDATA[Allow out-of-stock purchases]]></string>
+	<string name="stock_allow_variants" introduced="6.0.9"><![CDATA[Allow products and matrix entries to use different stock settings]]></string>
     <string name="stock_reduce" introduced="5.0.0"><![CDATA[Reduce stock levels]]></string>
     <string name="stock_reduce_basket" introduced="5.0.0"><![CDATA[When added to basket]]></string>
     <string name="stock_reduce_complete" introduced="5.0.0"><![CDATA[When the order is Complete]]></string>
