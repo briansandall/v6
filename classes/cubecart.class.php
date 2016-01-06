@@ -252,13 +252,7 @@ class Cubecart {
 						$matrix_where = array('product_id' => $product_id, 'status' => 1, 'options_identifier' => $options_identifier_string);
 						$matrix = $GLOBALS['db']->select('CubeCart_option_matrix', $matrix_fields, $matrix_where);
 						if ($matrix) {
-							// These values should be overwritten even if 'empty'
-							$overwrite = array('use_stock_level', 'stock_level');
-							foreach ($matrix as $k => $v) {
-								if (!empty($v) || array_search($k, $overwrite) !== false) {
-									$product[$k] = $v;
-								}
-							}
+							Cart::applyProductMatrix($product, $matrix[0]);
 						}
 					}
 					// Finally, format product values for display
