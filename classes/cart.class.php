@@ -1280,4 +1280,17 @@ class Cart {
 		}
 		$product['product_weight'] += (isset($option['option_weight'])) ? $option['option_weight'] : 0;
 	}
+
+	/**
+	 * Updates the product array with non-empty values from the matrix.
+	 * @param array $product   Updated to contain the most authoritative version of any field, e.g. 'stock_level'
+	 * @param array $overwrite Fields to set even when empty, overwriting any previous value
+	 */
+	public static function applyProductMatrix(array &$product, array $matrix, array $overwrite = array('use_stock_level', 'stock_level')) {
+		foreach ($matrix as $k => $v) {
+			if (!empty($v) || array_search($k, $overwrite) !== false) {
+				$product[$k] = $v;
+			}
+		}
+	}
 }
