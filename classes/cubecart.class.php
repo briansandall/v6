@@ -260,6 +260,7 @@ class Cubecart {
 						if ($product['sale_price'] == 0 || $product['price'] < $product['sale_price']) {
 							$product['sale_price'] = $product['price'];
 						}
+						$product['ctrl_sale'] = ($product['sale_price'] > 0 && $product['sale_price'] < $product['price'] ? true : false);
 						$product['price'] = $GLOBALS['tax']->priceFormat($product['price']);
 						$product['sale_price'] = $GLOBALS['tax']->priceFormat($product['sale_price']);
 						// Format the following entries to 3-decimal precision

@@ -428,6 +428,20 @@ function specification_inc_options() {
 						}
 					}
 				}
+				// Handle after loop so elements are properly displayed / hidden
+				if (data['CTRL_SETTINGS']['CTRL_HIDE_PRICES']) {
+					$('#fbp').hide();
+					$('#ptp').hide();
+				} else {
+					$('#ptp').show();
+					if (data['ctrl_sale']) {
+						$('#fbp').show();
+						$('#ptp').addClass('sale_price');
+					} else {
+						$('#fbp').hide();
+						$('#ptp').removeClass('sale_price');
+					}
+				}
             }
         });
 	}
