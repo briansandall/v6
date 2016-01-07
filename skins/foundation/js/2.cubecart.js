@@ -419,6 +419,8 @@ function specification_inc_options() {
 					case 'sale_price':
 						$('#ptp').html(data[key]);
 					break;
+					case 'CTRL_SETTINGS':
+					break;
 					default: // update product specifications
 						var id = '#spec_' + key;
 						if (data.hasOwnProperty(key) && $(id).length) {

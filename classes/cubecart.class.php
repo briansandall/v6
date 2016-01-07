@@ -267,6 +267,23 @@ class Cubecart {
 						foreach ($thousands as $key) {
 							$product[$key] = sprintf('%.3F', $product[$key]);
 						}
+						// Add settings to determine which GUI elements to display / hide (replicates variables / logic in Catalogue#displayProduct)
+						$product['CTRL_SETTINGS'] = array(
+							'CATALOGUE_MODE'      => ($GLOBALS['config']->get('config', 'catalogue_mode') ? true : false),
+							'CTRL_ALLOW_PURCHASE' => true,
+							'CTRL_OUT_OF_STOCK'   => false,
+							'CTRL_HIDE_PRICES'    => false
+						);
+						if ((bool)$product['use_stock_level']) {
+							if ((int)$product['stock_level'] < 1 && !$GLOBALS['config']->get('config', 'basket_out_of_stock_purchase')) {
+								$product['CTRL_SETTINGS']['CTRL_ALLOW_PURCHASE'] = false;
+								$product['CTRL_SETTINGS']['CTRL_OUT_OF_STOCK'] = true;
+							}
+						}
+						if ($GLOBALS['session']->get('hide_prices')) {
+							$product['CTRL_SETTINGS']['CTRL_ALLOW_PURCHASE'] = false;
+							$product['CTRL_SETTINGS']['CTRL_HIDE_PRICES'] = true;
+						}
 					}
 					die(json_encode($product));
 				break;
