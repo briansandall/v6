@@ -3620,7 +3620,8 @@ dl {
   margin-bottom: 1.25rem; }
 
 ul {
-  margin-bottom:0%; }
+  margin-left: 1.1rem;}
+  ul.logo { margin-left: 0; margin-bottom:0;}
   ul.no-bullet {
     margin-left: 0; }
     ul.no-bullet li ul,
