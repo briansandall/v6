@@ -473,22 +473,13 @@ class Cart {
 		if (!is_null($code) && !empty($code)) {
 			if (($coupon = $GLOBALS['db']->select('CubeCart_coupons', '*', array('code' => $code, 'status' => '1'))) !== false) {
 
-				$order = false;
-
-				if ($coupon[0]['cart_order_id'])
+				if (!empty($coupon[0]['cart_order_id'])) {
 					$order = $GLOBALS['db']->select('CubeCart_order_summary', 'status', array('cart_order_id' => $coupon[0]['cart_order_id']));
+				} else {
+					$order = false;
+				}
 
 				$coupon = $coupon[0];
-				// only allow multiple discount codes for gift certificates!
-				if(empty($coupon['cart_order_id'])) {
-					if(is_array($this->basket['coupons'])) {
-						foreach($this->basket['coupons'] as $key => $item) {
-							if(!$item['gc']) {
-								unset($this->basket['coupons'][$key]);
-							}
-						}
-					}
-				}
 
 				if ($coupon['expires']!=='0000-00-00' && (strtotime($coupon['expires']) < time())) {
 					// Coupon is no longer valid
@@ -547,6 +538,18 @@ class Cart {
 				}
 				foreach ($GLOBALS['hooks']->load('class.cart.discount_add') as $hook) include $hook;
 				if ($proceed) {
+
+					// only allow multiple discount codes for gift certificates!
+					if(empty($coupon['cart_order_id'])) {
+						if(is_array($this->basket['coupons'])) {
+							foreach($this->basket['coupons'] as $key => $item) {
+								if(!$item['gc']) {
+									unset($this->basket['coupons'][$key]);
+								}
+							}
+						}
+					}
+					
 					// Add a coupon to the array
 					$type = ($coupon['discount_percent'] > 0) ? 'percent' : 'fixed';
 					$value = ($coupon['discount_percent'] > 0) ? $coupon['discount_percent'] : $coupon['discount_price'];
@@ -722,7 +725,6 @@ class Cart {
 						}
 					}
 
-					$product['price'] = sprintf("%0.2F",$product['price']);
 					// Add the total product price inc options etc for payment gateways
 					$this->basket['contents'][$hash]['option_line_price'] = $product['option_line_price'];
 					$this->basket['contents'][$hash]['total_price_each'] = $product['price'];
@@ -746,10 +748,7 @@ class Cart {
 						'digital'  => (bool)$item['digital'],
 						'tax_type'  => $gc['taxType'],
 						'tax_inclusive' => true,
-						'options'  => array(
-							# 'Recipient' => $item['certificate']['name'],
-							# 'Message' => $item['certificate']['message'],
-						),
+						'options'  => array(),
 						'option_price_ignoring_tax' => 0,
 					);
 					$product['price_display'] = $product['price'];
@@ -1243,7 +1242,6 @@ class Cart {
 					$this->basket['coupons'][$key]['remainder'] = $remainder;	
 				}
 			}
-			$ave_tax_rate = sprintf('%.4F',$ave_tax_rate);
 			$tax = ($subtotal>0) ? ($subtotal*$ave_tax_rate) : 0;
 			$GLOBALS['tax']->adjustTax($tax);
 

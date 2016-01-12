@@ -249,7 +249,7 @@ $directories = getDirectories(PATH, true);
 			<label for="update_main_price" class="fleft">Update pricing for the main product using the lowest non-zero priced (base, not sale) matrix option</label>
 			<div class="clear"></div>
 			<small class="inner alert">Note that this requires your CubeCart installation to support both a 'price' and a 'sale_price' for the `option_matrix` table.</small>
-			<small class="inner">Note that pricing will only update if at least one of the product's prices (main product or matrix) changed.</small>
+			<br><small class="inner">Note that pricing will only update if at least one of the product's prices (main product or matrix) changed.</small>
 			<br><small class="inner">Useful if there is no 'general' price for the product, i.e. pricing is determined entirely by the chosen options / matrix.</small>
 			<br><br>
 			<input type="checkbox" id="disable_products" name="disable_products"<?php echo (!empty($options['disable_products']) ? ' checked="checked"' : ''); ?><?php echo (MATRIX_STATUS_ON ? '' : ' disabled="disabled"'); ?> />
@@ -534,15 +534,15 @@ function updatePrices($dbc, $filename, array $options = array()) {
 			foreach ($data as $entry) {
 				$manufacturer = (empty($entry[$labels['manufacturer']['label']]) ? $options['manufacturer'] : $entry[$labels['manufacturer']['label']]);
 				$product_code = $entry[$labels['product_code']['label']];
-				$list_price = $entry[$labels['list_price']['label']];
-				$sale_price = $entry[$labels['sale_price']['label']];
+				$list_price = round_up($entry[$labels['list_price']['label']], 2);
+				$sale_price = round_up($entry[$labels['sale_price']['label']], 2);
 				if ($select_only) {
 					if (!$stmts['select_product']->bind_param('ss', $product_code, $manufacturer) || !$stmts['select_product']->execute()) {
 						throw new \RuntimeException("Query failed for manufacturer $manufacturer and product code $product_code: {$stmts['select_product']->errno} - {$stmts['select_product']->error}");
 					} elseif (empty(fetch_assoc_stmt($stmts['select_product']))) {
 						$result['not_found'][$product_code] = "Product not found in database; Manufacturer: $manufacturer | Product Code: $product_code";
 					} else {
-						$result['updated'][] = "Product prices updated; Manufacturer: $manufacturer | Product Code: $product_code | List Price: \$$list_price | Sale Price: \$$sale_price";
+						$result['updated'][] = "Product prices updated; Manufacturer: $manufacturer | Product Code: $product_code | List Price: \$" . sprintf('%.2f', $list_price) . " | Sale Price: \$" . sprintf('%.2f', $sale_price);
 					}
 					if ($options['update_matrix']) {
 						if (!$stmts['select_matrix']->bind_param('ss', $product_code, $manufacturer) || !$stmts['select_matrix']->execute()) {
@@ -551,7 +551,7 @@ function updatePrices($dbc, $filename, array $options = array()) {
 							$desc = (array_key_exists($product_code, $result['not_found']) ? 'Neither product nor matrix' : 'Matrix');
 							$result['not_found'][$product_code] = "$desc entry not found; Manufacturer: $manufacturer | Product Code: $product_code";
 						} else {
-							$result['updated'][] = "Matrix prices updated; Manufacturer: $manufacturer | Product Code: $product_code | List Price: \$$list_price | Sale Price: \$$sale_price";
+							$result['updated'][] = "Matrix prices updated; Manufacturer: $manufacturer | Product Code: $product_code | List Price: \$" . sprintf('%.2f', $list_price) . " | Sale Price: \$" . sprintf('%.2f', $sale_price);
 							$updated[$product_id][] = $product_code;
 							// wasn't found as a product, but found as a matrix entry
 							if (array_key_exists($product_code, $result['not_found'])) {
@@ -565,7 +565,7 @@ function updatePrices($dbc, $filename, array $options = array()) {
 					} elseif ($stmts['update_product']->affected_rows < 1) {
 						$result['not_found'][$product_code] = "Product not found; Manufacturer: $manufacturer | Product Code: $product_code";
 					} else {
-						$result['updated'][] = "Product prices updated; Manufacturer: $manufacturer | Product Code: $product_code | List Price: \$$list_price | Sale Price: \$$sale_price";
+						$result['updated'][] = "Product prices updated; Manufacturer: $manufacturer | Product Code: $product_code | List Price: \$" . sprintf('%.2f', $list_price) . " | Sale Price: \$" . sprintf('%.2f', $sale_price);
 					}
 					if ($options['update_matrix']) {
 						if (!$stmts['update_matrix']->bind_param('ddss', $list_price, $sale_price, $product_code, $manufacturer) || !$stmts['update_matrix']->execute()) {
@@ -579,7 +579,7 @@ function updatePrices($dbc, $filename, array $options = array()) {
 							} elseif (empty($product_id = fetch_assoc_stmt($stmts['select_matrix']))) {
 								$result['failed'][] = "Matrix entry not found after updating! Manufacturer: $manufacturer | Product Code: $product_code";
 							} else {
-								$result['updated'][] = "Matrix prices updated; Manufacturer: $manufacturer | Product Code: $product_code | List Price: \$$list_price | Sale Price: \$$sale_price";
+								$result['updated'][] = "Matrix prices updated; Manufacturer: $manufacturer | Product Code: $product_code | List Price: \$" . sprintf('%.2f', $list_price) . " | Sale Price: \$" . sprintf('%.2f', $sale_price);
 								$updated[$product_id][] = $product_code;
 								// wasn't found as a product, but found as a matrix entry
 								if (array_key_exists($product_code, $result['not_found'])) {
@@ -695,6 +695,12 @@ function fetch_assoc_stmt($stmt, $force_assoc = false, $buffer = true) {
  */
 function copy_value($v) {
 	return $v;
+}
+
+/** @author mvds from http://stackoverflow.com/questions/8771842/always-rounding-decimals-up-to-specified-precision */
+function round_up($in, $prec) {
+	$fact = pow(10, $prec);
+	return ceil($fact * $in) / $fact;
 }
 
 /** This function copied from filemanager.class.php as found in CubeCart v6.0.8 */
