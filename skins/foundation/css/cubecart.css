@@ -71,6 +71,9 @@ footer {
     background-color: #393E41;
     color: #EDFFEE;
 }
+div.footer {
+	background-color: inherit;
+}
 footer h3 {
     color: #fff;
 }

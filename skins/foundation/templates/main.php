@@ -114,11 +114,11 @@
             </div>
             <footer>
                <div class="row">
-                  <div class="medium-7 large-7 columns">
+                  <div class="footer medium-7 large-7 columns">
                      {include file='templates/box.documents.php'}
                      <span class="show-for-medium-up">{$COPYRIGHT}<p>eCommerce by <a href="http://www.cubecart.com">CubeCart</a></p></span>
                   </div>
-                  <div class="medium-5 large-5 columns">
+                  <div class="footer medium-5 large-5 columns">
                      {$SOCIAL_LIST}
                      {include file='templates/ccpower.php'}
                            <span class="show-for-small-only">{$COPYRIGHT}</span>
