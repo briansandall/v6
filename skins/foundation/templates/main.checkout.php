@@ -52,28 +52,26 @@
             {include file='templates/box.eu_cookie.php'}
             <div class="right text-center show-for-small"><a class="left-off-canvas-toggle button white tiny" href="#"><i class="fa fa-bars fa-2x"></i></a></div>
             <div class="row marg-top" id="top_headercheckout">
-            <div class="right text-right show-for-medium-up2">{include file='templates/box.session2.php'}</div>
+               <div class="right text-right show-for-medium-up2">{include file='templates/box.session2.php'}</div>
                <div class="small-8 large-9 columns">
                   <div class="show-for-medium-up">
                      <div class="small-12 columns">
                         <div class="leftcontact2">
-                              <span class = "callus">
-                                 <i class="fa fa-phone"></i><a href="tel:+13606269028">(360)626-9028</a>
-                              </span>
-                              <span class ="faxus">
-                                 <i class="fa fa-fax"></i><a href="tel:+1206694272">(206)694-272</a>
-                              </u1>
-                              <u1 class = "emailus">
-                                 <i class="fa fa-envelope"></i><a href="{$STORE_URL}/contact-us.html">info@linemansequipment.com</a>
-                              </u1>
-                           </div>
+                           <span class = "callus">
+                              <i class="fa fa-phone"></i><a href="tel:+13606269028">(360)626-9028</a>
+                           </span>
+                           <span class ="faxus">
+                              <i class="fa fa-fax"></i><a href="tel:+1206694272">(206)694-272</a>
+                           </span>
+                           <u1 class = "emailus">
+                              <i class="fa fa-envelope"></i><a href="{$STORE_URL}/contact-us.html">info@linemansequipment.com</a>
+                           </u1>
                         </div>
-                      </div>
-                  </div>
-                     <div class="icon2">
-                        <a href="{$STORE_URL}" class="main-logo"><img src="{$STORE_URL}/images/logos/logo2.png" alt="{$META_TITLE}"></a>
                      </div>
                   </div>
+               </div>
+               <div class="icon2">
+                  <a href="{$STORE_URL}" class="main-logo"><img src="{$STORE_URL}/images/logos/logo2.png" alt="{$META_TITLE}"></a>
                </div>
             </div>
             <div class="row {$SECTION_NAME}_wrapper">
