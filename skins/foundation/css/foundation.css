@@ -6220,45 +6220,7 @@ box-shadow: 2px 0px 27px -5px rgba(0,0,0,0.75);
   text-decoration:none;
 }
 
-#box-session{
-  height:150%;
-  float:left;
-  color: #fff;
-  margin-bottom:0%;
-  font-size:12px;
-  -moz-box-shadow: 0px 10px 14px -7px #000;
-  -webkit-box-shadow: 0px 10px 14px -7px #000;
-  box-shadow: 5px 8px 1px 0px #000;
-  background-color:#E7BB41;
-  -moz-border-radius:0px;
-  -webkit-border-radius:0px;
-  border-radius:0px;
-  display:inline-block;
-  cursor:pointer;
-  color:#000;
-  font-weight:bold;
-  padding:5px 3px 0px 3px;
-  text-decoration:none;
-}
-#box-currency{
-  color: #fff;
-  font-size:10px;
-  -moz-box-shadow: 0px 10px 14px -7px #000;
-  -webkit-box-shadow: 0px 10px 14px -7px #000;
-  box-shadow: 5px 8px 1px 0px #000;
-  background-color:#E7BB41;
-  -moz-border-radius:0%;
-  -webkit-border-radius:0%;
-  border-radius:0%;
-  display:block;
-  cursor:pointer;
-  color:#FFFFFF;
-  font-weight:bold;
-  text-decoration:none;
-  height:2.99em;
-}
-
-#basket-summary{
+#basket-summary, #box-currency, #box-session > a, #box-session > div.divider {
   font-size:14px;
   -moz-box-shadow: 0px 10px 14px -7px #000;
   -webkit-box-shadow: 0px 10px 14px -7px #000;
@@ -6273,6 +6235,11 @@ box-shadow: 2px 0px 27px -5px rgba(0,0,0,0.75);
   font-weight:bold;
   text-decoration:none;
   padding:0.45em !important;
+}
+
+#box-session > div.divider {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
 #ccpower.row{
