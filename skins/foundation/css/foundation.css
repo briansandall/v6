@@ -6139,7 +6139,9 @@ th.hide-for-touch {
 #nav-actions.row {
   margin-left:-100%;
   margin-right:-70%;
- }
+}
+#nav-actions a.top-link:hover { background-color: #E9D49D;}
+
 #box-search{
   margin-top:-0.35em;
 }

@@ -61,13 +61,13 @@
                      <div class="show-for-medium-up" id="navcontacts">
                         <div class="leftcontact">
                               <span class = "callus">
-                                 <i class="fa fa-phone"></i><a href="tel:+13606269028">(360)626-9028</a>
+                                 <i class="fa fa-phone"></i><a href="tel:+13606269028" class="top-link">(360)626-9028</a>
                               </span>
                               <span class ="faxus">
-                                 <i class="fa fa-fax"></i><a href="tel:+1206694272">(206)694-272</a>
+                                 <i class="fa fa-fax"></i><a href="tel:+1206694272" class="top-link">(206)694-272</a>
                               </u1>
                               <u1 class = "emailus">
-                                 <i class="fa fa-envelope"></i><a href="{$STORE_URL}/contact-us.html">info@linemansequiptment.com</a>
+                                 <i class="fa fa-envelope"></i><a href="{$STORE_URL}/contact-us.html" class="top-link">info@linemansequiptment.com</a>
                               </u1>
                            </div>
                         </div>
