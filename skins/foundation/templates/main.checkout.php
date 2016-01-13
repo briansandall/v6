@@ -64,7 +64,7 @@
                                  <i class="fa fa-fax"></i><a href="tel:+1206694272">(206)694-272</a>
                               </u1>
                               <u1 class = "emailus">
-                                 <i class="fa fa-envelope"></i><a href="{$STORE_URL}/contact-us.html">info@linemansequiptment.com</a>
+                                 <i class="fa fa-envelope"></i><a href="{$STORE_URL}/contact-us.html">info@linemansequipment.com</a>
                               </u1>
                            </div>
                         </div>
