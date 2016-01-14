@@ -6214,7 +6214,7 @@ box-shadow: 2px 0px 27px -5px rgba(0,0,0,0.75);
   text-decoration:none;
 }
 
-#basket-summary, #box-currency, #box-session > a, #box-session > div.divider {
+#basket-summary, #box-currency, #box-session > a, #box-session > div.separator {
   font-size:14px;
   -moz-box-shadow: 0px 10px 14px -7px #000;
   -webkit-box-shadow: 0px 10px 14px -7px #000;
@@ -6231,7 +6231,7 @@ box-shadow: 2px 0px 27px -5px rgba(0,0,0,0.75);
   padding:0.45em !important;
 }
 
-#box-session > div.divider {
+#box-session > div.separator {
   padding-left: 0 !important;
   padding-right: 0 !important;
 }

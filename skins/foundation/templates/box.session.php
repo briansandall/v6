@@ -25,6 +25,6 @@
       <li class="text-left"><a href="{$STORE_URL}/index.php?_a=logout" title="{$LANG.account.logout}">{$LANG.account.logout}</a></li>
    </ul>
    {else}
-   <a href="{$STORE_URL}/login.html" class="top-link button white small nopad-sides">{$LANG.account.login}</a><div class="button white small nopad-sides divider">|</div><a href="{$STORE_URL}/register.html" class="top-link button white small nopad-sides">{$LANG.account.register}</a>
+   <a href="{$STORE_URL}/login.html" class="top-link button white small nopad-sides">{$LANG.account.login}</a><div class="button white small nopad-sides separator">|</div><a href="{$STORE_URL}/register.html" class="top-link button white small nopad-sides">{$LANG.account.register}</a>
    {/if}
 </div>
