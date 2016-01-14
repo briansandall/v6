@@ -60,7 +60,7 @@
                            <i class="fa fa-phone"></i><a href="tel:+13606269028" class="top-link">(360)626-9028</a>
                         </span>
                         <span class ="faxus">
-                           <i class="fa fa-fax"></i><a href="tel:+1206694272" class="top-link">(206)694-272</a>
+                           <i class="fa fa-fax"></i><a href="tel:+12066942723" class="top-link">(206)694-2723</a>
                         </span>
                         <span class="emailus">
                            <i class="fa fa-envelope"></i><a href="{$STORE_URL}/contact-us.html" class="top-link">info@linemansequipment.com</a>
