@@ -70,11 +70,11 @@
                      </div>
                   </div>
                </div>
-               <div class="icon2">
-                  <a href="{$STORE_URL}" class="main-logo"><img src="{$STORE_URL}/images/logos/logo2.png" alt="{$META_TITLE}"></a>
-               </div>
             </div>
             <div class="row {$SECTION_NAME}_wrapper">
+               <div class="img_container">
+                  <a href="{$STORE_URL}" class="main-logo"><img src="{$STORE_URL}/images/logos/logo2.png" alt="{$META_TITLE}"></a>
+               </div>
                <div class="small-12 large-12 columns small-collapse">
                	{include file='templates/box.progress.php'}
                </div>

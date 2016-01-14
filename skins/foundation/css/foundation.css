@@ -6145,11 +6145,13 @@ th.hide-for-touch {
 #box-search{
   margin-top:-0.35em;
 }
-.icon2{
-  margin-left:36%;
-  margin-top:1em;
-  margin-bottom:2em;
-  float: left;
+.img_container{
+  width: 100%;
+  text-align: center;
+  padding: 20px 0 20px 0;
+}
+.img_container a {
+	vertical-align: middle;
 }
 .checkoutfooter{
   background-color:#393E41;
