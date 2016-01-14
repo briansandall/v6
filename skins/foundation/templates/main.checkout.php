@@ -52,7 +52,7 @@
             {include file='templates/box.eu_cookie.php'}
             <div class="right text-center show-for-small"><a class="left-off-canvas-toggle button white tiny" href="#"><i class="fa fa-bars fa-2x"></i></a></div>
             <div class="marg-top" id="nav-actions">
-               <div class="right text-right show-for-medium-up">{include file='templates/box.session2.php'}</div>
+               <div class="right text-right show-for-medium-up">{include file='templates/box.session.php'}</div>
                <div class="small-8 large-9 columns">
                   <div class="show-for-medium-up">
                      <div class="leftcontact2">
