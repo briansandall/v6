@@ -81,9 +81,9 @@
                <div class="small-8 large-9 columns nav-boxes">
                </div>
             </div>
-            <ul class ="logo">
-               <li><a href="{$STORE_URL}" class="main-logo"><img src="{$STORE_LOGO}" alt="{$META_TITLE}"></a></li>
-            </ul>
+            <div class="img_container main-logo">
+               <a href="{$STORE_URL}"><img src="{$STORE_LOGO}" alt="{$META_TITLE}"></a>
+            </div>
             <div class="row hide" id="small-search">
                <div class="small-12 columns">
                   {include file='templates/box.search.php'}

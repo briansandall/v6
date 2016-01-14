@@ -51,11 +51,11 @@
             {include file='templates/box.off_canvas.left.php'}
             {include file='templates/box.eu_cookie.php'}
             <div class="right text-center show-for-small"><a class="left-off-canvas-toggle button white tiny" href="#"><i class="fa fa-bars fa-2x"></i></a></div>
-            <div class="marg-top" id="nav-actions">
+            <div class="row" id="nav-actions">
                <div class="right text-right show-for-medium-up">{include file='templates/box.session.php'}</div>
                <div class="small-8 large-9 columns">
                   <div class="show-for-medium-up">
-                     <div class="leftcontact2">
+                     <div class="leftcontact">
                         <div class="left callus">
                            <i class="fa fa-phone"></i><a href="tel:+13606269028" class="top-link">(360)626-9028</a>
                         </div>
