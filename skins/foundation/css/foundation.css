@@ -1841,7 +1841,7 @@ meta.foundation-mq-topbar {
     background: transparent;
     height: auto; }
     .top-bar.expanded .title-area {
-      background: crimson; }
+      background: #333333; }
     .top-bar.expanded .toggle-topbar a {
       color: #888888; }
       .top-bar.expanded .toggle-topbar a span::after {
