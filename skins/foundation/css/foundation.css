@@ -1774,8 +1774,8 @@ meta.foundation-mq-topbar {
   .top-bar select {
     font-size: 0.75rem;
     height: 1.75rem;
-    padding-bottom: .35rem;
-    padding-top: .35rem; }
+    padding-bottom: 0;
+    padding-top: 0; }
   .top-bar .button, .top-bar button {
     font-size: 0.75rem;
     margin-bottom: 0;
@@ -1852,12 +1852,27 @@ meta.foundation-mq-topbar {
         clip: initial; }
       .top-bar.expanded .top-bar-section .has-dropdown:not(.moved) > ul {
         padding: 0; } }
-.row.show-for-medium-up{
-  padding-top:10px;
-  width:500px;
+.row.show-for-medium-up {
+  padding-top:0.4rem;
+  width:300px;
   height:auto;
   z-index:-1;
   background-color:crimson;
+}
+#box-search .small-10, #box-search .large-11 {
+	width: 90%;
+}
+#box-search .small-2, #box-search .large-1 {
+	width: 10%;
+}
+.search-advanced {
+  margin-top: -1.1rem;
+}
+.search-advanced > a {
+  color: white;
+}
+.search-advanced > a:hover {
+  color: #333333;
 }
 .top-bar-section {
   left: 0;
@@ -2078,7 +2093,6 @@ meta.foundation-mq-topbar {
 /* top-bar nav 1 */
 @media only screen and (min-width: 68.75em) {
   .top-bar {
-    margin-bottom:1em;
     background-color: crimson;
     overflow: visible;
     box-shadow:0px 0.25rem; }
@@ -6149,9 +6163,6 @@ th.hide-for-touch {
 }
 #nav-actions a.top-link:hover { background-color: #E9D49D;}
 
-#box-search{
-  margin-top:-0.35em;
-}
 .img_container{
   width: 100%;
   text-align: center;
