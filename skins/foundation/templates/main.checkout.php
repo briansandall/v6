@@ -56,15 +56,15 @@
                <div class="small-8 large-9 columns">
                   <div class="show-for-medium-up">
                      <div class="leftcontact2">
-                        <span class = "callus">
+                        <div class="left callus">
                            <i class="fa fa-phone"></i><a href="tel:+13606269028" class="top-link">(360)626-9028</a>
-                        </span>
-                        <span class ="faxus">
+                        </div>
+                        <div class="left faxus">
                            <i class="fa fa-fax"></i><a href="tel:+12066942723" class="top-link">(206)694-2723</a>
-                        </span>
-                        <span class="emailus">
+                        </div>
+                        <div class="left emailus">
                            <i class="fa fa-envelope"></i><a href="{$STORE_URL}/contact-us.html" class="top-link">info@linemansequipment.com</a>
-                        </span>
+                        </div>
                      </div>
                   </div>
                </div>
