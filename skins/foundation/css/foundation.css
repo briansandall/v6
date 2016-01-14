@@ -2078,8 +2078,6 @@ meta.foundation-mq-topbar {
 /* top-bar nav 1 */
 @media only screen and (min-width: 68.75em) {
   .top-bar {
-    margin-left: -100%;
-    margin-right:-100%;
     margin-bottom:1em;
     background-color: crimson;
     overflow: visible;
@@ -6137,6 +6135,11 @@ th.hide-for-touch {
   .show-for-print {
     display: none !important; } }
 
+.box-navigation > div.columns {
+  background-color: crimson;
+  max-width: 100%;
+  padding: 0;
+}
 #nav-actions.row {
   max-width: 100%;
   width:100%;

@@ -89,7 +89,7 @@
                   {include file='templates/box.search.php'}
                </div>
             </div>
-            <div class="row">
+            <div class="box-navigation">
                <div class="small-12 columns small-collapse">
                   {include file='templates/box.navigation.php'}
                </div>
