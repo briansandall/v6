@@ -51,22 +51,20 @@
             {include file='templates/box.off_canvas.left.php'}
             {include file='templates/box.eu_cookie.php'}
             <div class="right text-center show-for-small"><a class="left-off-canvas-toggle button white tiny" href="#"><i class="fa fa-bars fa-2x"></i></a></div>
-            <div class="row marg-top" id="top_headercheckout">
-               <div class="right text-right show-for-medium-up2">{include file='templates/box.session2.php'}</div>
+            <div class="marg-top" id="nav-actions">
+               <div class="right text-right show-for-medium-up">{include file='templates/box.session2.php'}</div>
                <div class="small-8 large-9 columns">
                   <div class="show-for-medium-up">
-                     <div class="small-12 columns">
-                        <div class="leftcontact2">
-                           <span class = "callus">
-                              <i class="fa fa-phone"></i><a href="tel:+13606269028">(360)626-9028</a>
-                           </span>
-                           <span class ="faxus">
-                              <i class="fa fa-fax"></i><a href="tel:+1206694272">(206)694-272</a>
-                           </span>
-                           <u1 class = "emailus">
-                              <i class="fa fa-envelope"></i><a href="{$STORE_URL}/contact-us.html">info@linemansequipment.com</a>
-                           </u1>
-                        </div>
+                     <div class="leftcontact2">
+                        <span class = "callus">
+                           <i class="fa fa-phone"></i><a href="tel:+13606269028" class="top-link">(360)626-9028</a>
+                        </span>
+                        <span class ="faxus">
+                           <i class="fa fa-fax"></i><a href="tel:+1206694272" class="top-link">(206)694-272</a>
+                        </span>
+                        <span class="emailus">
+                           <i class="fa fa-envelope"></i><a href="{$STORE_URL}/contact-us.html" class="top-link">info@linemansequipment.com</a>
+                        </span>
                      </div>
                   </div>
                </div>
@@ -87,14 +85,14 @@
                <div class="row">
                   <div class="footer medium-7 large-7 columns">
                      {include file='templates/box.documents.php'}
-                     <span class="show-for-medium-up">{$COPYRIGHT}<p>eCommerce by <a href="http://www.cubecart.com">CubeCart</a></p></span>
+                     <div class="show-for-medium-up">{$COPYRIGHT}<p>eCommerce by <a href="http://www.cubecart.com">CubeCart</a></p></div>
                   </div>
                   <div class="footer medium-5 large-5 columns">
                      {$SOCIAL_LIST}
                      {include file='templates/ccpower.php'}
-                           <span class="show-for-small-only">{$COPYRIGHT}</span>
-                        </div>
-                     </div>
+                     <div class="show-for-small-only">{$COPYRIGHT}</div>
+                  </div>
+               </div>
             </footer>
             <script src="{$STORE_URL}/skins/{$SKIN_FOLDER}/js/vendor/jquery.rating.min.js" type="text/javascript"></script>
             <script src="{$STORE_URL}/skins/{$SKIN_FOLDER}/js/vendor/jquery.validate.min.js" type="text/javascript"></script>

@@ -5565,7 +5565,9 @@ table {
     top: 0;
     width: 100%;
     left: 0; }
-
+iframe {
+	border: 0;
+}
 .keystroke,
 kbd {
   background-color: #ededed;
@@ -6162,9 +6164,6 @@ th.hide-for-touch {
 #top_header.row.marg-top{
   width:42%;
 }
-#top_headercheckout.row.marg-top{
-  margin-top:-0.0001%;
-}
 .row.home_wrapper{
 -webkit-box-shadow: 2px 51px 17px 2px rgba(0,0,0,0.75);
 -moz-box-shadow: 2px 51px 17px 2px rgba(0,0,0,0.75);
@@ -6194,9 +6193,8 @@ box-shadow: 2px 0px 27px -5px rgba(0,0,0,0.75);
 .leftcontact2{
   float:left;
   color: #fff;
-  margin-left:-3%;
-  margin-top:1px;
-  font-size:14px;
+  margin-left:-10px;
+  font-size:12px;
   background-color:#E7BB41;
   -moz-border-radius:14px;
   -webkit-border-radius:14px;
@@ -6206,7 +6204,7 @@ box-shadow: 2px 0px 27px -5px rgba(0,0,0,0.75);
   color:#000;
   font-family:Arial;
   font-weight:bold;
-  padding:0px 10px 2px 23px;
+  padding:0px 10px 0px 20px;
   text-decoration:none;
 }
 
