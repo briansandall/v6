@@ -1880,6 +1880,9 @@ meta.foundation-mq-topbar {
 .search-advanced > a:hover {
   color: #333333;
 }
+.top-bar-section ul.left {
+  float: none !important;
+}
 .top-bar-section {
   left: 0;
   position: relative;
