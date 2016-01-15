@@ -1776,7 +1776,7 @@ meta.foundation-mq-topbar {
   .top-bar input,
   .top-bar select {
     font-size: 0.75rem;
-    height: 1.75rem;
+    height: 1.6rem;
     padding-bottom: 0;
     padding-top: 0; }
   .top-bar .button, .top-bar button {
@@ -1784,6 +1784,9 @@ meta.foundation-mq-topbar {
     margin-bottom: 0;
     padding-bottom: 0.4125rem;
     padding-top: 0.4125rem; }
+  .top-bar button.postfix {
+    height: 1.6rem;
+  }
     @media only screen and (max-width: 40em) {
       .top-bar .button, .top-bar button {
         position: relative;
@@ -1858,7 +1861,7 @@ meta.foundation-mq-topbar {
 .row.show-for-medium-up {
   padding-top:0.4rem;
   width:300px;
-  height:auto;
+  height:45px;
   z-index:-1;
   background-color:crimson;
 }
