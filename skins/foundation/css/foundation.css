@@ -1880,6 +1880,12 @@ meta.foundation-mq-topbar {
 .search-advanced > a:hover {
   color: #333333;
 }
+#small-search .search-advanced {
+  margin-top: -0.1rem;
+}
+#small-search .search-advanced > a {
+  color: black;
+}
 .top-bar-section ul.left {
   float: none !important;
 }
