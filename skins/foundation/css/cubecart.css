@@ -236,7 +236,12 @@ a.back-to-top, a.back-to-top:hover, a.back-to-top:active, a.back-to-top:visited 
 }
 .button.white {
 	background-color: transparent;
-	color: #000;
+	color: white;
+    margin-top:0px;
+}
+.button.black {
+	background-color: transparent;
+	color: black;
     margin-top:0px;
 }
 textarea#contact_enquiry {

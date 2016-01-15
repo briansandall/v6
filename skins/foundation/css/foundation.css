@@ -1253,6 +1253,9 @@ button, .button {
   button.tiny, .button.tiny {
     padding: 0.625rem 1.25rem 0.6875rem 1.25rem;
     font-size: 0.6875rem; }
+  .show-for-small-only > button.tiny, .show-for-small-only > .button.tiny, .show-for-small > button.tiny, .show-for-small > .button.tiny {
+    padding: 0.2rem 1.5rem 0.2rem 1.5rem;
+  }
   button.expand, .button.expand {
     padding-left: 0;
     padding-right: 0;
