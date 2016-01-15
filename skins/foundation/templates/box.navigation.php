@@ -10,29 +10,29 @@
  * License:  GPL-3.0 https://www.gnu.org/licenses/quick-guide-gplv3.html
  *}
 {if $CATEGORIES}
-{$CATEGORIES}
+   {$CATEGORIES}
 {else}
-
 <nav class="top-bar category-nav" data-topbar="" id="box-navigation">
   <ul class="title-area">
-     <li class="name"></li>
-     <li class="toggle-topbar left"><a href="">{$LANG.navigation.title} <i class="fa fa-caret-down"></i></a></li>
+    <li class="name"></li>
+    <li class="toggle-topbar left"><a href="">{$LANG.navigation.title} <i class="fa fa-caret-down"></i></a></li>
   </ul>
   <section class="top-bar-section">
-<ul class="right">
+  <div class="right">
     <div class="row show-for-medium-up">
-  <div class="small-12 columns">{include file='templates/box.search.php'}</div>
-</div>
-</ul>
-     <ul class="left">
-        <li class="show-for-medium-up"><a href="{$STORE_URL}" title="{$LANG.common.home}"><i class="fa fa-home"></i></a></li>
-        {$NAVIGATION_TREE}
-        {if $CTRL_CERTIFICATES && !$CATALOGUE_MODE}
-        <li><a href="{$STORE_URL}/gift-certificates.html" title="{$LANG.navigation.giftcerts}">{$LANG.navigation.giftcerts}</a></li>
-        {/if}
-        {if $CTRL_SALE}
-        <li><a href="{$STORE_URL}/sale-items.html" title="{$LANG.navigation.saleitems}">{$LANG.navigation.saleitems}</a></li>
-        {/if}
-     </ul>
+      <div class="small-12 columns">{include file='templates/box.search.php'}</div>
+    </div>
+  </div>
+  <ul class="left">
+    <li class="show-for-medium-up"><a href="{$STORE_URL}" title="{$LANG.common.home}"><i class="fa fa-home"></i></a></li>
+    {$NAVIGATION_TREE}
+    {if $CTRL_CERTIFICATES && !$CATALOGUE_MODE}
+      <li><a href="{$STORE_URL}/gift-certificates.html" title="{$LANG.navigation.giftcerts}">{$LANG.navigation.giftcerts}</a></li>
+    {/if}
+    {if $CTRL_SALE}
+      <li><a href="{$STORE_URL}/sale-items.html" title="{$LANG.navigation.saleitems}">{$LANG.navigation.saleitems}</a></li>
+    {/if}
+   </ul>
   </section>
-</nav>{/if}
+</nav>
+{/if}

@@ -6,7 +6,7 @@
 *}
 <div class="row" id="ccpower">
 	<div class="ccpowered">
-		<img src="{$STORE_URL}/images/logos/paypal.gif">
-		<p>Payment Powered by <a href="https://www.paypal.com">PayPal </a></p>
+		<img src="{$STORE_URL}/images/logos/paypal.gif" alt="logo" />
+		<p>Payment Powered by <a href="https://www.paypal.com">PayPal</a></p>
 	</div>
 </div>
