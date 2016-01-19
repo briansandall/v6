@@ -6,6 +6,5 @@
 !/modules/plugins/hooks.xml
 .DS_Store
 Thumbs.db
-/.htaccess
 /utils/extra/*
 !/utils/extra/.htaccess
