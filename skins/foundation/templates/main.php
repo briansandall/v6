@@ -100,15 +100,18 @@
                </div>
             </div>
             <div class="row {$SECTION_NAME}_wrapper">
-               <div class="small-12 large-9 columns" id="main_content">
+               <div class="large-2 columns show-for-large-up" id="sidebar_right">
+                  {include file='templates/box.manufacturers.php'}
+                  {include file='templates/box.sale_items.php'}
+               </div>
+               <div class="small-12 large-8 columns" id="main_content">
                   {include file='templates/box.errors.php'}
                   {include file='templates/box.progress.php'}
                   {$PAGE_CONTENT}
                </div>
-               <div class="large-3 columns show-for-large-up" id="sidebar_left">
+               <div class="large-2 columns show-for-large-up" id="sidebar_left">
                   {include file='templates/box.featured.php'}
                   {include file='templates/box.popular.php'}
-                  {include file='templates/box.sale_items.php'}
                </div>
                <a href="#" class="back-to-top"><span class="show-for-small-only"><i class="fa fa-angle-up"></i></span><span class="show-for-medium-up"><i class="fa fa-angle-up"></i> {$LANG.common.top}</span></a>
             </div>
