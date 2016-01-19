@@ -13,7 +13,21 @@ IndexIgnore *
 #### Rewrite rules for SEO functionality ####
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteBase /git/cc/
+  RewriteBase /
+
+  # Require SSL
+  SSLOptions +StrictRequire
+  SSLRequireSSL
+  SSLRequire %{HTTP_HOST} eq "linemansequipment.com"
+  ErrorDocument 403 https://linemansequipment.com
+
+  # Require SSL without mod_ssl
+  RewriteCond %{HTTPS} !=on [NC]
+  RewriteRule ^.*$ https://%{SERVER_NAME}%{REQUEST_URI} [R,L]
+
+  ## Redirect www. requests to pure domain
+  RewriteCond %{HTTP_HOST} ^www.linemansequipment.com [NC]
+  RewriteRule ^(.*)$ https://linemansequipment.com/$1 [R=301,NC]
 
   ######## START v4 SEO URL BACKWARD COMPATIBILITY ########
   RewriteCond %{QUERY_STRING} (.*)$
@@ -44,6 +58,6 @@ IndexIgnore *
 </IfModule>
 
 ## Default store 404 page
-ErrorDocument 404 /git/cc/index.php
+ErrorDocument 404 /index.php
 
 ##### END CubeCart .htaccess #####
