@@ -20,6 +20,7 @@
                <a href="{$item.link}"><strong>{$item.name}</strong></a>
                {if $item.options}
                <ul class="no-bullet item_options">
+                  <li><strong>{$LANG.catalogue.product_code}</strong>: {$item.product_code}</li>
                   {foreach from=$item.options item=option}
                   <li><strong>{if empty($option.option_description)}{$option.option_name}{else}{$option.option_description}{/if}</strong>: {$option.value_name|truncate:45:"&hellip;":true}{if !empty($option.price_display)} ({$option.price_display}){/if}</li>
                   {/foreach}
