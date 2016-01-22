@@ -353,6 +353,9 @@ if (isset($_POST['save']) && Admin::getInstance()->permissions('products', CC_PE
 	}
 
 	if (isset($_POST['image']) && is_array($_POST['image'])) {
+		$old_images = array();
+		$img_add = array();
+		$removed_images = array();
 		// md5 compare of before / after so we know if changes have been made or not
 		if (($before = $GLOBALS['db']->select('CubeCart_image_index', array('product_id', 'file_id', 'main_img'), array('product_id' => (int)$product_id))) !== false) {
 			$hash_before = md5(serialize($before));
@@ -793,6 +796,7 @@ if (isset($_GET['action'])) {
 		$request->setMethod('get');
 		$request->skiplog(true);
 		$request->cache(true);
+		$request->setData(array('null'=>true));
 
 		if($response = $request->send()) {
 			$google_cats = explode("\n",$response);
@@ -958,7 +962,8 @@ if (isset($_GET['action'])) {
 			// Breadcrumb
 			$GLOBALS['gui']->addBreadcrumb($lang['catalogue']['product_add'], $_GET);
 			$result[0] = array(
-				'featured'   => 1,
+				'featured' => 0,
+				'latest'   => 1,
 				'tax_inclusive'  => 0,
 				'use_stock_level' => 1,
 			);
@@ -1192,11 +1197,6 @@ if (isset($_GET['action'])) {
 			}
 		}
 		$GLOBALS['smarty']->assign('PRODUCT', $result[0]);
-
-		$selectArray = array(
-			'featured',
-			'use_stock_level',
-		);
 
 		if (isset($select_options)) {
 			foreach ($select_options as $field => $options) {
