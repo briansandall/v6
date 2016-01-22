@@ -96,9 +96,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		'header_labels'      => array(
 				'product_code' => array('label'=>$header_labels['product_code'], 'required'=>true),
 				'list_price'   => array('label'=>$header_labels['list_price'], 'required'=>true),
+				'cost_price'   => array('label'=>$header_labels['cost_price'], 'required'=>false),
 				'sale_price'   => array('label'=>$header_labels['sale_price'], 'required'=>true),
 				'manufacturer' => array('label'=>$header_labels['manufacturer'], 'required'=>false),
 			),
+		/** allow 'sale' prices to be greater than the list price */
+		'allow_upsell'          => isset($_POST['allow_upsell']),
 		/** sets status of products / matrix entries that have a price update to enabled */
 		'enable_updated'        => isset($_POST['enable_updated']),
 		/** true to update prices in the option matrix - only select if your database supports this! */
@@ -238,6 +241,12 @@ $directories = getDirectories(PATH, true);
 				<input type="text" id="header_list_price" name="header_labels[list_price]"<?php echo (empty($errors['header_labels']['list_price']) ? '' : ' class="error"'); ?> value="<?php echo (isset($header_labels['list_price']) ? htmlspecialchars($header_labels['list_price']) . '"' : 'List Price'); ?>" required="required" title="List price for the product" />
 				<?php echo (empty($errors['header_labels']['list_price']) ? '' : '<br><span class="error">' . $errors['header_labels']['list_price'] . '</span>'); ?>
 			</div><div class="fleft half">
+				<label for="header_cost_price" title="Price for which the product will actually be sold, i.e. the 'Sale Price' - should not be greater than the List Price"><strong>Sale Price Header Label</strong></label><br>
+				<input type="text" id="header_cost_price" name="header_labels[cost_price]"<?php echo (empty($errors['header_labels']['cost_price']) ? '' : ' class="error"'); ?> value="<?php echo (isset($header_labels['cost_price']) ? htmlspecialchars($header_labels['cost_price']) . '"' : 'Cost'); ?>" title="Price at which your company can procure the product" />
+				<?php echo (empty($errors['header_labels']['cost_price']) ? '' : '<br><span class="error">' . $errors['header_labels']['cost_price'] . '</span>'); ?>
+			</div><div class="clear"></div>
+			<br>
+			<div class="fleft half">
 				<label for="header_sale_price" title="Price for which the product will actually be sold, i.e. the 'Sale Price' - should not be greater than the List Price"><strong>Sale Price Header Label</strong></label><br>
 				<input type="text" id="header_sale_price" name="header_labels[sale_price]"<?php echo (empty($errors['header_labels']['sale_price']) ? '' : ' class="error"'); ?> value="<?php echo (isset($header_labels['sale_price']) ? htmlspecialchars($header_labels['sale_price']) . '"' : 'Price'); ?>" required="required" title="Price for which the product will actually be sold, i.e. the 'Sale Price' - should not be greater than the List Price" />
 				<?php echo (empty($errors['header_labels']['sale_price']) ? '' : '<br><span class="error">' . $errors['header_labels']['sale_price'] . '</span>'); ?>
@@ -245,7 +254,11 @@ $directories = getDirectories(PATH, true);
 			<p>Other Options</p>
 			<input type="checkbox" id="enable_updated" name="enable_updated"<?php echo (!empty($options['enable_updated']) ? ' checked="checked"' : ''); ?> />
 			<label for="enable_updated" class="fleft">Automatically enable products (and matrix entries, if applicable) whose prices are updated</label>
+			<div class="clear"></div><br>
+			<input type="checkbox" id="allow_upsell" name="allow_upsell"<?php echo (!empty($options['allow_upsell']) ? ' checked="checked"' : ''); ?> />
+			<label for="allow_upsell" class="fleft">Allow 'sale' prices to be greater than the list price*</label>
 			<div class="clear"></div>
+			<small>* If such is the case, the 'sale' price will be used as the list price, and the item will not be considered 'on sale'</small>
 			<h4>MATRIX OPTIONS</h4>
 			<?php echo (MATRIX_STATUS_ON ? '' : '<p>You must enable MATRIX_STATUS_ON in the script file in order to use any of the <strong>Matrix Options</strong>.</p>'); ?>
 			<?php echo (empty($errors['matrix_options']) ? '' : '<p><span class="error">ERROR: ' . $errors['matrix_options'] . '</span></p>'); ?>
@@ -545,21 +558,27 @@ function updatePrices($dbc, $filename, array $options = array()) {
 				$manufacturer = (empty($entry[$labels['manufacturer']['label']]) ? $options['manufacturer'] : $entry[$labels['manufacturer']['label']]);
 				$product_code = $entry[$labels['product_code']['label']];
 				$list_price = round_up($entry[$labels['list_price']['label']], 2);
+				$cost_price = (isset($entry[$labels['cost_price']['label']]) ? round_up($entry[$labels['cost_price']['label']], 2) : null);
 				$sale_price = round_up($entry[$labels['sale_price']['label']], 2);
+				if ($sale_price > $list_price && $options['allow_upsell']) {
+					$list_price = $sale_price;
+					$sale_price = null;
+				}
 				if ($select_only) {
 					if (!$stmts['select_product']->bind_param('ss', $product_code, $manufacturer) || !$stmts['select_product']->execute()) {
 						throw new \RuntimeException("Query failed for manufacturer $manufacturer and product code $product_code: {$stmts['select_product']->errno} - {$stmts['select_product']->error}");
 					} elseif (empty(fetch_assoc_stmt($stmts['select_product']))) {
 						$result['not_found'][$product_code] = "Product not found in database; Manufacturer: $manufacturer | Product Code: $product_code";
 					} else {
-						$result['updated'][] = "Product prices updated; Manufacturer: $manufacturer | Product Code: $product_code | List Price: \$" . sprintf('%.2f', $list_price) . " | Sale Price: \$" . sprintf('%.2f', $sale_price);
+						$result['updated'][] = "Product prices updated; Manufacturer: $manufacturer | Product Code: $product_code | List Price: \$" . sprintf('%.2f', $list_price) . " | Cost Price: \$" . sprintf('%.2f', $cost_price) . " | Sale Price: \$" . sprintf('%.2f', $sale_price);
 					}
 					if ($options['update_matrix']) {
 						if (!$stmts['select_matrix']->bind_param('ss', $product_code, $manufacturer) || !$stmts['select_matrix']->execute()) {
 							throw new \RuntimeException("Query failed for manufacturer $manufacturer and product code $product_code: {$stmts['select_matrix']->errno} - {$stmts['select_matrix']->error}");
 						} elseif (empty($product_id = fetch_assoc_stmt($stmts['select_matrix']))) {
-							$desc = (array_key_exists($product_code, $result['not_found']) ? 'Neither product nor matrix' : 'Matrix');
-							$result['not_found'][$product_code] = "$desc entry not found; Manufacturer: $manufacturer | Product Code: $product_code";
+							if (array_key_exists($product_code, $result['not_found'])) {
+								$result['not_found'][$product_code] = "Neither product nor matrix entry not found; Manufacturer: $manufacturer | Product Code: $product_code";
+							}
 						} else {
 							$result['updated'][] = "Matrix prices updated; Manufacturer: $manufacturer | Product Code: $product_code | List Price: \$" . sprintf('%.2f', $list_price) . " | Sale Price: \$" . sprintf('%.2f', $sale_price);
 							$updated[$product_id][] = $product_code;
@@ -570,19 +589,20 @@ function updatePrices($dbc, $filename, array $options = array()) {
 						}
 					}
 				} else {
-					if (!$stmts['update_product']->bind_param('ddss', $list_price, $sale_price, $product_code, $manufacturer) || !$stmts['update_product']->execute()) {
+					if (!$stmts['update_product']->bind_param('dddss', $list_price, $cost_price, $sale_price, $product_code, $manufacturer) || !$stmts['update_product']->execute()) {
 						throw new \RuntimeException("Query failed for manufacturer $manufacturer and product code $product_code: {$stmts['update_product']->errno} - {$stmts['update_product']->error}");
 					} elseif ($stmts['update_product']->affected_rows < 1) {
 						$result['not_found'][$product_code] = "Product not found; Manufacturer: $manufacturer | Product Code: $product_code";
 					} else {
-						$result['updated'][] = "Product prices updated; Manufacturer: $manufacturer | Product Code: $product_code | List Price: \$" . sprintf('%.2f', $list_price) . " | Sale Price: \$" . sprintf('%.2f', $sale_price);
+						$result['updated'][] = "Product prices updated; Manufacturer: $manufacturer | Product Code: $product_code | List Price: \$" . sprintf('%.2f', $list_price) . " | Cost Price: \$" . sprintf('%.2f', $cost_price) . " | Sale Price: \$" . sprintf('%.2f', $sale_price);
 					}
 					if ($options['update_matrix']) {
 						if (!$stmts['update_matrix']->bind_param('ddss', $list_price, $sale_price, $product_code, $manufacturer) || !$stmts['update_matrix']->execute()) {
 							throw new \RuntimeException("Query failed for manufacturer $manufacturer and product code $product_code: {$stmts['update_matrix']->errno} - {$stmts['update_matrix']->error}");
 						} elseif ($stmts['update_matrix']->affected_rows < 1) {
-							$desc = (array_key_exists($product_code, $result['not_found']) ? 'Neither product nor matrix' : 'Matrix');
-							$result['not_found'][$product_code] = "$desc entry not found; Manufacturer: $manufacturer | Product Code: $product_code";
+							if (array_key_exists($product_code, $result['not_found'])) {
+								$result['not_found'][$product_code] = "Neither product nor matrix entry not found; Manufacturer: $manufacturer | Product Code: $product_code";
+							}
 						} else {
 							if (!$stmts['select_matrix']->bind_param('ss', $product_code, $manufacturer) || !$stmts['select_matrix']->execute()) {
 								throw new \RuntimeException("Query to select product id from matrix table failed for manufacturer $manufacturer and product code $product_code: {$stmts['select_matrix']->errno} - {$stmts['select_matrix']->error}");
@@ -648,9 +668,9 @@ function updatePrices($dbc, $filename, array $options = array()) {
 					if (!$stmts['update_main_price']->bind_param('ddi', $price, $sale_price, $product_id) || !$stmts['update_main_price']->execute()) {
 						throw new \RuntimeException("Failed to update main prices for product $product_id: {$stmts['update_main_price']->errno} - {$stmts['update_main_price']->error}");
 					} elseif ($stmts['update_main_price']->affected_rows > 0) {
-						$result['updated'][] = "Main prices updated for product $product_id: List Price=\$$price, Sale Price=\$$sale_price";
+						$result['updated'][] = "Main prices for product id $product_id set to lowest found in matrix: List Price=\$$price, Sale Price=\$".($sale_price ? $sale_price : '0.00');
 					} else {
-						$result['warning'][] = "Failed to update prices to \$$price (sale: \$$sale_price) for product $product_id: prices may already be up-to-date";
+						$result['warning'][$product_id][] = "Failed to update prices to \$$price (sale: \$".($sale_price ? $sale_price : '0.00').") - prices may already be up-to-date";
 					}
 				}
 			}
@@ -736,8 +756,8 @@ function getPreparedStatements($dbc, array $options = array()) {
 		$stmts['select_product'] = $dbc->prepare($q);
 	} else {
 		// update prices for matching products
-		// params = 'ddss', price, sale price, product code, manufacturer
-		$q = "UPDATE `$prefix" . "_inventory` i JOIN `$prefix" . "_manufacturers` mf ON mf.id=i.manufacturer SET " . ($options['enable_updated'] ? ' i.status=1, ' : '') . "i.price=?, i.sale_price=?, i.updated=CURRENT_TIMESTAMP WHERE i.product_code=? AND mf.name=?";
+		// params = 'dddss', price, cost_price, sale price, product code, manufacturer
+		$q = "UPDATE `$prefix" . "_inventory` i JOIN `$prefix" . "_manufacturers` mf ON mf.id=i.manufacturer SET " . ($options['enable_updated'] ? ' i.status=1, ' : '') . "i.price=?, i.cost_price=COALESCE(?, i.cost_price), i.sale_price=?, i.updated=CURRENT_TIMESTAMP WHERE i.product_code=? AND mf.name=?";
 		$stmts['update_product'] = $dbc->prepare($q);
 		
 		// update prices for matching option matrix entries
