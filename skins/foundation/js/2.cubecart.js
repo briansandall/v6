@@ -435,20 +435,13 @@ function specification_inc_options() {
 						if (data[key]['CTRL_ALLOW_PURCHASE'] && !data[key]['CATALOGUE_MODE']) {
 							if (data['set_enabled'] == 1) {
 								$('#allow_purchase').show();
-								$('#combination_unavailable').hide();
 							} else {
 								$('#allow_purchase').hide();
-								$('#combination_unavailable').show();
 							}
 							$('#login_to_view').hide();
 							$('#out_of_stock').hide();
 						} else {
 							$('#allow_purchase').hide();
-							if (data['set_enabled'] == 1) {
-								$('#combination_unavailable').hide();
-							} else {
-								$('#combination_unavailable').show();
-							}
 							if (data['set_enabled'] == 1 && data[key]['CTRL_HIDE_PRICES']) {
 								$('#login_to_view').show();
 							} else {
@@ -478,9 +471,11 @@ function specification_inc_options() {
 						$('#fbp').hide();
 						$('#ptp').removeClass('sale_price');
 					}
+					$('#combination_unavailable').hide();
 				} else {
 					$('#fbp').hide();
 					$('#ptp').hide();
+					$('#combination_unavailable').show();
 				}
             }
         });
