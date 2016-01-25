@@ -277,7 +277,11 @@ class Catalogue {
 
 				// Show manfacturer
 				if (($manufacturer = $this->getManufacturer($product['manufacturer'])) !== false) {
-					$GLOBALS['smarty']->assign('MANUFACTURER', $manufacturer);
+					if (filter_var($manufacturer['URL'], FILTER_VALIDATE_URL)) {
+						$GLOBALS['smarty']->assign('MANUFACTURER', '<a href="'.$manufacturer['URL'].'" target="_blank">'.$manufacturer['name'].'</a>');
+					} else {
+						$GLOBALS['smarty']->assign('MANUFACTURER', $manufacturer['name']);
+					}
 				}
 
 				// Display gallery
@@ -763,15 +767,8 @@ class Catalogue {
 	 * @return array/false
 	 */
 	public function getManufacturer($manufacturer_id) {
-		if (($manufacturers = $GLOBALS['db']->select('CubeCart_manufacturers', array('name', 'URL'), array('id' => $manufacturer_id))) !== false) {
-			if (filter_var($manufacturers[0]['URL'], FILTER_VALIDATE_URL)) {
-				return '<a href="'.$manufacturers[0]['URL'].'" target="_blank">'.$manufacturers[0]['name'].'</a>';
-			} else {
-				return $manufacturers[0]['name'];
-			}
-		} else {
-			return false;
-		}
+		$manufacturer = $GLOBALS['db']->select('CubeCart_manufacturers', false, array('id' => $manufacturer_id));
+		return ($manufacturer ? $manufacturer[0] : false);
 	}
 
 	/**
