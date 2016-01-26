@@ -331,6 +331,11 @@
     <string name="imported_products" introduced="5.0.0"><![CDATA[Imported Products]]></string>
     <string name="is_digital" introduced="5.0.0"><![CDATA[Is Digital Download]]></string>
     <string name="latest_products" introduced="5.0.0"><![CDATA[Latest Products]]></string>
+    <string name="lead_time_estimate" introduced="6.0.10"><![CDATA[Estimated Lead Time]]></string>
+    <string name="lead_time_days_singular" introduced="6.0.10"><![CDATA[1 day]]></string>
+    <string name="lead_time_days" introduced="6.0.10"><![CDATA[%d days]]></string>
+    <string name="lead_time_weeks" introduced="6.0.10"><![CDATA[%d weeks]]></string>
+    <string name="lead_time_weeks_range" introduced="6.0.10"><![CDATA[%d to %d weeks]]></string>
     <string name="login_to_view" introduced="5.0.0"><![CDATA[Login to view price]]></string>
     <string name="manufacturer" introduced="5.0.0"><![CDATA[Manufacturer]]></string>
     <string name="master_caregory_id" introduced="5.0.0"><![CDATA[Category (ID or Name - Comma Separated)]]></string>
