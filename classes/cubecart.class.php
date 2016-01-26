@@ -90,7 +90,7 @@ class Cubecart {
 
 		$products = array();
 
-		$where = $GLOBALS['catalogue']->outOfStockWhere(array('status' => '1', 'featured' => '1'));
+		$where = $GLOBALS['catalogue']->outOfStockWhere(array('status' => '1', 'latest' => '1'));
 
 		if ($GLOBALS['config']->get('config', 'catalogue_latest_products')) {
 			$latestProducts = $GLOBALS['db']->select('CubeCart_inventory', false, $where, array('date_added' => 'DESC', 'product_id' => 'DESC'), (int)$GLOBALS['config']->get('config', 'catalogue_latest_products_count'));
@@ -1221,7 +1221,7 @@ class Cubecart {
 			}
 			$GLOBALS['smarty']->assign('REGISTER_CHECKED', (isset($this->_basket['register']) && $this->_basket['register']) ? 'checked="checked"' : '');
 			$GLOBALS['smarty']->assign('TERMS_CONDITIONS_CHECKED', (isset($this->_basket['terms_agree']) && $this->_basket['terms_agree']) ? 'checked="checked"' : '');
-			$GLOBALS['smarty']->assign('MAILING_LIST_SUBSCRIBE', (isset($this->_basket['terms_agree']) && $this->_basket['terms_agree']) ? 'checked="checked"' : '');
+			$GLOBALS['smarty']->assign('MAILING_LIST_SUBSCRIBE', (isset($this->_basket['mailing_list']) && $this->_basket['mailing_list']) ? 'checked="checked"' : '');
 		} else {
 			// Registered users - Display predefined addresses, if any exist
 			$this->_displayAddresses();
@@ -1427,13 +1427,14 @@ class Cubecart {
 		if ($contact && $contact['status']) {
 			$GLOBALS['gui']->addBreadcrumb($GLOBALS['language']->documents['document_contact'], currentPage());
 			if (isset($_POST['contact'])) {
+
+				$error = false;
+				$required = array('email', 'name', 'subject', 'enquiry');
 				
 				foreach ($GLOBALS['hooks']->load('class.cubecart.contact') as $hook) include $hook;
 				
 				$GLOBALS['smarty']->assign('MESSAGE', $_POST['contact']);
 				// Validation
-				$error = false;
-				$required = array('email', 'name', 'subject', 'enquiry');
 				foreach ($_POST['contact'] as $key => $value) {
 					if (in_array($key, $required) && empty($value)) {
 						$GLOBALS['gui']->setError($GLOBALS['language']->common['error_fields_required']);
@@ -1474,7 +1475,7 @@ class Cubecart {
 					if (isset($_POST['contact']['cc'])) {
 						$mailer->AddAddress($_POST['contact']['email'], strip_tags($_POST['contact']['name']));
 					}
-					$mailer->AddReplyTo($_POST['contact']['email'], strip_tags($_POST['contact']['name']));
+					$mailer->addReplyTo($_POST['contact']['email'], strip_tags($_POST['contact']['name']));
 					$mailer->Subject = strip_tags($_POST['contact']['subject']);
 					$mailer->Body  = sprintf($GLOBALS['language']->contact['email_content'], $_POST['contact']['name'], $_POST['contact']['email'], $department, strip_tags($_POST['contact']['enquiry']));
 					// Send
@@ -2511,8 +2512,8 @@ class Cubecart {
 				}
 			} else {
 				// Display a search page
-				$cart_oder_id = Order::validOrderId(trim($_GET['cart_order_id'])) ? trim($_GET['cart_order_id']) : '';
-				$GLOBALS['smarty']->assign('ORDER_NUMBER', $cart_oder_id);
+				$cart_order_id = Order::validOrderId(trim($_GET['cart_order_id'])) ? trim($_GET['cart_order_id']) : '';
+				$GLOBALS['smarty']->assign('ORDER_NUMBER', $cart_order_id);
 				$GLOBALS['gui']->addBreadcrumb($GLOBALS['language']->orders['search'], currentPage());
 			}
 		}

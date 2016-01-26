@@ -396,7 +396,8 @@ CREATE TABLE IF NOT EXISTS `CubeCart_inventory` (
   `product_width` decimal(10,3) DEFAULT NULL COMMENT 'Product Width',
   `tax_type` int(10) unsigned DEFAULT NULL COMMENT 'Tax Type',
   `tax_inclusive` tinyint(1) unsigned DEFAULT '0' COMMENT 'Price inclusive of tax',
-  `featured` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT 'Included on Homepage',
+  `featured` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Featured product',
+  `latest` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT 'Included on Homepage',
   `seo_meta_title` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'SEO Meta Title',
   `seo_meta_description` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'SEO Meta Description',
   `seo_meta_keywords` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'SEO Meta Keywords',
@@ -411,6 +412,7 @@ CREATE TABLE IF NOT EXISTS `CubeCart_inventory` (
   `date_added` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Date Added',
   `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Last Updated',
   `manufacturer` int(10) unsigned DEFAULT NULL COMMENT 'Manufacturer ID',
+  `lead_time` TINYINT UNSIGNED NULL DEFAULT NULL COMMENT 'Overrides manufacturer lead time',
   `condition` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Condition',
   `available` enum('0','1') COLLATE utf8_unicode_ci NOT NULL DEFAULT '1',
   `minimum_quantity` INT( 10) NOT NULL DEFAULT '0',
@@ -462,6 +464,7 @@ CREATE TABLE IF NOT EXISTS `CubeCart_manufacturers` (
 	`name` VARCHAR(200) NOT NULL,
 	`URL` VARCHAR(250) NULL,
 	`image` INT(10) UNSIGNED NULL,
+	`lead_time` TINYINT UNSIGNED NOT NULL DEFAULT 14 COMMENT 'Lead time when out of stock, in days',
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci; #EOQ 
 

@@ -160,7 +160,7 @@ $default_config_settings = array(
   'standard_url' => preg_replace(array('#^https#i','#/setup$#'),array('http',''), CC_STORE_URL),
   'cookie_domain' => $cookie_domain,
   'show_basket_weight' => '1',
-  'stock_change_time' => '2',
+  'stock_change_time' => '1',
   'stock_level' => '0',
   'offline' => '0',
   'offline_content' => '<div style="font-family: georgia,serif; text-align: center;"><p style="font-size: 18px;">Store is currently offline.</p><p style="font-size: 14px;">Please visit again soon.</p></div>',
@@ -500,7 +500,7 @@ if (!isset($_SESSION['setup']) || is_null($_SESSION['setup'])) {
     /* Truncate CubeCart_system_error_log table. There are a number of failed SQL queries on upgrade depending
      * on to/from version. We need a clean slate to detect operational errors.
      */
-    $db->misc('TRUNCATE TABLE `' . $glob['dbprefix'] . 'CubeCart_system_error_log`');
+    $db->truncate('CubeCart_system_error_log');
   }
 }
 

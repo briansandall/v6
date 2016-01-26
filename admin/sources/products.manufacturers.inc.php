@@ -63,7 +63,7 @@ foreach ($GLOBALS['hooks']->load('admin.product.manufacturer.pre_display') as $h
 if (isset($_GET['edit']) && is_numeric($_GET['edit'])) {
 	$GLOBALS['main']->addTabControl($lang['catalogue']['title_manufacturer'], false, currentPage(array('edit')));
 	$GLOBALS['main']->addTabControl($lang['catalogue']['title_manufacturer_edit'], 'manu_edit');
-	if (($manufacturers = $GLOBALS['db']->select('CubeCart_manufacturers', array('name', 'id', 'URL'), array('id' => (int)$_GET['edit']))) !== false) {
+	if (($manufacturers = $GLOBALS['db']->select('CubeCart_manufacturers', false, array('id' => (int)$_GET['edit']))) !== false) {
 		$GLOBALS['smarty']->assign('EDIT', $manufacturers[0]);
 	} else {
 		$GLOBALS['main']->setACPWarning($lang['catalogue']['error_manufacturer_found']);
@@ -77,14 +77,14 @@ if (isset($_GET['edit']) && is_numeric($_GET['edit'])) {
 	$catalogue = Catalogue::getInstance();
 	$page  = (isset($_GET['page'])) ? $_GET['page'] : 1;
 	$per_page = 10;
-	if (($manufacturers = $GLOBALS['db']->select('CubeCart_manufacturers', array('id', 'image'), false, 'name', $per_page, $page)) !== false) {
+	if (($manufacturers = $GLOBALS['db']->select('CubeCart_manufacturers', false, false, 'name', $per_page, $page)) !== false) {
 		$GLOBALS['smarty']->assign('PAGINATION', $GLOBALS['db']->pagination(false, $per_page, $page));
-		foreach ($manufacturers as $manufacturer) {
-			$manufacturer['name'] = $catalogue->getManufacturer($manufacturer['id']);
-			$smarty_data['manufacturers'][] = $manufacturer;
+		foreach ($manufacturers as $i => $manufacturer) {
+			if (filter_var($manufacturer['URL'], FILTER_VALIDATE_URL)) {
+				$manufacturers[$i]['name'] = '<a href="'.$manufacturer['URL'].'" target="_blank">'.$manufacturer['name'].'</a>';
+			}
 		}
-		$GLOBALS['smarty']->assign('MANUFACTURERS', $smarty_data['manufacturers']);
-
+		$GLOBALS['smarty']->assign('MANUFACTURERS', $manufacturers);
 	}
 	$GLOBALS['smarty']->assign('DISPLAY_LIST', true);
 }

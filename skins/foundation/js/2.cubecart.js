@@ -99,18 +99,23 @@ jQuery(document).ready(function() {
                 $(target).replaceWith($(select).attr({
                     'name': $(target).attr('name'),
                     'id': $(target).attr('id'),
-                    'class': $(target).attr('class')
+                    'class': $(target).attr('class'),
+                    'required': $(target).attr('required')
                 }));
                 if ($(this).attr('title')) {
                     var option = document.createElement('option');
-                    $('select' + target).append($(option).val('0').text($(this).attr('title')));
+                    $('select' + target).append($(option).text($(this).attr('title')));
                 }
                 for (i in counties) {
                     var option = document.createElement('option');
                     if (setting == counties[i].name || setting == counties[i].id) {
                         $('select' + target).append($(option).val(counties[i].id).text(counties[i].name).attr('selected', 'selected'));
                     } else {
-                        $('select' + target).append($(option).val(counties[i].id).text(counties[i].name));
+                        if(counties[i].id>0) {
+                            $('select' + target).append($(option).val(counties[i].id).text(counties[i].name));
+                        } else {
+                            $('select' + target).append($(option).val('').text(counties[i].name));   
+                        }
                     }
                 }
             } else {
@@ -129,17 +134,24 @@ jQuery(document).ready(function() {
                 $(target).replaceWith($(select).attr({
                     'name': $(target).attr('name'),
                     'id': $(target).attr('id'),
-                    'class': $(target).attr('class')
+                    'class': $(target).attr('class'),
+                    'required': $(target).attr('required')
                 }));
                 if ($(this).attr('title')) {
                     var option = document.createElement('option');
-                    $('select' + target).append($(option).val('0').text($(this).attr('title')));
+                    $('select' + target).append($(option).text($(this).attr('title')));
                 }
                 for (var i = 0; i < list.length; i++) {
                     var option = document.createElement('option');
-                    $('select' + target).append($(option).val(list[i].id).text(list[i].name));
+                    if(list[i].id > 0) {
+                        $('select' + target).append($(option).val(list[i].id).text(list[i].name));
+                    } else {
+                        $('select' + target).append($(option).val('').text(list[i].name));  
+                    } 
                 }
-                $('select' + target + ' > option[value=' + setting + ']').attr('selected', 'selected');
+                if(setting>0) {
+                    $('select' + target + ' > option[value=' + setting + ']').attr('selected', 'selected');
+                }
             } else {
                 var input = document.createElement('input');
                 var placeholder = $('label[for="' + $(this).attr('rel') + '"]').text() + ' ' + $('#validate_required').text();
@@ -148,7 +160,8 @@ jQuery(document).ready(function() {
                     'placeholder': placeholder,
                     'id': $(target).attr('id'),
                     'name': $(target).attr('name'),
-                    'class': $(target).attr('class')
+                    'class': $(target).attr('class'),
+                    'required': $(target).attr('required')
                 });
                 if ($(this).hasClass('no-custom-zone')) $(replacement).attr('disabled', 'disabled').val($(this).attr('title'));
                 $(target).replaceWith($(replacement));
@@ -422,21 +435,16 @@ function specification_inc_options() {
 						if (data[key]['CTRL_ALLOW_PURCHASE'] && !data[key]['CATALOGUE_MODE']) {
 							if (data['set_enabled'] == 1) {
 								$('#allow_purchase').show();
-								$('#combination_unavailable').hide();
+								$('#lead_time').show();
 							} else {
 								$('#allow_purchase').hide();
-								$('#combination_unavailable').show();
+								$('#lead_time').hide();
 							}
 							$('#login_to_view').hide();
 							$('#out_of_stock').hide();
 						} else {
-							if (data['set_enabled'] == 1) {
-								$('#allow_purchase').show();
-								$('#combination_unavailable').hide();
-							} else {
-								$('#allow_purchase').hide();
-								$('#combination_unavailable').show();
-							}
+							$('#allow_purchase').hide();
+							$('#lead_time').hide();
 							if (data['set_enabled'] == 1 && data[key]['CTRL_HIDE_PRICES']) {
 								$('#login_to_view').show();
 							} else {
@@ -466,9 +474,11 @@ function specification_inc_options() {
 						$('#fbp').hide();
 						$('#ptp').removeClass('sale_price');
 					}
+					$('#combination_unavailable').hide();
 				} else {
 					$('#fbp').hide();
 					$('#ptp').hide();
+					$('#combination_unavailable').show();
 				}
             }
         });

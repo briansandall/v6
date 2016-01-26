@@ -171,7 +171,8 @@
          <div><label for="product_length">{$LANG.catalogue.product_length}</label><span><input name="product_length" id="product_length" class="textbox number" type="text" value="{$PRODUCT.product_length}"></span></div>
          <div><label for="product_height">{$LANG.catalogue.product_height}</label><span><input name="product_height" id="product_height" class="textbox number" type="text" value="{$PRODUCT.product_height}"></span></div>
          <div><label for="product_width">{$LANG.catalogue.product_width}</label><span><input name="product_width" id="product_width" class="textbox number" type="text" value="{$PRODUCT.product_width}"></span></div>
-         <div><label for="product_featured">{$LANG.catalogue.product_latest}</label><span><input type="hidden" name="featured" id="product_featured" class="toggle" value="{$PRODUCT.featured}"></span></div>
+         <div><label for="product_featured">{$LANG.catalogue.product_featured}</label><span><input type="hidden" name="featured" id="product_featured" class="toggle" value="{$PRODUCT.featured}"></span></div>
+         <div><label for="product_latest">{$LANG.catalogue.product_latest}</label><span><input type="hidden" name="latest" id="product_latest" class="toggle" value="{$PRODUCT.latest}"></span></div>
          <div><label for="available">{$LANG.catalogue.available_for_purchase}</label><span><input type="hidden" name="available" id="available" class="toggle" value="{if isset($PRODUCT.available)}{$PRODUCT.available}{else}1{/if}"></span></div>
       </fieldset>
       <fieldset>
@@ -179,6 +180,7 @@
          <div><label for="use_stock_level">{$LANG.catalogue.stock_level_use}</label><span><input type="hidden" name="use_stock_level" id="use_stock_level" class="toggle" value="{$PRODUCT.use_stock_level}"></span></div>
          <div><label for="stock_level">{$LANG.catalogue.stock_level}</label><span><input name="stock_level" id="stock_level" class="textbox number" type="text" value="{$PRODUCT.stock_level}"></span>{if isset($DISPLAY_MATRIX_STOCK_NOTE)}&nbsp;{$LANG.catalogue.matrix_stock_level}{/if}</div>
          <div><label for="stock_warning">{$LANG.catalogue.stock_level_warn}</label><span><input name="stock_warning" id="stock_warning" class="textbox number" type="text" value="{$PRODUCT.stock_warning}"></span></div>
+		 <div><label for="lead_time">{$LANG.catalogue.lead_time_estimate}</label><span><input name="lead_time" id="lead_time" class="textbox number" type="text" value="{$PRODUCT.lead_time}"></span></div>
       </fieldset>
       <fieldset>
          <legend>{$LANG.catalogue.title_misc}</legend>

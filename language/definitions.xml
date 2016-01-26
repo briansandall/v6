@@ -209,7 +209,7 @@
     <string name="basket_zero_items" introduced="5.0.0"><![CDATA[Your basket has (0) items.]]></string>
     <string name="cancel_order" introduced="5.0.0"><![CDATA[Cancel Order]]></string>
     <string name="complete_payment" introduced="5.0.0"><![CDATA[Complete Payment]]></string>
-    <string name="coupon_add" introduced="5.0.0"><![CDATA[Gift Certificate or Coupon]]></string>
+    <string name="coupon_add" introduced="5.0.0"><![CDATA[Gift Certificate/Coupon]]></string>
     <string name="customer_info" introduced="5.0.0"><![CDATA[Customer Information]]></string>
     <string name="order_date" introduced="5.0.0"><![CDATA[Order Date]]></string>
     <string name="order_number" introduced="5.0.0"><![CDATA[Order Number]]></string>
@@ -331,6 +331,11 @@
     <string name="imported_products" introduced="5.0.0"><![CDATA[Imported Products]]></string>
     <string name="is_digital" introduced="5.0.0"><![CDATA[Is Digital Download]]></string>
     <string name="latest_products" introduced="5.0.0"><![CDATA[Latest Products]]></string>
+    <string name="lead_time_estimate" introduced="6.0.10"><![CDATA[Estimated Lead Time]]></string>
+    <string name="lead_time_days_singular" introduced="6.0.10"><![CDATA[1 day]]></string>
+    <string name="lead_time_days" introduced="6.0.10"><![CDATA[%d days]]></string>
+    <string name="lead_time_weeks" introduced="6.0.10"><![CDATA[%d weeks]]></string>
+    <string name="lead_time_weeks_range" introduced="6.0.10"><![CDATA[%d to %d weeks]]></string>
     <string name="login_to_view" introduced="5.0.0"><![CDATA[Login to view price]]></string>
     <string name="manufacturer" introduced="5.0.0"><![CDATA[Manufacturer]]></string>
     <string name="master_caregory_id" introduced="5.0.0"><![CDATA[Category (ID or Name - Comma Separated)]]></string>
@@ -403,6 +408,7 @@
     <string name="product_details" introduced="5.0.0"><![CDATA[Product Details]]></string>
     <string name="product_description" introduced="5.0.0"><![CDATA[Product Description]]></string>
     <string name="product_doesnt_exist" introduced="5.0.0"><![CDATA[That product couldn't be found.]]></string>
+    <string name="product_featured" introduced="6.0.10"><![CDATA[Include in featured products]]></string>
     <string name="product_id" introduced="5.0.0"><![CDATA[Product Id]]></string>
     <string name="product_info" introduced="5.0.0"><![CDATA[Product Information]]></string>
     <string name="product_latest" introduced="5.0.0"><![CDATA[Include in latest products]]></string>
@@ -1326,7 +1332,7 @@
     <string name="notify_sitemap_fail" introduced="5.0.0"><![CDATA[Failed to rebuild sitemap.]]></string>
     <string name="no_query_entered" introduced="5.0.0"><![CDATA[No query entered]]></string>
     <string name="expert_use_only" introduced="5.0.0"><![CDATA[WARNING: Only use this tool if you are confident you know what you are doing!]]></string>
-    <string name="sql_delimiter" introduced="6.0.7"><![CDATA[Seperate MySQL queries with delimiter <span class="courier">; #EOQ</span> at the end of each line.]]></string>
+    <string name="sql_delimiter" introduced="6.0.7"><![CDATA[Separate MySQL queries with delimiter <span class="courier">; #EOQ</span> at the end of each line.]]></string>
     <string name="reset_views" introduced="5.0.0"><![CDATA[Reset all product view counts]]></string>
     <string name="sitemap" introduced="5.0.0"><![CDATA[Rebuild Sitemap]]></string>
     <string name="tab_backup" introduced="5.0.0"><![CDATA[Backup]]></string>
@@ -1358,6 +1364,7 @@
     <string name="query_box" introduced="5.0.0"><![CDATA[Query Box]]></string>
   </group>
   <group name="module">
+    <string name="package_fail" introduced="6.0.9"><![CDATA[Error: Failed to obtain package information. Please install via FTP.]]></string>
     <string name="plugin_still_exists" introduced="6.0.0"><![CDATA[Plugin still exists. Please delete manually via FTP or hosting filemanager.]]></string>
     <string name="plugin_deleted_successfully" introduced="6.0.0"><![CDATA[Plugin deleted succesfully.]]></string>
     <string name="plugin_deleted_already" introduced="6.0.0"><![CDATA[Plugin not found. Maybe it was deleted already.]]></string>
@@ -1674,6 +1681,9 @@
     <string name="title_search_products" introduced="5.0.0"><![CDATA[Search Products]]></string>
   </group>
   <group name="settings">
+    <string name="assign_all_products" introduced="6.0.9"><![CDATA[Assign to all products]]></string>
+    <string name="notify_tax_class_assigned" introduced="6.0.9"><![CDATA[Tax classes have been assigned to %s products.]]></string>
+    <string name="notify_tax_class_not_assigned" introduced="6.0.9"><![CDATA[No products have been updated.]]></string>
     <string name="disable_estimates" introduced="6.0.9"><![CDATA[Disable initial shipping &amp; tax estimates]]></string>
     <string name="social_accounts" introduced="6.0.0"><![CDATA[Social Account (Username or URL)]]></string>
     <string name="seo_add_cats" introduced="6.0.0"><![CDATA[Add category to product URL path?]]></string>

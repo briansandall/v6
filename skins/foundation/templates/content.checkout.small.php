@@ -9,7 +9,7 @@
          <div class="small-3 columns">
             <a href="{$item.link}" class="th" title="{$item.name}"><img src="{$item.image}" alt="{$item.name}" width="50"></a>
          </div>
-         <div class="small-5 columns">
+         <div class="small-7 columns text-right">
             <a href="{$item.link}"><strong>{$item.name}</strong></a>
             {if $item.options}
             <ul class="no-bullet">
@@ -19,28 +19,22 @@
                {/foreach}
             </ul>
             {/if}
-         </div>
-         <div class="small-3 columns">
-         {$item.line_price_display}
+            <br>
+            {$item.line_price_display}
          </div>
       </div>
       <hr>
       <div class="row">
-         <div class="small-2 columns">
+         <div class="small-6 columns">
             {$LANG.common.quantity_abbreviated}
-         </div>
-         <div class="small-4 columns">
             <a href="#" class="quan subtract" rel="{$hash}"><i class="fa fa-minus-circle"></i></a>
             <span class="disp_quan_{$hash}">{$item.quantity}</span>
             <input name="quan[{$hash}]" class="field_small_only" type="hidden" value="{$item.quantity}">
             <span id="original_val_{$hash}" class="hide">{$item.quantity}</span>
             <a href="#" class="quan add" rel="{$hash}"><i class="fa fa-plus-circle"></i></a>
          </div>
-         <div class="small-3 columns">
-            {$LANG.basket.total}
-         </div>
-         <div class="small-3 columns">
-            {$item.price_display}
+         <div class="small-6 columns text-right">
+            <span class="hide">{$LANG.basket.total}</span>{$item.price_display}
          </div>
       </div>
       <div class="row hide" id="quick_update_{$hash}">

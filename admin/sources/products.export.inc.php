@@ -41,15 +41,15 @@ foreach ($GLOBALS['hooks']->load('admin.product.export') as $hook) include $hook
 
 if (isset($_GET['format']) && !empty($_GET['format'])) {
 	if ($_GET['format'] == 'cubecart') {
-		$query = sprintf('SELECT I.* FROM %1$sCubeCart_inventory AS I INNER JOIN %1$sCubeCart_category_index AS R ON I.product_id = R.product_id LEFT JOIN %1$sCubeCart_category AS C ON R.cat_id = C.cat_id WHERE R.primary = 1 AND I.status = 1', $GLOBALS['config']->get('config', 'dbprefix'));
+		$query = sprintf('SELECT I.* FROM %1$sCubeCart_inventory AS I INNER JOIN %1$sCubeCart_category_index AS R ON I.product_id = R.product_id LEFT JOIN %1$sCubeCart_category AS C ON R.cat_id = C.cat_id WHERE R.primary = 1 AND I.status = 1 AND C.status =1', $GLOBALS['config']->get('config', 'dbprefix'));
 	} else {
-		$query = sprintf('SELECT I.* FROM %1$sCubeCart_inventory AS I LEFT JOIN %1$sCubeCart_category AS C ON I.cat_id = C.cat_id WHERE I.status = 1', $GLOBALS['config']->get('config', 'dbprefix'));
+		$query = sprintf('SELECT I.* FROM %1$sCubeCart_inventory AS I LEFT JOIN %1$sCubeCart_category AS C ON I.cat_id = C.cat_id WHERE I.status = 1 AND C.status = 1', $GLOBALS['config']->get('config', 'dbprefix'));
 	}
 
 	if ($results = $GLOBALS['db']->query($query, $per_page, $page)) {
 		
-		$header_fields = array('Product Name', 'Status', 'Include in latest products', 'Product Code', 'Weight', 'Description', 'Short Description', 'Price', 'Sale Price', 'Cost Price', 'Tax Class', 'Tax Inclusive', 'Main Image', 'Stock Level', 'Use Stock Level', 'Stock Level Warning', 'Master Category ID', 'Manufacturer', 'UPC Code', 'EAN Code', 'JAN Code', 'ISBN Code', 'Brand', 'MPN Code', 'GTIN Code', 'Meta Title', 'Meta Keywords', 'Meta Description', 'Condition');
-		$fields  = array('name', 'status', 'featured', 'product_code', 'product_weight', 'description', 'description_short', 'price', 'sale_price', 'cost_price', 'tax_type', 'tax_inclusive', 'image', 'stock_level', 'use_stock_level', 'stock_warning', 'cat_id', 'manufacturer', 'upc', 'ean', 'jan', 'isbn', 'brand', 'mpn', 'gtin', 'seo_meta_title', 'seo_meta_description', 'seo_meta_keywords', 'condition');
+		$header_fields = array('Product Name', 'Status', 'Include in featured products', 'Include in latest products', 'Product Code', 'Weight', 'Description', 'Short Description', 'Price', 'Sale Price', 'Cost Price', 'Tax Class', 'Tax Inclusive', 'Main Image', 'Stock Level', 'Use Stock Level', 'Stock Level Warning', 'Master Category ID', 'Manufacturer', 'UPC Code', 'EAN Code', 'JAN Code', 'ISBN Code', 'Brand', 'MPN Code', 'GTIN Code', 'Meta Title', 'Meta Keywords', 'Meta Description', 'Condition');
+		$fields  = array('name', 'status', 'featured', 'latest', 'product_code', 'product_weight', 'description', 'description_short', 'price', 'sale_price', 'cost_price', 'tax_type', 'tax_inclusive', 'image', 'stock_level', 'use_stock_level', 'stock_warning', 'cat_id', 'manufacturer', 'upc', 'ean', 'jan', 'isbn', 'brand', 'mpn', 'gtin', 'seo_meta_title', 'seo_meta_description', 'seo_meta_keywords', 'condition');
 		$delimiter = ',';
 		$extension = 'csv';
 		$glue  = "\n";
