@@ -43,6 +43,7 @@
 	<fieldset><legend>{$LANG.catalogue.title_manufacturer_add}</legend>
 		<div><label for="manu_name">{$LANG.catalogue.manufacturer}</label><span><input type="text" class="textbox required" id="manu_name" name="manufacturer[name]" value="{$EDIT.name}"></span></div>
 		<div><label for="manu_site">{$LANG.common.url}</label><span><input type="text" class="textbox" id="manu_site" name="manufacturer[URL]" value="{$EDIT.URL}"></span></div>
+		<div><label for="manu_lead_time">{$LANG.catalogue.lead_time_estimate}</label><span><input id="manu_lead_time" name="manufacturer[lead_time]" class="textbox number required" type="text" value="{$EDIT.lead_time}"></span></div>
 	</fieldset>
 	
 	{include file='templates/element.hook_form_content.php'}
@@ -61,6 +62,7 @@
 	<fieldset><legend>{$LANG.catalogue.title_manufacturer_edit}</legend>
 		<div><label for="manu_name">{$LANG.catalogue.manufacturer}</label><span><input type="text" class="textbox required" id="manu_name" name="manufacturer[name]" value="{$EDIT.name}"></span></div>
 		<div><label for="manu_site">{$LANG.common.url}</label><span><input type="text" class="textbox" id="manu_site" name="manufacturer[URL]" value="{$EDIT.URL}"></span></div>
+		<div><label for="manu_lead_time">{$LANG.catalogue.lead_time_estimate}</label><span><input id="manu_lead_time" name="manufacturer[lead_time]" class="textbox number required" type="text" value="{$EDIT.lead_time}"></span></div>
 	</fieldset>
 	<div class="form_control">
 	<input type="hidden" name="previous-tab" id="previous-tab" value="">

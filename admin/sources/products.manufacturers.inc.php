@@ -63,7 +63,7 @@ foreach ($GLOBALS['hooks']->load('admin.product.manufacturer.pre_display') as $h
 if (isset($_GET['edit']) && is_numeric($_GET['edit'])) {
 	$GLOBALS['main']->addTabControl($lang['catalogue']['title_manufacturer'], false, currentPage(array('edit')));
 	$GLOBALS['main']->addTabControl($lang['catalogue']['title_manufacturer_edit'], 'manu_edit');
-	if (($manufacturers = $GLOBALS['db']->select('CubeCart_manufacturers', array('name', 'id', 'URL'), array('id' => (int)$_GET['edit']))) !== false) {
+	if (($manufacturers = $GLOBALS['db']->select('CubeCart_manufacturers', false, array('id' => (int)$_GET['edit']))) !== false) {
 		$GLOBALS['smarty']->assign('EDIT', $manufacturers[0]);
 	} else {
 		$GLOBALS['main']->setACPWarning($lang['catalogue']['error_manufacturer_found']);

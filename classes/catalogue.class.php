@@ -282,6 +282,10 @@ class Catalogue {
 					} else {
 						$GLOBALS['smarty']->assign('MANUFACTURER', $manufacturer['name']);
 					}
+					// Only use manufacturer lead time if product does not already specify one
+					if (empty($product['lead_time'])) {
+						$product['lead_time'] = $manufacturer['lead_time'];
+					}
 				}
 
 				// Display gallery
@@ -310,6 +314,11 @@ class Catalogue {
 				if ($GLOBALS['session']->get('hide_prices')) {
 					$allow_purchase = false;
 					$hide = true;
+				}
+
+				// Format product lead time, if any
+				if (!empty($product['lead_time']) && ($out || !((bool)$product['use_stock_level']))) {
+					$product['lead_time'] = $this->_getFormattedLeadTime($product['lead_time']);
 				}
 
 				$GLOBALS['smarty']->assign('CTRL_ALLOW_PURCHASE', $allow_purchase);
@@ -1745,5 +1754,24 @@ class Catalogue {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Returns a product's lead time in a more human-readable format, e.g. 2 weeks
+	 *
+	 * @param int $lead_time Represented in days
+	 * @return string
+	 */
+	private function _getFormattedLeadTime($lead_time) {
+		if ($lead_time < 14) {
+			return ($lead_time == 1)
+				? $GLOBALS['language']->catalogue['lead_time_days_singular']
+				: sprintf($GLOBALS['language']->catalogue['lead_time_days'], $lead_time);
+		}
+		$weeks = $lead_time / 7;
+		if (($lead_time % 7) > 0) {
+			return sprintf($GLOBALS['language']->catalogue['lead_time_weeks_range'], $weeks, $weeks + 1);
+		}
+		return sprintf($GLOBALS['language']->catalogue['lead_time_weeks'], $weeks);
 	}
 }
