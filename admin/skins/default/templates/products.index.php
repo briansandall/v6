@@ -180,7 +180,8 @@
          <div><label for="use_stock_level">{$LANG.catalogue.stock_level_use}</label><span><input type="hidden" name="use_stock_level" id="use_stock_level" class="toggle" value="{$PRODUCT.use_stock_level}"></span></div>
          <div><label for="stock_level">{$LANG.catalogue.stock_level}</label><span><input name="stock_level" id="stock_level" class="textbox number" type="text" value="{$PRODUCT.stock_level}"></span>{if isset($DISPLAY_MATRIX_STOCK_NOTE)}&nbsp;{$LANG.catalogue.matrix_stock_level}{/if}</div>
          <div><label for="stock_warning">{$LANG.catalogue.stock_level_warn}</label><span><input name="stock_warning" id="stock_warning" class="textbox number" type="text" value="{$PRODUCT.stock_warning}"></span></div>
-		 <div><label for="lead_time">{$LANG.catalogue.lead_time_estimate}</label><span><input name="lead_time" id="lead_time" class="textbox number" type="text" value="{$PRODUCT.lead_time}"></span></div>
+		 <div><label for="lead_time_min">{$LANG.catalogue.lead_time_min_estimate}</label><span><input name="lead_time_min" id="lead_time_min" class="textbox number" type="text" value="{$PRODUCT.lead_time_min}"></span></div>
+		 <div><label for="lead_time_max">{$LANG.catalogue.lead_time_max_estimate}</label><span><input name="lead_time_max" id="lead_time_max" class="textbox number" type="text" value="{$PRODUCT.lead_time_max}"></span></div>
       </fieldset>
       <fieldset>
          <legend>{$LANG.catalogue.title_misc}</legend>

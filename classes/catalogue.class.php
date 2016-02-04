@@ -282,9 +282,11 @@ class Catalogue {
 					} else {
 						$GLOBALS['smarty']->assign('MANUFACTURER', $manufacturer['name']);
 					}
-					// Only use manufacturer lead time if product does not already specify one
-					if (empty($product['lead_time'])) {
-						$product['lead_time'] = $manufacturer['lead_time'];
+					// Only use manufacturer lead times if product does not already specify one
+					foreach (array('lead_time_min', 'lead_time_max') as $key) {
+						if (empty($product[$key])) {
+							$product[$key] = $manufacturer[$key];
+						}
 					}
 				}
 
@@ -317,8 +319,8 @@ class Catalogue {
 				}
 
 				// Format product lead time, if any
-				if (!empty($product['lead_time']) && ($out || !((bool)$product['use_stock_level']))) {
-					$product['lead_time'] = $this->_getFormattedLeadTime($product['lead_time']);
+				if ($out || !((bool)$product['use_stock_level'])) {
+					$product['lead_time'] = $this->_getFormattedLeadTime($product);
 				}
 
 				$GLOBALS['smarty']->assign('CTRL_ALLOW_PURCHASE', $allow_purchase);
@@ -1759,19 +1761,35 @@ class Catalogue {
 	/**
 	 * Returns a product's lead time in a more human-readable format, e.g. 2 weeks
 	 *
-	 * @param int $lead_time Represented in days
-	 * @return string
+	 * @param array $product The product array
+	 * @return string representation of the lead time or null
 	 */
-	private function _getFormattedLeadTime($lead_time) {
-		if ($lead_time < 14) {
-			return ($lead_time == 1)
-				? $GLOBALS['language']->catalogue['lead_time_days_singular']
-				: sprintf($GLOBALS['language']->catalogue['lead_time_days'], $lead_time);
+	private function _getFormattedLeadTime(array $product) {
+		$min = (empty($product['lead_time_min']) ? 0 : (int)$product['lead_time_min']);
+		$max = (empty($product['lead_time_max']) ? 0 : (int)$product['lead_time_max']);
+		if ($min < 1 && $max < 1) {
+			return null;
+		} elseif ($min > $max) { // swap $min and $max so $max is largest value
+			$tmp = $min;
+			$min = $max;
+			$max = $tmp;
 		}
-		$weeks = $lead_time / 7;
-		if (($lead_time % 7) > 0) {
-			return sprintf($GLOBALS['language']->catalogue['lead_time_weeks_range'], $weeks, $weeks + 1);
+		// Display in days if max is less than 2 weeks or the min cannot be expressed in weeks
+		if ($max < 14 || ($min < 14 && $max < 21 && $min !== 7)) {
+			if ($max === $min) {
+				return ($max === 1)
+					? $GLOBALS['language']->catalogue['lead_time_days_singular']
+					: sprintf($GLOBALS['language']->catalogue['lead_time_days'], $max);
+			}
+			return sprintf($GLOBALS['language']->catalogue['lead_time_days_range'], $min, $max);
 		}
-		return sprintf($GLOBALS['language']->catalogue['lead_time_weeks'], $weeks);
+		$weeks_min = (int)(($min + 3) / 7); // 2w3d estimated as 2w, 2w4d estimated as 3w
+		$weeks_max = (int)(($max + 6) / 7); // always round up the max estimate
+		if ($weeks_max >= 8) {
+			return sprintf($GLOBALS['language']->catalogue['lead_time_months'], (($weeks_max + 1) / 4));
+		} elseif ($weeks_min === $weeks_max) {
+			return sprintf($GLOBALS['language']->catalogue['lead_time_weeks'], $weeks_min);
+		}
+		return sprintf($GLOBALS['language']->catalogue['lead_time_weeks_range'], $weeks_min, $weeks_max);
 	}
 }
