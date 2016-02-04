@@ -204,7 +204,7 @@ class Cubecart {
 		if (($manufacturers = $GLOBALS['db']->misc($query, false)) !== false) {
 			foreach ($manufacturers as $key => $manufacturer) {
 				// make some assumptions about logo filename and location since CC_manufacturers.image is not implemented
-				$manufacturers[$key]['image'] = strtolower($manufacturer['name']).'.jpg';
+				$manufacturers[$key]['image'] = preg_replace('/\s+/', '_', strtolower($manufacturer['name'])).'.jpg';
 			}
 			$GLOBALS['smarty']->assign('MANUFACTURERS', $manufacturers);
 		}
