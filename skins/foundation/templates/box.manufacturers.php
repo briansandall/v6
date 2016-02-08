@@ -13,7 +13,7 @@
 <div class="panel" id="box-manufacturers">
   <h3>{$LANG.catalogue.title_browse_brands}</h3>
   {foreach from=$MANUFACTURERS item=manufacturer}
-    <a class="clickable-image" href="{$STORE_URL}/search.html?search[keywords]={$manufacturer.name}&_a=category" title="{$manufacturer.name}">
+    <a class="clickable-image" href="{$STORE_URL}/search.html?_a=category&search[keywords]={$manufacturer.name}&search[manufacturer][0]={$manufacturer.id}" title="{$manufacturer.name}">
       <img class="clickable-image" title="View all {$manufacturer.name} products" src="{$STORE_URL}/images/logos/manufacturers/{$manufacturer.image}" alt="{$manufacturer.name}" height="30" width="120"></img>
     </a><br>
   {/foreach}
