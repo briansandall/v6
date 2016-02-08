@@ -1783,13 +1783,15 @@ class Catalogue {
 			}
 			return sprintf($GLOBALS['language']->catalogue['lead_time_days_range'], $min, $max);
 		}
+		// Show note for 'long' lead times
+		$note = ($min < 15 && $max < 22) ? '' : '<br>'.$GLOBALS['language']->catalogue['lead_time_note'];
 		$weeks_min = (int)(($min + 3) / 7); // 2w3d estimated as 2w, 2w4d estimated as 3w
 		$weeks_max = (int)(($max + 6) / 7); // always round up the max estimate
 		if ($weeks_max >= 8) {
-			return sprintf($GLOBALS['language']->catalogue['lead_time_months'], (($weeks_max + 1) / 4));
+			return sprintf($GLOBALS['language']->catalogue['lead_time_months'], (($weeks_max + 1) / 4)).$note;
 		} elseif ($weeks_min === $weeks_max) {
-			return sprintf($GLOBALS['language']->catalogue['lead_time_weeks'], $weeks_min);
+			return sprintf($GLOBALS['language']->catalogue['lead_time_weeks'], $weeks_min).$note;
 		}
-		return sprintf($GLOBALS['language']->catalogue['lead_time_weeks_range'], $weeks_min, $weeks_max);
+		return sprintf($GLOBALS['language']->catalogue['lead_time_weeks_range'], $weeks_min, $weeks_max).$note;
 	}
 }
