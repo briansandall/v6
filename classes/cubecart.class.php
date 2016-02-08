@@ -200,7 +200,7 @@ class Cubecart {
 	public function loadPage() {
 		$prefix = $GLOBALS['config']->get('config', 'dbprefix');
 		$where = "WHERE EXISTS (SELECT 1 FROM `{$prefix}CubeCart_inventory` AS inv WHERE inv.manufacturer=man.id AND inv.status=1 LIMIT 1)";
-		$query = "SELECT man.name FROM `{$prefix}CubeCart_manufacturers` AS man $where ORDER BY man.name";
+		$query = "SELECT man.id, man.name FROM `{$prefix}CubeCart_manufacturers` AS man $where ORDER BY man.name";
 		if (($manufacturers = $GLOBALS['db']->misc($query, false)) !== false) {
 			foreach ($manufacturers as $key => $manufacturer) {
 				// make some assumptions about logo filename and location since CC_manufacturers.image is not implemented
