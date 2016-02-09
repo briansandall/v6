@@ -467,6 +467,8 @@ CREATE TABLE IF NOT EXISTS `CubeCart_manufacturers` (
 	`image` INT(10) UNSIGNED NULL,
 	`lead_time_min` TINYINT UNSIGNED NOT NULL DEFAULT 14 COMMENT 'Minimum lead time when out of stock, in days',
 	`lead_time_max` TINYINT UNSIGNED NOT NULL DEFAULT 14 COMMENT 'Maximum lead time when out of stock, in days',
+	`min_order_amount` DECIMAL(16,2) UNSIGNED DEFAULT 0.00 COMMENT 'Minimum order amount required by manufacturer',
+	`min_order_fee` DECIMAL(16,2) UNSIGNED DEFAULT 0.00 COMMENT 'Additional fee for orders that do not meet the minimum required amount',
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci; #EOQ 
 

@@ -34,6 +34,14 @@
             <td class="text-right">{$item.price_display}</td>
          </tr>
          {/foreach}
+		 {foreach from=$MIN_ORDER key=manufacturer_id item=data}
+         <tr>
+            <td colspan="3" class="alert">{sprintf($LANG.checkout.minimum_order_text, $data.name, $data.display_minimum, $data.display_total, $data.display_fee)}</td>
+            <td class="text-center alert">{$data.display_fee}</td>
+            <td class="text-center alert"><input name="quan[{$manufacturer_id}]" type="text" value="1" maxlength="3" class="quantity" {$QUAN_READ_ONLY} disabled></td>
+            <td class="text-center alert"><a href="{$STORE_URL}/index.php?_a=basket&accept_manufacturer_fee={$manufacturer_id}" class="button left">{$LANG.checkout.minimum_order_fee_accept}</a></td>
+         </tr>
+         {/foreach}
       </tbody>
       <tfoot>
          <tr>

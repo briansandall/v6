@@ -43,6 +43,16 @@
       </div>
    </div>
    {/foreach}
+   {foreach from=$MIN_ORDER key=manufacturer_id item=data}
+   <div class="panel alert">
+      <div class="row">
+         <div class="small-12 columns alert">{sprintf($LANG.checkout.minimum_order_text, $data.name, $data.display_minimum, $data.display_total, $data.display_fee)}</div>
+      </div>
+      <div class="row">
+         <div class="small-12 columns alert"><br><a href="{$STORE_URL}/index.php?_a=basket&accept_manufacturer_fee={$manufacturer_id}" class="button small-12 columns">{$LANG.checkout.minimum_order_fee_accept}</a></div>
+      </div>
+   </div>
+   {/foreach}
    <table class="expand">
       <tr>
          <td colspan="2">

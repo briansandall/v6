@@ -347,6 +347,8 @@
     <string name="matrix_stock_level" introduced="5.2.6"><![CDATA[(Total stock of all product option combinations)]]></string>
     <string name="minimum_quantity" introduced="5.2.6"><![CDATA[Minimum Quantity Purchase]]></string>
     <string name="minimum_subtotal" introduced="5.0.0"><![CDATA[Minimum Subtotal]]></string>
+    <string name="min_order_amount" introduced="6.0.10"><![CDATA[Minimum Order Amount]]></string>
+    <string name="min_order_fee" introduced="6.0.10"><![CDATA[Minimum Order Fee]]></string>
     <string name="no_categories_specified" introduced="5.0.0"><![CDATA[No categories have been assigned to this product.]]></string>
     <string name="no_option_groups" introduced="5.0.0"><![CDATA[No option groups exist.]]></string>
     <string name="no_option_sets" introduced="5.2.0b1"><![CDATA[No option sets exist.]]></string>
@@ -551,6 +553,10 @@
     <string name="error_item_not_available" introduced="6.0.1"><![CDATA[Sorry, but %s is no longer available and has been removed form your basket.]]></string>
     <string name="error_voucher_wrong_product" introduced="5.0.0"><![CDATA[Sorry, that voucher is not valid for the items in your basket.]]></string>
     <string name="make_payment" introduced="5.0.0"><![CDATA[A total of <strong>%s</strong> is due for order number <strong>%s</strong>]]></string>
+    <string name="minimum_order_error" introduced="6.0.10"><![CDATA[This order does not meet minimum order requirements for one or more manufacturers; see below for details.]]></string>
+    <string name="minimum_order_error_missing" introduced="6.0.10"><![CDATA[Sorry, there was an unexpected error accepting the manufacturer fee. Please contact customer support.]]></string>
+    <string name="minimum_order_fee_accept" introduced="6.0.10"><![CDATA[Accept]]></string>
+    <string name="minimum_order_text" introduced="6.0.10"><![CDATA[<strong>%1$s</strong> has a minimum order requirement of %2$s (your current subtotal: %3$s). Orders that do not meet this requirement may still be processed for an <strong>additional %4$s fee</strong>.]]></string>
     <string name="pay_now" introduced="5.0.0"><![CDATA[Pay Now]]></string>
     <string name="process_basket" introduced="5.0.0"><![CDATA[Basket]]></string>
     <string name="process_checkout" introduced="5.0.0"><![CDATA[Checkout]]></string>

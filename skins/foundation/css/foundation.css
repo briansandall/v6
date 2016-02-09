@@ -6088,3 +6088,7 @@ th.hide-for-touch {
 @media not print {
   .show-for-print {
     display: none !important; } }
+.alert {
+	background-color: #c60f13;
+    color: #FFFFFF;
+}

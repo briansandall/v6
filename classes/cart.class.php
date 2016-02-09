@@ -184,6 +184,36 @@ class Cart {
 	//=====[ Public ]=======================================
 
 	/**
+	 * Adds the minimum order fee for the specified manufacturer to the cart
+	 */
+	public function acceptFee($manufacturer_id) {
+		// Find 'minimum_order_fee' product id for the manufacturer
+		// Note that each manufacturer will have its own specific minimum order fee product with NO OPTIONS
+		// Can't use $this->add($product_id) as that method auto-redirects to the current page, causing an recursive loop in this case
+		$product_id = $GLOBALS['db']->select('CubeCart_inventory', 'product_id', array('product_code' => 'MIN_ORDER_FEE', 'manufacturer' => $manufacturer_id, 'status' => 1, 'available' => 1));
+		if ($product_id) {
+			$product_id = (int)$product_id[0]['product_id'];
+		}
+		$product = $GLOBALS['catalogue']->getProductData($product_id);
+		if ($product) {
+			$hash = md5($product['product_id'].$product['name']);
+			if (isset($this->basket['contents'][$hash])) {
+				return; // already added the fee
+			}
+			$this->basket['contents'][$hash] = array(
+				'id'  => $product_id,
+				'quantity' => 1,
+				'digital' => true, // well, it is, plus this prevents shipping estimates from getting messed up
+			);
+			$this->save();
+		} else { // fee 'product' not found...
+			$GLOBALS['gui']->setError($GLOBALS['language']->checkout['minimum_order_error_missing']);
+			$message = "Unable to find minimum order fee product for manufacturer id '$manufacturer_id'";
+			Database::getInstance()->insert('CubeCart_system_error_log', array('message' => $message, 'time' => time()));
+		}
+	}
+
+	/**
 	 * Add item to the basket
 	 *
 	 * @param int $product_id
@@ -630,6 +660,7 @@ class Cart {
 
 			$GLOBALS['tax']->loadTaxes($tax_country);
 
+			$manufacturer_totals = array(); // Data array which will be passed to #_getMinimumOrderRequirements
 			foreach ($this->basket['contents'] as $hash => $item) {
 				if (empty($item) || !is_array($item)) {  ## Keep things tidy
 					unset($this->basket['contents'][$hash]);
@@ -770,6 +801,20 @@ class Cart {
 
 				$this->basket_data[$hash] = $product;
 
+				// if ($check_min_order_reqs && !empty($product['manufacturer'])) {
+				// Add product's value to current manufacturer total (for handling manufacturer minimum order requirements)
+				if (!empty($product['manufacturer'])) {
+					if (empty($manufacturer_totals[$product['manufacturer']])) {
+						$manufacturer_totals[$product['manufacturer']] = array('total'=>0.00, 'stocked'=>true);
+					}
+					$manufacturer_totals[$product['manufacturer']]['total'] += $product['price'];
+					if (empty($product['use_stock_level']) || $product['stock_level'] < $item['quantity']) {
+						$manufacturer_totals[$product['manufacturer']]['stocked'] = false;
+					}
+					$manufacturer_totals[$product['manufacturer']]['use_stock_level'] = $product['use_stock_level'];
+					$manufacturer_totals[$product['manufacturer']]['stock_level'] = $product['stock_level'];
+				}
+
 				// Calculate Taxes
 				$tax_state_id = is_numeric($this->basket[$tax_on]['state_id']) ? $this->basket[$tax_on]['state_id'] : getStateFormat($this->basket[$tax_on]['state_id'], 'name', 'id');
 
@@ -794,6 +839,9 @@ class Cart {
 					$line_shipping->lineCalc($product, $category);
 				}
 			}
+			// Manufacturer minimum order requirements
+			$this->basket['min_order'] = $this->_getMinimumOrderRequirements($manufacturer_totals);
+			
 			// Put By_Cat shipping prices into basket for calc class
 			if (isset($ship_by_cat['status']) && $ship_by_cat['status']) {
 				$this->basket['By_Category_Shipping'] =  $line_shipping->_lineShip + $line_shipping->_perShipPrice;
@@ -1366,5 +1414,40 @@ class Cart {
 				}
 			}
 		}
+	}
+
+	/**
+	 * @param array $manufacturer_totals Must contain total price amounts for each manufacturer, keyed by manufacturer ID;
+	 *                                   set $manufacturer_totals[$id]['stocked'] to true if all items are in stock
+	 * @return array containing information about any unfulfilled manufacturer minimum order requirements based
+	 *               on the current cart contents. Array is keyed by manufacturer ID, each containing an array
+	 *               with the manufacturer data, subtotals, and formatted prices for the fee, minimum amount, and total.
+	 */
+	private function _getMinimumOrderRequirements(array $manufacturer_totals) {
+		$min_order = array();
+		if (($manufacturers = $GLOBALS['db']->select('CubeCart_manufacturers', false, false)) !== false) {
+			foreach ($manufacturers as $manufacturer) {
+				$fee = (float)$manufacturer['min_order_fee']; // default for customer notification if product not found
+				$min_order_product = $GLOBALS['db']->select('CubeCart_inventory', array('product_id', 'name', 'price'), array('product_code' => 'MIN_ORDER_FEE', 'manufacturer' => $manufacturer['id']));
+				if ($min_order_product) {
+					$min_order_product = $min_order_product[0];
+					// note that each manufacturer will have its own specific minimum order fee product with no options
+					$min_order_hash = md5($min_order_product['product_id'].$min_order_product['name']);
+					if (isset($this->basket['contents'][$min_order_hash])) {
+						continue; // customer already accepted the fee
+					}
+					// set fee to 'product' price
+					$fee = (float)$min_order_product['price'];
+				}
+				// allow the order if all the items are in stock or if the total meets or exceeds the minimum order requirement
+				if (!empty($manufacturer_totals[$manufacturer['id']]) && !$manufacturer_totals[$manufacturer['id']]['stocked'] && $manufacturer_totals[$manufacturer['id']]['total'] < (float)$manufacturer['min_order_amount']) {
+					$min_order[$manufacturer['id']] = array_merge($manufacturer, $manufacturer_totals[$manufacturer['id']]);
+					$min_order[$manufacturer['id']]['display_fee'] = $GLOBALS['tax']->priceFormat($fee);
+					$min_order[$manufacturer['id']]['display_minimum'] = $GLOBALS['tax']->priceFormat($manufacturer['min_order_amount']);
+					$min_order[$manufacturer['id']]['display_total'] = $GLOBALS['tax']->priceFormat($manufacturer_totals[$manufacturer['id']]['total']);
+				}
+			}
+		}
+		return $min_order;
 	}
 }
