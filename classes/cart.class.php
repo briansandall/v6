@@ -1332,12 +1332,16 @@ class Cart {
 	 * @param array $product Updated to contain the most authoritative version of any field, e.g. 'stock_level'
 	 */
 	public static function applyProductMatrix(array &$product, array $matrix) {
+		// These values should be overwritten even if 'empty'
+		$overwrite = array('set_enabled');
 		// Only allow matrix to use stock if the main product does also
 		if (empty($product['use_stock_level']) && !empty($matrix['use_stock_level'])) {
 			$matrix['use_stock_level'] = 0;
 		}
-		// These values should be overwritten even if 'empty'
-		$overwrite = array('set_enabled', 'use_stock_level', 'stock_level');
+		// Only use matrix stock level if it is still enabled
+		if (!empty($matrix['use_stock_level'])) {
+			$overwrite[] = 'stock_level';
+		}
 		foreach ($matrix as $k => $v) {
 			switch ($k) {
 			case 'price': // Fall through to 'sale_price'
