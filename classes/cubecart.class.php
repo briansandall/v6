@@ -381,6 +381,11 @@ class Cubecart {
 					$GLOBALS['cart']->clear();
 					httpredir(currentPage(array('empty-basket'), array('_a' => 'basket')));
 				}
+				// Add manufacturer fee to cart
+				if (isset($_GET['accept_manufacturer_fee'])) {
+					$GLOBALS['cart']->acceptFee(filter_input(INPUT_GET, 'accept_manufacturer_fee', FILTER_VALIDATE_INT));
+					httpredir("index.php?_a=basket"); // redirect back to basket
+				}
 				switch (strtolower($_GET['_a'])) {
 					/**
 					 * These are hard coded method calls that require variables or special calls
@@ -1628,6 +1633,10 @@ class Cubecart {
 				$items[$hash] = $product;
 			}
 			$GLOBALS['smarty']->assign('ITEMS', array_reverse($items, true));
+			if (!empty($this->_basket['min_order'])) {
+				$GLOBALS['smarty']->assign('MIN_ORDER', $this->_basket['min_order']);
+				$GLOBALS['gui']->setError($GLOBALS['language']->checkout['minimum_order_error']);
+			}
 
 			// Get basket total
 			if (isset($this->_basket['coupons']) && is_array($this->_basket['coupons']) || !empty($this->_basket['discount'])) {

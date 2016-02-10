@@ -43,8 +43,10 @@
 	<fieldset><legend>{$LANG.catalogue.title_manufacturer_add}</legend>
 		<div><label for="manu_name">{$LANG.catalogue.manufacturer}</label><span><input type="text" class="textbox required" id="manu_name" name="manufacturer[name]" value="{$EDIT.name}"></span></div>
 		<div><label for="manu_site">{$LANG.common.url}</label><span><input type="text" class="textbox" id="manu_site" name="manufacturer[URL]" value="{$EDIT.URL}"></span></div>
-		<div><label for="manu_lead_time_min">{$LANG.catalogue.lead_time_min_estimate}</label><span><input id="manu_lead_time_min" name="manufacturer[lead_time_min]" class="textbox number required" type="text" value="{$EDIT.lead_time_min}"></span></div>
-		<div><label for="manu_lead_time_max">{$LANG.catalogue.lead_time_max_estimate}</label><span><input id="manu_lead_time_max" name="manufacturer[lead_time_max]" class="textbox number required" type="text" value="{$EDIT.lead_time_max}"></span></div>
+		<div><label for="manu_lead_time_min">{$LANG.catalogue.lead_time_min_estimate}</label><span><input id="manu_lead_time_min" name="manufacturer[lead_time_min]" class="textbox number-right" type="text" value="{$EDIT.lead_time_min}"></span></div>
+		<div><label for="manu_lead_time_max">{$LANG.catalogue.lead_time_max_estimate}</label><span><input id="manu_lead_time_max" name="manufacturer[lead_time_max]" class="textbox number-right" type="text" value="{$EDIT.lead_time_max}"></span></div>
+		<div><label for="manu_min_order_amount">{$LANG.catalogue.min_order_amount}</label><span><input id="manu_min_order_amount" name="manufacturer[min_order_amount]" class="textbox number-right" type="text" value="{$EDIT.min_order_amount}"></span></div>
+		<div><label for="manu_min_order_fee">{$LANG.catalogue.min_order_fee}</label><span><input id="manu_min_order_fee" name="manufacturer[min_order_fee]" class="textbox number-right" type="text" value="{$EDIT.min_order_fee}"></span></div>
 	</fieldset>
 	
 	{include file='templates/element.hook_form_content.php'}
@@ -63,8 +65,10 @@
 	<fieldset><legend>{$LANG.catalogue.title_manufacturer_edit}</legend>
 		<div><label for="manu_name">{$LANG.catalogue.manufacturer}</label><span><input type="text" class="textbox required" id="manu_name" name="manufacturer[name]" value="{$EDIT.name}"></span></div>
 		<div><label for="manu_site">{$LANG.common.url}</label><span><input type="text" class="textbox" id="manu_site" name="manufacturer[URL]" value="{$EDIT.URL}"></span></div>
-		<div><label for="manu_lead_time_min">{$LANG.catalogue.lead_time_min_estimate}</label><span><input id="manu_lead_time_min" name="manufacturer[lead_time_min]" class="textbox number required" type="text" value="{$EDIT.lead_time_min}"></span></div>
-		<div><label for="manu_lead_time_max">{$LANG.catalogue.lead_time_max_estimate}</label><span><input id="manu_lead_time_max" name="manufacturer[lead_time_max]" class="textbox number required" type="text" value="{$EDIT.lead_time_max}"></span></div>
+		<div><label for="manu_lead_time_min">{$LANG.catalogue.lead_time_min_estimate}</label><span><input id="manu_lead_time_min" name="manufacturer[lead_time_min]" class="textbox number-right required" type="text" value="{$EDIT.lead_time_min}"></span></div>
+		<div><label for="manu_lead_time_max">{$LANG.catalogue.lead_time_max_estimate}</label><span><input id="manu_lead_time_max" name="manufacturer[lead_time_max]" class="textbox number-right required" type="text" value="{$EDIT.lead_time_max}"></span></div>
+		<div><label for="manu_min_order_amount">{$LANG.catalogue.min_order_amount}</label><span><input id="manu_min_order_amount" name="manufacturer[min_order_amount]" class="textbox number-right" type="text" value="{$EDIT.min_order_amount}"></span></div>
+		<div><label for="manu_min_order_fee">{$LANG.catalogue.min_order_fee}</label><span><input id="manu_min_order_fee" name="manufacturer[min_order_fee]" class="textbox number-right" type="text" value="{$EDIT.min_order_fee}"></span></div>
 	</fieldset>
 	<div class="form_control">
 	<input type="hidden" name="previous-tab" id="previous-tab" value="">
