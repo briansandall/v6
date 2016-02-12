@@ -322,6 +322,14 @@ class Catalogue {
 				if ($out || !((bool)$product['use_stock_level'])) {
 					$product['lead_time'] = $this->_getFormattedLeadTime($product);
 				}
+				// Add additional product info links, if any
+				$prefix = $GLOBALS['config']->get('config', 'dbprefix').'CubeCart_';
+				$query = "SELECT doc.doc_title_short, doc.doc_url FROM `{$prefix}documents` doc JOIN `{$prefix}inventory` inv ON inv.product_id={$product['product_id']} WHERE doc.doc_id=inv.info_doc_id";
+				if (!empty($info = $GLOBALS['db']->misc($query))) {
+					foreach ($info[0] as $key => $value) {
+						$product[$key] = $value;
+					}
+				}
 
 				$GLOBALS['smarty']->assign('CTRL_ALLOW_PURCHASE', $allow_purchase);
 				$GLOBALS['smarty']->assign('CTRL_HIDE_PRICES', $hide);
