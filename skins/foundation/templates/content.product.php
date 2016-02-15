@@ -188,6 +188,7 @@
                   <tr id="stock_level_row">
                   {else}
                   <tr id="stock_level_row" class="hide">
+                  </tr><tr class="hide hidden_row">
                   {/if}
                      <td>{$LANG.catalogue.stock_level}</td>
                      <td><span id="spec_stock_level" data-stock_level="{$PRODUCT.stock_level}">{$PRODUCT.stock_level}</span></td>
