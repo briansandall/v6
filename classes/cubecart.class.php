@@ -198,16 +198,6 @@ class Cubecart {
 	 * Load a page
 	 */
 	public function loadPage() {
-		$prefix = $GLOBALS['config']->get('config', 'dbprefix');
-		$where = "WHERE EXISTS (SELECT 1 FROM `{$prefix}CubeCart_inventory` AS inv WHERE inv.manufacturer=man.id AND inv.status=1 LIMIT 1)";
-		$query = "SELECT man.id, man.name FROM `{$prefix}CubeCart_manufacturers` AS man $where ORDER BY man.name";
-		if (($manufacturers = $GLOBALS['db']->misc($query, false)) !== false) {
-			foreach ($manufacturers as $key => $manufacturer) {
-				// make some assumptions about logo filename and location since CC_manufacturers.image is not implemented
-				$manufacturers[$key]['image'] = preg_replace('/\s+/', '_', strtolower($manufacturer['name'])).'.jpg';
-			}
-			$GLOBALS['smarty']->assign('MANUFACTURERS', $manufacturers);
-		}
 		if (isset($_GET['_g']) && !empty($_GET['_g'])) {
 			switch (strtolower($_GET['_g'])) {
 				case 'ajax_price_format':
@@ -516,6 +506,16 @@ class Cubecart {
 			} else {
 			$GLOBALS['smarty']->assign('SECTION_NAME', 'home');
 			$this->displayHomePage();
+		}
+		$prefix = $GLOBALS['config']->get('config', 'dbprefix');
+		$where = "WHERE EXISTS (SELECT 1 FROM `{$prefix}CubeCart_inventory` AS inv WHERE inv.manufacturer=man.id AND inv.status=1 LIMIT 1)";
+		$query = "SELECT man.id, man.name FROM `{$prefix}CubeCart_manufacturers` AS man $where ORDER BY man.name";
+		if (($manufacturers = $GLOBALS['db']->misc($query, false)) !== false) {
+			foreach ($manufacturers as $key => $manufacturer) {
+				// make some assumptions about logo filename and location since CC_manufacturers.image is not implemented
+				$manufacturers[$key]['image'] = preg_replace('/\s+/', '_', strtolower($manufacturer['name'])).'.jpg';
+			}
+			$GLOBALS['smarty']->assign('MANUFACTURERS', $manufacturers);
 		}
 	}
 
