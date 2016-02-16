@@ -55,7 +55,7 @@
             {include file='templates/box.off_canvas.right.php'}
             {include file='templates/box.off_canvas.left.php'}
             {include file='templates/box.eu_cookie.php'}
-            <div class="row marg-top" id="top_header">
+            <div class="row" id="top_header">
                <div class="row" id="nav-actions">
                   <div class="small-12 columns">
                      <div class="show-for-medium-up" id="navcontacts">

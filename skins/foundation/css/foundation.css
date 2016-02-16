@@ -5271,7 +5271,7 @@ table {
 [class*="block-grid-"] {
   display: block;
   padding: 0;
-  margin: 3.48em -0.625rem; }
+  margin: 0 -0.625rem; }
   [class*="block-grid-"]:before, [class*="block-grid-"]:after {
     content: " ";
     display: table; }
