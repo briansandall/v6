@@ -1175,6 +1175,15 @@ if (isset($_GET['action'])) {
 			$GLOBALS['smarty']->assign('MANUFACTURERS', $smarty_data['list_manufacturers']);
 		}
 
+		// List Documents
+		if (($docs = $GLOBALS['db']->select('CubeCart_documents', array('doc_name', 'doc_id'), false, array('doc_name' => 'ASC'))) !== false) {
+			foreach ($docs as $doc) {
+				$doc['selected'] = ($doc['doc_id'] == $result[0]['info_doc_id']) ? ' selected="SELECTED"' : '';
+				$smarty_data['list_documents'][] = $doc;
+			}
+			$GLOBALS['smarty']->assign('DOCUMENTS', $smarty_data['list_documents']);
+		}
+
 		// Set status to 1 if not set
 		$result[0]['status'] = !isset($result[0]['status']) ? 1 : $result[0]['status'];
 		foreach ($result[0] as $key => $value) {

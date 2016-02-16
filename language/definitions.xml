@@ -349,6 +349,7 @@
     <string name="minimum_subtotal" introduced="5.0.0"><![CDATA[Minimum Subtotal]]></string>
     <string name="min_order_amount" introduced="6.0.10"><![CDATA[Minimum Order Amount]]></string>
     <string name="min_order_fee" introduced="6.0.10"><![CDATA[Minimum Order Fee]]></string>
+    <string name="missing_additional_info" introduced="6.0.10"><![CDATA[We're sorry, no additional information is available at this time.]]></string>
     <string name="no_categories_specified" introduced="5.0.0"><![CDATA[No categories have been assigned to this product.]]></string>
     <string name="no_option_groups" introduced="5.0.0"><![CDATA[No option groups exist.]]></string>
     <string name="no_option_sets" introduced="5.2.0b1"><![CDATA[No option sets exist.]]></string>
@@ -482,6 +483,7 @@
     <string name="title_import_csv" introduced="5.0.0"><![CDATA[Import Product CSV]]></string>
     <string name="title_import_delete_previous" introduced="5.0.0"><![CDATA[Delete Previous Import]]></string>
     <string name="title_import_options" introduced="5.0.0"><![CDATA[Options]]></string>
+    <string name="title_info_document" introduced="6.0.10"><![CDATA[Additional Information Document]]></string>
     <string name="title_information_basic" introduced="5.0.0"><![CDATA[Basic Information]]></string>
     <string name="title_information_general" introduced="5.0.0"><![CDATA[General Information]]></string>
     <string name="title_items" introduced="5.0.0"><![CDATA[Items]]></string>
@@ -941,6 +943,7 @@
     <string name="document_homepage" introduced="5.0.0"><![CDATA[Homepage]]></string>
     <string name="document_terms" introduced="5.0.0"><![CDATA[T&amp;Cs]]></string>
     <string name="document_title" introduced="5.0.0"><![CDATA[Title]]></string>
+    <string name="document_title_short" introduced="6.0.10"><![CDATA[Short Title]]></string>
     <string name="document_url" introduced="5.0.0"><![CDATA[URL]]></string>
     <string name="document_url_open" introduced="5.0.0"><![CDATA[Open URL in]]></string>
     <string name="document_url_open_new" introduced="5.0.0"><![CDATA[New window]]></string>

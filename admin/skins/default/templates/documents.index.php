@@ -64,6 +64,7 @@
 	<h3>{$ADD_EDIT_DOCUMENT}</h3>
 	<fieldset><legend>{$LANG.common.general}</legend>
 	  <div><label for="doc-name">{$LANG.documents.document_title}</label><span><input type="text" name="document[doc_name]" id="doc-name" value="{$DOCUMENT.doc_name}" class="textbox required"></span></div>
+	  <div><label for="doc-desc">{$LANG.documents.document_title_short}</label><span><input type="text" name="document[doc_title_short]" id="doc-desc" value="{$DOCUMENT.doc_title_short}" class="textbox"></span></div>
 	  <div><label for="doc-lang">{$LANG.common.language}</label><span><select name="document[doc_lang]" id="doc-lang" class="textbox">
 		{foreach from=$LANGUAGES item=language}<option value="{$language.code}"{$language.selected}>{$language.title}</option>{/foreach}
 	  </select></span></div>

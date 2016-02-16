@@ -198,18 +198,21 @@ class Cubecart {
 	 * Load a page
 	 */
 	public function loadPage() {
-		$prefix = $GLOBALS['config']->get('config', 'dbprefix');
-		$where = "WHERE EXISTS (SELECT 1 FROM `{$prefix}CubeCart_inventory` AS inv WHERE inv.manufacturer=man.id AND inv.status=1 LIMIT 1)";
-		$query = "SELECT man.id, man.name FROM `{$prefix}CubeCart_manufacturers` AS man $where ORDER BY man.name";
-		if (($manufacturers = $GLOBALS['db']->misc($query, false)) !== false) {
-			foreach ($manufacturers as $key => $manufacturer) {
-				// make some assumptions about logo filename and location since CC_manufacturers.image is not implemented
-				$manufacturers[$key]['image'] = preg_replace('/\s+/', '_', strtolower($manufacturer['name'])).'.jpg';
-			}
-			$GLOBALS['smarty']->assign('MANUFACTURERS', $manufacturers);
-		}
 		if (isset($_GET['_g']) && !empty($_GET['_g'])) {
 			switch (strtolower($_GET['_g'])) {
+				case 'ajax_product_modal':
+					$product_id = filter_var($_GET['product_id'], FILTER_VALIDATE_INT);
+					$prefix = $GLOBALS['config']->get('config', 'dbprefix').'CubeCart_';
+					$query = "SELECT doc.doc_content FROM `{$prefix}documents` doc JOIN `{$prefix}inventory` inv ON inv.product_id=$product_id WHERE doc.doc_id=inv.info_doc_id";
+					$html = '<span class="close-reveal-modal">x</span>'; // guarantees all modal boxes have an obvious way to be closed
+					if (empty($result = $GLOBALS['db']->misc($query))) {
+						$html .= '<p>'.$GLOBALS['language']->catalogue['missing_additional_info'].'</p>';
+						$message = 'No additional product info found for AJAX call: ' . print_r($_GET, true);
+						Database::getInstance()->insert('CubeCart_system_error_log', array('message' => $message, 'time' => time()));
+					} else {
+						$html .= $result[0]['doc_content'];
+					}
+					die($html);
 				case 'ajax_price_format':
 					$GLOBALS['debug']->supress();
 					if(is_numeric($_GET['price'])) {
@@ -516,6 +519,16 @@ class Cubecart {
 			} else {
 			$GLOBALS['smarty']->assign('SECTION_NAME', 'home');
 			$this->displayHomePage();
+		}
+		$prefix = $GLOBALS['config']->get('config', 'dbprefix');
+		$where = "WHERE EXISTS (SELECT 1 FROM `{$prefix}CubeCart_inventory` AS inv WHERE inv.manufacturer=man.id AND inv.status=1 LIMIT 1)";
+		$query = "SELECT man.id, man.name FROM `{$prefix}CubeCart_manufacturers` AS man $where ORDER BY man.name";
+		if (($manufacturers = $GLOBALS['db']->misc($query, false)) !== false) {
+			foreach ($manufacturers as $key => $manufacturer) {
+				// make some assumptions about logo filename and location since CC_manufacturers.image is not implemented
+				$manufacturers[$key]['image'] = preg_replace('/\s+/', '_', strtolower($manufacturer['name'])).'.jpg';
+			}
+			$GLOBALS['smarty']->assign('MANUFACTURERS', $manufacturers);
 		}
 	}
 

@@ -174,6 +174,17 @@
          <div><label for="product_featured">{$LANG.catalogue.product_featured}</label><span><input type="hidden" name="featured" id="product_featured" class="toggle" value="{$PRODUCT.featured}"></span></div>
          <div><label for="product_latest">{$LANG.catalogue.product_latest}</label><span><input type="hidden" name="latest" id="product_latest" class="toggle" value="{$PRODUCT.latest}"></span></div>
          <div><label for="available">{$LANG.catalogue.available_for_purchase}</label><span><input type="hidden" name="available" id="available" class="toggle" value="{if isset($PRODUCT.available)}{$PRODUCT.available}{else}1{/if}"></span></div>
+         <div>
+            <label for="info_doc_id">{$LANG.catalogue.title_info_document}</label>
+            <span>
+               <select name="info_doc_id" id="info_doc_id" class="textbox" type="text">
+                  <option value="">{$LANG.form.none}</option>
+                  {foreach from=$DOCUMENTS item=doc}
+                  <option value="{$doc.doc_id}"{$doc.selected}>{$doc.doc_name}</option>
+                  {/foreach}
+               </select>
+            </span>
+         </div>
       </fieldset>
       <fieldset>
          <legend>{$LANG.catalogue.title_stock_control}</legend>

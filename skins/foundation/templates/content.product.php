@@ -18,7 +18,7 @@
          </div>
       </div>
       <div class="row">
-         <div class="small-5 medium-7 columns">            
+         <div class="small-5 medium-7 columns">
             <a href="#" class="open-clearing" data-thumb-index="0"><img src="{$PRODUCT.medium}" alt="{$PRODUCT.name}" id="img-preview"></a>
             {if $GALLERY}
             <ul class="clearing-thumbs small-block-grid-3 medium-block-grid-5 marg-top" data-clearing>
@@ -26,6 +26,12 @@
                <li><a href="{$image.source}" class="th"><img src="{$image.small}" data-image-swap="{$image.medium}" data-caption="{$PRODUCT.name}{if !empty($image.description)}: {/if}{$image.description}" class="image-gallery" alt="{$LANG.catalogue.click_enlarge}"></a></li>
                {/foreach}
             </ul>
+            {/if}
+            {if !empty($PRODUCT.doc_url)}
+            <div data-reveal>
+               <a href="{$STORE_URL}/index.php?_g=ajax_product_modal&product_id={$PRODUCT.product_id}&page={$PRODUCT.doc_url}" data-reveal-ajax="true" data-reveal-id="additional-product-info" class="button" title="{$LANG.catalogue.click_enlarge}">{if !empty($PRODUCT.doc_title_short)}{$PRODUCT.doc_title_short}{else}Additional Information{/if}</a>
+            </div>
+            <div data-reveal id="additional-product-info" class="reveal-modal"></div>
             {/if}
          </div>
          <div class="small-7 medium-5 columns">
@@ -188,6 +194,7 @@
                   <tr id="stock_level_row">
                   {else}
                   <tr id="stock_level_row" class="hide">
+                  </tr><tr class="hide hidden_row">
                   {/if}
                      <td>{$LANG.catalogue.stock_level}</td>
                      <td><span id="spec_stock_level" data-stock_level="{$PRODUCT.stock_level}">{$PRODUCT.stock_level}</span></td>
