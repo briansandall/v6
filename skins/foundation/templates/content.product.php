@@ -28,7 +28,10 @@
             </ul>
             {/if}
             {if !empty($PRODUCT.doc_url)}
-            <div data-reveal>
+            <div id="additional-product-info-reg">
+               <a href="{$STORE_URL}/{$PRODUCT.doc_url}.html" class="button" title="{$LANG.catalogue.click_enlarge}">{if !empty($PRODUCT.doc_title_short)}{$PRODUCT.doc_title_short}{else}Additional Information{/if}</a>
+            </div>
+            <div data-reveal id="additional-product-info-js" class="hide">
                <a href="{$STORE_URL}/index.php?_g=ajax_product_modal&product_id={$PRODUCT.product_id}&page={$PRODUCT.doc_url}" data-reveal-ajax="true" data-reveal-id="additional-product-info" class="button" title="{$LANG.catalogue.click_enlarge}">{if !empty($PRODUCT.doc_title_short)}{$PRODUCT.doc_title_short}{else}Additional Information{/if}</a>
             </div>
             <div data-reveal id="additional-product-info" class="reveal-modal"></div>
