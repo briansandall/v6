@@ -210,7 +210,8 @@ class Cubecart {
 						$message = 'No additional product info found for AJAX call: ' . print_r($_GET, true);
 						Database::getInstance()->insert('CubeCart_system_error_log', array('message' => $message, 'time' => time()));
 					} else {
-						$html .= $result[0]['doc_content'];
+						// hard-code replacement of store urls since smarty is not readily available at this point
+						$html .= preg_replace('/\{\$STORE_URL\}/', $GLOBALS['storeURL'], $result[0]['doc_content']);
 					}
 					die($html);
 				case 'ajax_price_format':

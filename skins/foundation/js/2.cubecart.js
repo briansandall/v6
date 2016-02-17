@@ -295,6 +295,9 @@ jQuery(document).ready(function() {
 			specification_inc_options();
         });
     }
+	// swap non-js product info link for AJAX-powered modal dialogue
+	$('#additional-product-info-reg').hide();
+	$('#additional-product-info-js').show();
 
     /* We must only show grid view with 1 grid column for medium */
     if(Foundation.utils.is_small_only()) {
