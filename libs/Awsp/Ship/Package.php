@@ -44,6 +44,11 @@ class Package {
      * @var int calculated size of package (length plus girth)
      */
     protected $size = null;
+
+    /**
+     * @var int calculated volume of package
+     */
+    protected $volume = null;
     
     /**
      *
@@ -83,6 +88,7 @@ class Package {
         $this->isPackageValid();
         // calculate the package's size and set the class property
         $this->size = $this->calculatePackageSize();
+        $this->volume = $this->calculatePackageVolume();
     }
     
     
@@ -172,6 +178,15 @@ class Package {
         }
         // calculate and return the girth
         return 2 * ($width + $height);
+    }
+    
+    
+    /**
+     * Calculates the package's total volume to the nearest whole measurement unit
+     * @return int the volume of the package
+     */
+    public function calculatePackageVolume() {
+        return round($this->length * $this->width * $this->height);
     }
     
     
