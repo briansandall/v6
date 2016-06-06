@@ -374,6 +374,9 @@ abstract class AbstractPacker implements IPacker
             $constraints[] = $constraint;
         } elseif ($overwrite || !array_key_exists($key, $constraints)) {
             $constraints[$key] = $constraint;
+            if ($key === 'additional_handling') {
+                $this->handling_constraint = $constraint;
+            }
         } else {
             throw new \InvalidArgumentException(($required ? 'Required' : 'Optional') . " constraint '$key' already exists!");
         }
