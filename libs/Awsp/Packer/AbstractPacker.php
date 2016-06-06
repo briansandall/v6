@@ -136,7 +136,7 @@ abstract class AbstractPacker implements IPacker
      * @param float|int A currency value such as the value of a package in dollars
      * @return The converted value
      */
-    protected function getCurrencyValue($value) {
+    public function getCurrencyValue($value) {
         return $this->getValidatedFloat($value);
     }
 
@@ -145,7 +145,7 @@ abstract class AbstractPacker implements IPacker
      * @param float|int A measurement value such as the length of a package in inches
      * @return The converted value
      */
-    protected function getMeasurementValue($value) {
+    public function getMeasurementValue($value) {
         return $this->getValidatedFloat($value);
     }
 
