@@ -48,6 +48,34 @@ $items[] = array(
     )
 );
 
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// The $ship_to Address is information you have received from your user.  Always validate and sanitize user input!
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+// if ship_from is null, the default shipper address from the config is used
+$ship_from = null;
+$ship_to = new Ship\Address(array(
+        'name'           => 'XYZ Corporation',
+        'attention'      => 'Attn: Bill',
+        'phone'          => '555-123-4567',
+        'email'          => '',
+        'address1'       => '2 Massachusetts Ave NE',
+        'address2'       => 'Suite 100',
+        'address3'       => 'Room 5C', // not supported by all shippers
+        'city'           => 'Washington',
+        'state'          => 'DC',
+        'postal_code'    => '20212',
+        'country_code'   => 'US',
+        'is_residential' => false
+    )
+);
+
+// Array of shipping plugins and their packers that will be used to fetch rates
+$shippers = array();
+
+//==========================================================================//
+// UPS packer setup
+//==========================================================================//
 // These are the default (UPS) measurements in LBS and INCHES; convert / change as needed
 $max_package_weight = 150;
 $max_package_length = 108;
@@ -77,13 +105,8 @@ $packer->setAdditionalHandlingLimits(60, 30);
 // Add one or more merge strategies if desired and the IPacker supports it
 $packer->addMergeStrategy(new \Awsp\MergeStrategy\DefaultMergeStrategy());
 
-///////////////////////////////////////////////////////////////////////////////
-
-// Stores any items that could not be packed so we can display an error message to the user
-$not_packed = array();
-
-// Make the actual packages to ship
-$packages = $packer->makePackages($items, $not_packed);
+// Add UPS packer to array
+$shippers['Ups'] = array('name'=>'UPS', 'packer'=>$packer);
 
 /*
 // Example using vendor-based packing algorithms (OpenCart, in this case)
@@ -112,112 +135,95 @@ $config['dimension_unit'] = strtoupper($this->registry->get('length')->getUnit($
 $config['currency_code'] = strtoupper($this->registry->get('currency')->getCode());
 */
 
-// Exit with error message if any items could not be packed - these need special attention
-// or may not even be shippable. Customer may still order other items after removing the
-// items listed here from their cart.
-if (!empty($not_packed)) {
-    $not_shipped = '';
-    foreach ($not_packed as $p) {
-        $not_shipped .= '<p><strong>' . (empty($p['name']) ? 'Unknown Item' : $p['name']) . '</strong>' . (empty($p['error']) ? '' : " - Error: $p[error]") . '</p>';
+//==========================================================================//
+// Iterate over shipping plugins and fetch rates
+//==========================================================================//
+foreach ($shippers as $key => $shipper) {
+    // Stores any items that could not be packed so we can display an error message to the user
+    $not_packed = array();
+    try {
+        // Make the actual packages to ship
+        $packages = $shipper['packer']->makePackages($items, $not_packed);
+        // If all items could be packed, create the shipment and fetch rates
+        if (empty($not_packed)) {
+            // create a Shipment object with the provided addresses and packed items
+            $shipment = new Ship\Shipment($ship_to, $ship_from, $packages);
+            // create the shipper object and pass it the Shipment object and config data array
+            $plugin_class = "\\Awsp\\Ship\\$key";
+            $plugin = new $plugin_class($shipment, $config);
+            // calculate rates for shipment - returns an instance of RatesResponse
+            $shippers[$key]['rates'] = $plugin->getRate();
+        } else {
+            // Display error message if any items could not be packed - these need special attention
+            // or may not even be shippable. Customer may still order other items after removing the
+            // items listed here from their cart.
+            $not_shipped = '';
+            foreach ($not_packed as $p) {
+                $not_shipped .= '<p><strong>' . (empty($p['name']) ? 'Unknown Item' : $p['name']) . '</strong>' . (empty($p['error']) ? '' : " - Error: $p[error]") . '</p>';
+            }
+            $shippers[$key]['error'] = "<p>The following items are not eligible for shipping via $shipper[name] - please call to order:</p>$not_shipped";
+        }
+    } catch(\Exception $e) {
+        $shippers[$key]['error'] = '<p>Error: ' . $e->getMessage() . '</p>';
     }
-    exit("<p>The following items are not eligible for shipping via UPS - please call to order:</p>$not_shipped");
 }
 
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// The $ship_to Address is information you have received from your user.  Always validate and sanitize user input!
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-// if ship_from is null, the default shipper address from the config is used
-$ship_from = null;
-$ship_to = new Ship\Address(array(
-        'name'           => 'XYZ Corporation',
-        'attention'      => 'Attn: Bill',
-        'phone'          => '555-123-4567',
-        'email'          => '',
-        'address1'       => '2 Massachusetts Ave NE',
-        'address2'       => 'Suite 100',
-        'address3'       => 'Room 5C', // not supported by all shippers
-        'city'           => 'Washington',
-        'state'          => 'DC',
-        'postal_code'    => '20212',
-        'country_code'   => 'US',
-        'is_residential' => false
-    )
-);
-
-// create a Shipment object with the provided addresses and packed items
-try {
-    $shipment = new Ship\Shipment($ship_to, $ship_from, $packages);
-}
-// catch any exceptions 
-catch(\Exception $e) {
-    exit('<br /><br />Error: ' . $e->getMessage() . '<br /><br />');    
-}
-
-// UPS rates -----------------------------------------------------------------------------------------------------------
-// interface with the desired shipper plugin object
-try {
-    // create the shipper object and pass it the Shipment object and config data array
-    $Ups = new Ship\Ups($shipment, $config);
-    // calculate rates for shipment - returns an instance of RatesResponse
-    $rates = $Ups->getRate();
-}
-catch(\Exception $e) {
-    exit('<br /><br />Error: ' . $e->getMessage() . '<br /><br />');
-}
-
+//==========================================================================//
+//                            DISPLAY RESULTS                               //
+//==========================================================================//
 // send opening html (note: this will not create a valid html document - for example only)
 echo '<html><body>';
 
-// output UPS rates response
-echo '
-    <h2>UPS (United Parcel Service)* Rates:</h2>
-    <dl>
-        <dt><strong>Status:</strong></dt>
-        <dd>' . $rates->status . '</dd>
-        <dt><strong>Rate Options:</strong></dt>
-        <dd>
-            <ol>
-';
-
-foreach($rates->services as $service) {
-    // display the service, cost and a link to create the label
-    echo '<li><strong>' . $service['service_description'] . '*: $' . $service['total_cost'] 
-            . '</strong> - <a href="create_label_example.php?shipper=ups&service_code=' . $service['service_code'] 
-            . '">Create Shipping Label(s)</a></li><ul>';
-    // display any service specific messages
-    echo '<li>Service Messages:<ul>';
-    foreach($service['messages'] as $message) {
-        echo '<li>' . $message . '</li>';
+// output shipper rates responses
+foreach ($shippers as $shipper) {
+    // display any error messages from processing stages
+    if (!empty($shipper['error'])) {
+        echo '<h2>' . $shipper['name'] . '* Error:</h2>' . $shipper['error'];
+        continue;
     }
     echo '
-            </ul>
-        </li>
+        <h2>' . $shipper['name'] . '* Rates:</h2>
+        <dl>
+            <dt><strong>Status:</strong></dt>
+            <dd>' . $shipper['rates']->status . '</dd>
+            <dt><strong>Rate Options:</strong></dt>
+            <dd>
+                <ol>
     ';
-    // display a break down of multiple packages if there are more than one
-    if($service['package_count'] > 1) {
-        echo '<li>Multiple Package Breakdown:<ul>';
-        $counter = 1;
-        foreach($service['packages'] as $package) {
-            echo '<li>Package ' . $counter . ': $' . $package['total_cost'] . ' (Base: ' . $package['base_cost'] 
-                    . ' + Options: ' . $package['option_cost'] . ')</li>';
-            $counter++;
+    foreach ($shipper['rates']->services as $service) {
+        // display the service, cost and a link to create the label
+        echo '<li><strong>' . $service['service_description'] . '*: $' . sprintf('%.2F', $service['total_cost']) 
+                . '</strong> - <a href="create_label_example.php?shipper=ups&service_code=' . $service['service_code'] 
+                . '">Create Shipping Label(s)</a></li><ul>';
+        // display any service specific messages
+        if (!empty($service['messages'])) {
+            echo '<li>Service Messages:<ul>';
+            foreach($service['messages'] as $message) {
+                echo '<li>' . $message . '</li>';
+            }
+            echo '</ul></li>';
         }
-        echo '
-                        </ul>
-                     </li>
-        ';
-    }
-    echo '          </ul>';
-}    
-echo '
-            </ol>
-        </dd>
-    </dl>';
-
+        // display a break down of multiple packages if there are more than one
+        if (!empty($service['packages']) && $service['package_count'] > 1) {
+            echo '<li>Multiple Package Breakdown:<ul>';
+            $counter = 1;
+            foreach($service['packages'] as $package) {
+                echo '<li>Package ' . $counter . ': $' . sprintf('%.2F', $package['total_cost']) . ' (Base: ' . $package['base_cost'] 
+                        . ' + Options: ' . sprintf('%.2F', $package['option_cost']) . ')</li>';
+                $counter++;
+            }
+            echo '</ul></li>';
+        }
+        echo '</ul>';
+    }    
+    echo '
+                </ol>
+            </dd>
+        </dl>';
+}
 echo '
     <h5>Legal Disclaimer:
-        <div>* UPS trademarks, logos and services are the property of United Parcel Service.</div>
+        <div>* Shipping company trademarks, logos and services are the property of their respective companies.</div>
     </h5>
     </body>
-    </html>';
+</html>';
