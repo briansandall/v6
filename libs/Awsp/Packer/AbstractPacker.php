@@ -27,6 +27,12 @@ abstract class AbstractPacker implements IPacker
      */
     protected $optional_constraints = array();
 
+    /**
+     * Array of all \Awsp\Constraint\IConstraints applied at the final package level, i.e. 
+     * constraints checked after packing is completed.
+     */
+    protected $post_constraints = array();
+
     /** Array of \Awsp\MergeStrategy\IMergeStrategy strategies available for merging packages */
     protected $merge_strategies = array();
 
@@ -99,6 +105,7 @@ abstract class AbstractPacker implements IPacker
 
     /**
      * @Override Default implementation of IPacker#makePackages
+     * @throws UnexpectedValueException if a post-constraint fails
      */
     public function makePackages(array $items, array &$notPacked = array()) {
         $packages = array();
@@ -113,6 +120,14 @@ abstract class AbstractPacker implements IPacker
             } catch (\Exception $e) {
                 $item['error'] = $e->getMessage(); // allows error message to be displayed
                 $notPacked[] = $item;
+            }
+        }
+        // Check any post-packing Contraints
+        if (!empty($this->post_constraints)) {
+            foreach ($packages as $package) {
+                if (!$this->doConstraintCheck($this->post_constraints, $package, $error)) {
+                    throw new \UnexpectedValueException("Package failed constraint: $error");
+                }
             }
         }
         return $packages;
@@ -379,6 +394,25 @@ abstract class AbstractPacker implements IPacker
             }
         } else {
             throw new \InvalidArgumentException(($required ? 'Required' : 'Optional') . " constraint '$key' already exists!");
+        }
+    }
+
+    /**
+     * Adds a post-constraint, optionally overwriting any existing constraint with the same key.
+     * Post constraints are checked after packing has been completed.
+     *
+     * @param IConstraint $constraint The constraint to add
+     * @param int|string  $key        Optional key parameter used to access the constraint
+     * @param boolean     $overwrite  True to overwrite any existing constraint
+     * @throws InvalidArgumentException if a constraint exists for the provided key and $overwrite is false
+     */
+    public function addPostConstraint(\Awsp\Constraint\IConstraint $constraint, $key = null, $overwrite = false) {
+        if ($key === null) {
+            $this->post_constraints[] = $constraint;
+        } elseif ($overwrite || !array_key_exists($key, $this->post_constraints)) {
+            $this->post_constraints[$key] = $constraint;
+        } else {
+            throw new \InvalidArgumentException("Post constraint '$key' already exists!");
         }
     }
 
