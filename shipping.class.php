@@ -168,7 +168,9 @@ class UPS {
 		try {
 			$packages = $packer->makePackages($this->_basket['contents'], $notPacked);
 		} catch (\Exception $e) {
-			trigger_error('UPS Error: ' . $e->getMessage());
+			$message = 'UPS Error: ' . $e->getMessage();
+			Database::getInstance()->insert('CubeCart_system_error_log', array('message' => $message, 'time' => time()));
+			trigger_error($message);
 			return false;
 		}
 		// Exit with error message if any items could not be packed
@@ -211,7 +213,9 @@ class UPS {
 			$ups = new Ship\Ups($shipment, $this->_config);
 			$rates = $ups->getRate();
 		} catch (\Exception $e) {
-			trigger_error('UPS Error: ' . $e->getMessage());
+			$message = 'UPS Error: ' . $e->getMessage();
+			Database::getInstance()->insert('CubeCart_system_error_log', array('message' => $message, 'time' => time()));
+			trigger_error($message);
 			return false;
 		}
 		$quote_data = array();
