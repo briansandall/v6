@@ -19,7 +19,7 @@
  * License:  GPL-2.0 http://opensource.org/licenses/GPL-2.0
  */
 use Awsp\Ship as Ship;
-define('AWSP_ROOT_DIR', str_replace('\\', '/', CC_INCLUDES_DIR) . 'lib/Awsp/');
+if (!defined('AWSP_ROOT_DIR')) { define('AWSP_ROOT_DIR', str_replace('\\', '/', CC_INCLUDES_DIR) . 'lib/Awsp/'); }
 class UPS {
 	private $_basket;
 	private $_settings;
@@ -34,7 +34,7 @@ class UPS {
 	}
 
 	protected function includeAutoloader() {
-		require_once(AWSP_ROOT_DIR . 'includes/autoloader.php');
+		require_once AWSP_ROOT_DIR . 'includes/autoloader.php';
 	}
 
 	/**
