@@ -318,11 +318,12 @@ class Package {
      * 'type'                : Both packages must have the same packing type
      * 'additional_handling' : True if either package has this option
      * 'signature_required'  : True if either package has this option
+     * default               : Current value if set, otherwise the merged package's value
      *
      * @param Package $package The package being merged with the current Package instance
      * @param string  $error   Message describing why the merge failed, if applicable
      * @return False if options were unable to merge
-     * @version 09/25/2015
+     * @version 06/14/2016
      * @since 09/25/2015
      */
     public function mergeOptions(Package $package, &$error) {
@@ -356,6 +357,10 @@ class Package {
             case 'signature_required':  // True if either package has this option
                 $this->options[$key] = (!empty($value) || !empty($this->options[$key]));
                 break;
+            default: // default behavior is to keep original value if present
+                if (!array_key_exists($key, $this->options)) {
+                    $this->options[$key] = $value;
+                }
             }
         }
         return true;
