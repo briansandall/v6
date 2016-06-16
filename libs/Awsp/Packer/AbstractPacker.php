@@ -169,7 +169,7 @@ abstract class AbstractPacker implements IPacker
      * @param float|int A weight value such as the weight of a package in pounds
      * @return The converted value
      */
-    protected function getWeightValue($value) {
+    public function getWeightValue($value) {
         return $this->getValidatedFloat($value);
     }
 
