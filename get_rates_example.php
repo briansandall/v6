@@ -137,6 +137,32 @@ $config['weight_unit'] = strtoupper($this->registry->get('weight')->getUnit($thi
 $config['dimension_unit'] = strtoupper($this->registry->get('length')->getUnit($this->config->get('ups_length_class_id')));
 $config['currency_code'] = strtoupper($this->registry->get('currency')->getCode());
 */
+//==========================================================================//
+// YRC Freight quote uses a different packer setup
+//==========================================================================//
+// Effective maximum weight and dimensions for YRC rate quote API
+$max_package_weight = 5000; // note that this is per single package
+$max_package_length = 326;
+$max_package_width  = 103; // note that this is used as maximum height on YRC's website
+$max_package_height =  92; // note that this is used as maximum width on YRC's website
+$max_package_size   = $max_package_length + 2 * ($max_package_width + $max_package_height);
+
+// Create a new packer with YRC's constraints
+$packer = new Packer\RecursivePacker($max_package_weight, $max_package_length, $max_package_size, false);
+
+// YRC additional hard dimension limits: height <= 103" and width <= 92"
+$packer->addConstraint(new \Awsp\Constraint\PackageValueConstraint($packer->getMeasurementValue($max_package_height), 'height', '<='), 'max_height', true, true);
+$packer->addConstraint(new \Awsp\Constraint\PackageValueConstraint($packer->getMeasurementValue($max_package_width), 'width', '<='), 'max_width', true, true);
+
+// Add a soft constraint for max length and width based on size of standard pallet
+$packer->addConstraint(new \Awsp\Constraint\PackageValueConstraint($packer->getMeasurementValue(48), 'length', '<='), 'preferred_length', false, true);
+$packer->addConstraint(new \Awsp\Constraint\PackageValueConstraint($packer->getMeasurementValue(40), 'width', '<='), 'preferred_width', false, true);
+
+// Add one or more merge strategies if desired and the IPacker supports it
+$packer->addMergeStrategy(new \Awsp\MergeStrategy\DefaultMergeStrategy());
+
+// Add YRC packer to array
+$shippers['Yrc'] = array('name'=>'YRC Freight', 'packer'=>$packer);
 
 //==========================================================================//
 // Iterate over shipping plugins and fetch rates

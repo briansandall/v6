@@ -85,4 +85,21 @@ $config['ups']['pickup_type'] = '01';
 */
 $config['ups']['rate_type'] = '00';
 
+// YRC Freight shipper configuration settings
+$config['yrc'] = array(
+    'user'              => '', // SenderID
+    'password'          => '',
+    'account_id'        => '', // BusID
+    'account_terms'     => 'Prepaid', // Prepaid or Collect
+    'account_role'      => 'Shipper', // Shipper, Consignee, or Third Party
+    'testing_url'       => 'https://my.yrc.com/dynamic/national/servlet?CONTROLLER=com.rdwy.ec.rexcommon.proxy.http.controller.ProxyApiController&redir=/tfq561',
+    'production_url'    => 'https://my.yrc.com/dynamic/national/servlet?CONTROLLER=com.rdwy.ec.rexcommon.proxy.http.controller.ProxyApiController&redir=/tfq561',
+    'shipper_address'   => $config['shipper_address'],
+    'rate_type'         => 'QUOTE', // MATRX, QUOTE, or TABLE* (* not currently supported)
+    'service_class'     => 'ALL', // typical options include: ALL, STD, TCS
+    'package_type'      => 'PLT', // common values include: SKD (skids), CTN (cartons), PLT (pallets)
+    'nmfc_class'        => 50, // usually varies by item type, but may be allowed a blanket value for all shipments; common values are 50, 55, 77.5, and 150
+    'nmfc_prefix'       => '', // optional, see YRC documentation
+    'nmfc_suffix'       => '', // optional, see YRC documentation
+);
 //----------------------------------------------------------------------------------------------------------------------
