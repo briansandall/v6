@@ -9,7 +9,7 @@
  *
  * @package Awsp\Packer\Vendor\OpenCart Package
  * @author Brian Sandall
- * @copyright (c) 2015 Brian Sandall
+ * @copyright (c) 2016 Brian Sandall
  * @license MIT License http://www.opensource.org/licenses/mit-license.php
  */
 namespace Awsp\Packer\Vendor\OpenCart;
@@ -56,10 +56,11 @@ class PackByProduct extends AbstractOCPacker
         
         // Ensure item is at least able to be packed individually
         $this->single_item = new \Awsp\Ship\Package($weight, $lwh, $options);
-        $this->setAdditionalHandlingConstraint(false); // don't check additional handling on single items
         if (!$this->checkConstraints($this->single_item, $error)) {
             throw new \InvalidArgumentException("Invalid package: $error");
         }
+        // Toggle optional constraints based on item packed singly
+        $this->updateOptionalConstraints($this->single_item);
         
         // Attempt to merge item(s) with existing package(s)
         if (!empty($this->merge_strategies)) {
@@ -69,13 +70,8 @@ class PackByProduct extends AbstractOCPacker
         if ($quantity > 1) {
             // Update item with converted unit values, remaining quantity, etc.
             $item = array_merge($item, $lwh, array('weight'=>$weight, 'quantity'=>$quantity, 'options'=>$options));
-            
-            // If item packaged singly does not require additional handling, add the constraint to avoid the extra fee
-            // Note that it may be possible for the fee to be worth it if, for example, many items can be packaged together
-            if ($this->handling_constraint != null) {
-                $flag = $this->handling_constraint->check($this->single_item);
-                $this->setAdditionalHandlingConstraint($this->handling_constraint->check($this->single_item));
-            }
+            // Reset optional constraint status to that of single item after attempted merging
+            $this->updateOptionalConstraints($this->single_item);
             return $this->recursivePackageWorker(array($item));
         }
         // Remaining quantity is either 0 or 1; return array filled with that many packages

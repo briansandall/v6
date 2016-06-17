@@ -6,8 +6,8 @@
  *
  * @package Awsp Packer Package
  * @author Brian Sandall
- * @copyright (c) 2015 Brian Sandall
- * @version 07/07/2015 - NOTICE: This is beta software.  Although it has been tested, there may be bugs and 
+ * @copyright (c) 2016 Brian Sandall
+ * @version 06/16/2016 - NOTICE: This is beta software.  Although it has been tested, there may be bugs and 
  *      there is plenty of room for improvement.  Use at your own risk.
  * @license MIT License http://www.opensource.org/licenses/mit-license.php
  */
@@ -53,9 +53,6 @@ abstract class AbstractPacker implements IPacker
 
     /** Preferred maximum total size (e.g. to avoid additional handling fees) */
     protected $preferred_size;
-
-    /** Constraint for package dimensions before additional handling fees are applied (may be NULL) */
-    protected $handling_constraint = null;
 
     /**
      * Constructs a default packer with maximum allowed package weight, length, and size constraints.
@@ -198,19 +195,8 @@ abstract class AbstractPacker implements IPacker
     }
 
     /**
-     * Adds or removes (optional) additional handling constraint based on the parameter
-     * @param boolean $required True to add the constraint, false to remove it
-     */
-    protected function setAdditionalHandlingConstraint($required) {
-        if ($required && $this->handling_constraint instanceof \Awsp\Constraint\IConstraint) {
-            $this->addConstraint($this->handling_constraint, 'additional_handling', false, true);
-        } else {
-            unset($this->optional_constraints['additional_handling']);
-        }
-    }
-
-    /**
-     * Set the additional handling thresholds, but does not add the constraint
+     * @Deprecated since 06/16/2016 - constraint can be added directly
+     * Adds optional additional handling constraint with given thresholds
      * @param float|int $first  Maximum length of longest dimension before additional handling charges are applied
      * @param float|int $second Maximum length of second-longest dimension before additional handling charges are applied
      *                          Values are passed through #getMeasurementValue before they are used
@@ -218,7 +204,7 @@ abstract class AbstractPacker implements IPacker
      */
     public function setAdditionalHandlingLimits($first, $second) {
         $thresholds = array($this->getMeasurementValue($first), $this->getMeasurementValue($second));
-        $this->handling_constraint = new \Awsp\Constraint\PackageHandlingConstraint($thresholds);
+        $this->addConstraint(new \Awsp\Constraint\PackageHandlingConstraint($thresholds), 'additional_handling', false, true);
         return $this;
     }
 
@@ -313,7 +299,8 @@ abstract class AbstractPacker implements IPacker
 
     /**
      * Attempts to merge one package into another using the most efficient strategy provided.
-     * The combined package must meet all required and optional constraints.
+     * The combined package must meet all required and optional constraints that apply.
+     * Note that optional constraint status may be altered based on previous packages.
      *
      * @param \Awsp\Ship\Package $old  Reference to previously existing package - will be modified if merged
      * @param \Awsp\Ship\Package $item A package to be merged into the existing one
@@ -321,12 +308,8 @@ abstract class AbstractPacker implements IPacker
      * @return True on success, otherwise false
      */
     protected function mergePackage(\Awsp\Ship\Package &$old, \Awsp\Ship\Package $item, array $strategies) {
-        // If neither package requires additional handling, add the constraint; otherwise, remove it
-        // Add additional handling constraint if the old package passes (i.e. it does not
-        // already require additional handling); otherwise, ensure constraint is removed.
-        if ($this->handling_constraint != null) {
-            $this->setAdditionalHandlingConstraint($this->handling_constraint->check($old));
-        }
+        // Toggle optional constraint status based on previous package
+        $this->updateOptionalConstraints($old);
         // Find the most efficiently packed package out of all available strategies
         $package = null;
         foreach ($strategies as $strategy) {
@@ -385,9 +368,6 @@ abstract class AbstractPacker implements IPacker
             $constraints[] = $constraint;
         } elseif ($overwrite || !array_key_exists($key, $constraints)) {
             $constraints[$key] = $constraint;
-            if ($key === 'additional_handling') {
-                $this->handling_constraint = $constraint;
-            }
         } else {
             throw new \InvalidArgumentException(($required ? 'Required' : 'Optional') . " constraint '$key' already exists!");
         }
@@ -430,6 +410,15 @@ abstract class AbstractPacker implements IPacker
      */
     protected function checkOptionalConstraints(\Awsp\Ship\Package $package, &$error = '') {
         return $this->doConstraintCheck($this->optional_constraints, $package, $error);
+    }
+
+    /**
+     * Enables or disables optional constraints based on the provided package
+     */
+    protected function updateOptionalConstraints(\Awsp\Ship\Package $package) {
+        foreach ($this->optional_constraints as $constraint) {
+            $constraint->setStatus($constraint->check($package, $error));
+        }
     }
 
     final private function doConstraintCheck(array $constraints, \Awsp\Ship\Package $package, &$error) {
