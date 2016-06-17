@@ -4,8 +4,8 @@
  *
  * @package Awsp Constraint Package
  * @author Brian Sandall
- * @copyright (c) 2015 Brian Sandall
- * @version 09/25/2015 - NOTICE: This is beta software.  Although it has been tested, there may be bugs and 
+ * @copyright (c) 2016 Brian Sandall
+ * @version 06/16/2016 - NOTICE: This is beta software.  Although it has been tested, there may be bugs and 
  *      there is plenty of room for improvement.  Use at your own risk.
  * @license MIT License http://www.opensource.org/licenses/mit-license.php
  */
@@ -18,6 +18,8 @@ class PackageValueConstraint implements IConstraint
     protected $key;
 
     protected $operator;
+
+    protected $enabled = true;
 
     /**
      * @param mixed  $bound    Value to test against during the constraint check() function
@@ -42,6 +44,20 @@ class PackageValueConstraint implements IConstraint
     public function check($package, &$error = '') {
         $error = "Package {$this->key} must be {$this->operator} {$this->bound}";
         return $this->compare($package->get($this->key), $this->bound);
+    }
+
+    /**
+     * @Override
+     */
+    public function isEnabled() {
+        return $this->enabled;
+    }
+
+    /**
+     * @Override
+     */
+    public function setStatus($is_enabled) {
+        $this->enabled = (bool) $is_enabled;
     }
 
     /**

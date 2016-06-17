@@ -434,7 +434,7 @@ abstract class AbstractPacker implements IPacker
 
     final private function doConstraintCheck(array $constraints, \Awsp\Ship\Package $package, &$error) {
         foreach ($constraints as $constraint) {
-            if (!$constraint->check($package, $error)) {
+            if ($constraint->isEnabled() && !$constraint->check($package, $error)) {
                 return false;
             }
         }

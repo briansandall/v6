@@ -6,8 +6,8 @@
  *
  * @package Awsp Constraint Package
  * @author Brian Sandall
- * @copyright (c) 2015 Brian Sandall
- * @version 09/25/2015 - NOTICE: This is beta software.  Although it has been tested, there may be bugs and 
+ * @copyright (c) 2016 Brian Sandall
+ * @version 06/16/2016 - NOTICE: This is beta software.  Although it has been tested, there may be bugs and 
  *      there is plenty of room for improvement.  Use at your own risk.
  * @license MIT License http://www.opensource.org/licenses/mit-license.php
  */
@@ -16,6 +16,8 @@ namespace Awsp\Constraint;
 class PackageHandlingConstraint implements IConstraint
 {
     protected $bound;
+
+    protected $enabled = true;
 
     /**
      * @param $bound Array containing 2 float or integer values
@@ -35,5 +37,19 @@ class PackageHandlingConstraint implements IConstraint
     public function check($package, &$error = '') {
         $error = "Package would require additional handling";
         return $package->get('length') <= $this->bound[0] && $package->get('width') <= $this->bound[1];
+    }
+
+    /**
+     * @Override
+     */
+    public function isEnabled() {
+        return $this->enabled;
+    }
+
+    /**
+     * @Override
+     */
+    public function setStatus($is_enabled) {
+        $this->enabled = (bool) $is_enabled;
     }
 }
