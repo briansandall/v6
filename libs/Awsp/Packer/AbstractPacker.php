@@ -180,7 +180,7 @@ abstract class AbstractPacker implements IPacker
      * @return Returns itself for convenience
      */
     public function setPreferredSize($size) {
-        $this->preferred_size = $this->getMeasurementValue($this->getValidatedFloat($size));
+        $this->preferred_size = $this->getMeasurementValue($size);
         $this->addConstraint(new \Awsp\Constraint\PackageValueConstraint($this->preferred_size, 'size', '<='), 'preferred_size', false, true);
         return $this;
     }
@@ -192,10 +192,7 @@ abstract class AbstractPacker implements IPacker
      * @return Returns itself for convenience
      */
     public function setPreferredWeight($weight) {
-        if (!filter_var($weight, FILTER_VALIDATE_FLOAT)) {
-            throw new \InvalidArgumentException("Expected float or integer for 'weight'; received " . getType($weight));
-        }
-        $this->preferred_weight = $this->getWeightValue($this->getValidatedFloat($weight));
+        $this->preferred_weight = $this->getWeightValue($weight);
         $this->addConstraint(new \Awsp\Constraint\PackageValueConstraint($this->preferred_weight, 'weight', '<='), 'preferred_weight', false, true);
         return $this;
     }
@@ -220,8 +217,7 @@ abstract class AbstractPacker implements IPacker
      * @return Returns itself for convenience
      */
     public function setAdditionalHandlingLimits($first, $second) {
-        $thresholds = array($this->getMeasurementValue($this->getValidatedFloat($first)),
-                            $this->getMeasurementValue($this->getValidatedFloat($second)));
+        $thresholds = array($this->getMeasurementValue($first), $this->getMeasurementValue($second));
         $this->handling_constraint = new \Awsp\Constraint\PackageHandlingConstraint($thresholds);
         return $this;
     }
@@ -232,7 +228,7 @@ abstract class AbstractPacker implements IPacker
      * @return Returns itself for convenience
      */
     public function setMaxInsurance($value) {
-        $value = $this->getCurrencyValue($this->getValidatedFloat($value));
+        $value = $this->getCurrencyValue($value);
         $this->addConstraint(new \Awsp\Constraint\PackageOptionConstraint($value, 'insured_amount', '<=', true), 'max_insurance', true, true);
         return $this;
     }
