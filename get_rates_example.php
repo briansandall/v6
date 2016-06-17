@@ -95,12 +95,15 @@ $packer = new Packer\RecursivePacker($max_package_weight, $max_package_length, $
 ///////////////////////////////////////////////////////////////////////////////
 
 // Add additional constraints that may cause the shipper to refuse the package
-$packer->setMaxInsurance(50000.00);
+$packer->addConstraint(new \Awsp\Constraint\PackageOptionConstraint($packer->getCurrencyValue(50000.00), 'insured_amount', '<=', true), 'max_insurance', true, true);
 
 // Add additional constraints to avoid extra charges when merging packages
-$packer->setPreferredSize(129.999);  // Package considered 'large' if over 130 inches in total size
-$packer->setPreferredWeight(69.999); // Package considered 'large' if over 70 lbs
-$packer->setAdditionalHandlingLimits(60, 30);
+// Package considered 'large' if 130 inches or more in total size
+$packer->addConstraint(new \Awsp\Constraint\PackageValueConstraint($packer->getMeasurementValue(130), 'size', '<'), 'preferred_size', false, true);
+// Package considered 'large' if 70 lbs or more
+$packer->addConstraint(new \Awsp\Constraint\PackageValueConstraint($packer->getMeasurementValue(70), 'weight', '<'), 'preferred_weight', false, true);
+// Package incurs additional handling fees if longest dimension over 60 inches or second-longest dimension over 30
+$packer->addConstraint(new \Awsp\Constraint\PackageHandlingConstraint(array($packer->getMeasurementValue(60), $packer->getMeasurementValue(30))), 'additional_handling', false, true);
 
 // Add one or more merge strategies if desired and the IPacker supports it
 $packer->addMergeStrategy(new \Awsp\MergeStrategy\DefaultMergeStrategy());
@@ -122,8 +125,8 @@ $packer = new Packer\Vendor\OpenCart\DefaultPacker($this->registry, 'ups', 150, 
 $packer = (new Packer\Vendor\OpenCart\PackByProduct($this->registry, 'ups', 150, 108, 165, 'lb', 'in'));
 
 // Perform any optional steps here, such as adding additional constraints or merge strategies
-$packer->setPreferredSize(129.999);  // Package considered 'large' if over 130 inches in total size
-$packer->setPreferredWeight(69.999); // Package considered 'large' if over 70 lbs
+$packer->addConstraint(new \Awsp\Constraint\PackageValueConstraint($packer->getMeasurementValue(130), 'size', '<'), 'preferred_size', false, true);
+$packer->addConstraint(new \Awsp\Constraint\PackageValueConstraint($packer->getMeasurementValue(70), 'weight', '<'), 'preferred_weight', false, true);
 $packer->addMergeStrategy(new \Awsp\MergeStrategy\DefaultMergeStrategy());
 
 // Then create packages using the shopping cart contents:

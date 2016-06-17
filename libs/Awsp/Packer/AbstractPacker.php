@@ -48,12 +48,6 @@ abstract class AbstractPacker implements IPacker
     /** Maximum total size - total size equals the length plus twice the combined height and width */
     protected $max_size;
 
-    /** Preferred maximum weight (e.g. to avoid additional handling fees) */
-    protected $preferred_weight;
-
-    /** Preferred maximum total size (e.g. to avoid additional handling fees) */
-    protected $preferred_size;
-
     /**
      * Constructs a default packer with maximum allowed package weight, length, and size constraints.
      * Default values are in pounds and inches; use the same measurement unit as the items to ship.
@@ -71,9 +65,6 @@ abstract class AbstractPacker implements IPacker
         $this->max_length = $this->getMeasurementValue($max_length);
         $this->max_size = $this->getMeasurementValue($max_size);
         $this->is_weight_combined = filter_var($is_weight_combined, FILTER_VALIDATE_BOOLEAN);
-        // Set preferred values to max as defaults; don't add them as constraints at this point
-        $this->preferred_weight = $this->max_weight;
-        $this->preferred_size = $this->max_size;
         // Finally, add the default required constraints
         $this->addDefaultConstraints();
     }
@@ -171,26 +162,26 @@ abstract class AbstractPacker implements IPacker
     }
 
     /**
+     * @Deprecated since 06/16/2016 - constraint can be added directly
      * Adds (optional) constraint for the preferred package size (e.g. to avoid additional handling fees)
      * @param float|int $size Usually the max size before a package is considered 'large'
      *                        Value is passed through #getMeasurementValue before it is used
      * @return Returns itself for convenience
      */
     public function setPreferredSize($size) {
-        $this->preferred_size = $this->getMeasurementValue($size);
-        $this->addConstraint(new \Awsp\Constraint\PackageValueConstraint($this->preferred_size, 'size', '<='), 'preferred_size', false, true);
+        $this->addConstraint(new \Awsp\Constraint\PackageValueConstraint($this->getMeasurementValue($size), 'size', '<='), 'preferred_size', false, true);
         return $this;
     }
 
     /**
+     * @Deprecated since 06/16/2016 - constraint can be added directly
      * Adds (optional) constraint for the preferred package weight (e.g. to avoid additional handling fees)
      * @param float|int $weight Usually the max weight before a package is considered 'heavy'
      *                          Value is passed through #getWeightValue before it is used
      * @return Returns itself for convenience
      */
     public function setPreferredWeight($weight) {
-        $this->preferred_weight = $this->getWeightValue($weight);
-        $this->addConstraint(new \Awsp\Constraint\PackageValueConstraint($this->preferred_weight, 'weight', '<='), 'preferred_weight', false, true);
+        $this->addConstraint(new \Awsp\Constraint\PackageValueConstraint($this->getWeightValue($weight), 'weight', '<='), 'preferred_weight', false, true);
         return $this;
     }
 
@@ -209,6 +200,7 @@ abstract class AbstractPacker implements IPacker
     }
 
     /**
+     * @Deprecated since 06/16/2016 - constraint can be added directly
      * Adds (required) constraint for the maximum allowed insurance amount
      * @param float|int $value Value is passed through #getCurrencyValue before it is used
      * @return Returns itself for convenience
