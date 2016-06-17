@@ -355,7 +355,7 @@ abstract class AbstractPacker implements IPacker
      * @param IConstraint $constraint The constraint to add
      * @param int|string  $key        Optional key parameter used to access the constraint
      * @param boolean     $required   True if the constraint is required, or false for an optional constraint
-     * @param boolean     $overwrite  True to overwrite any existing constraint
+     * @param boolean     $overwrite  True to overwrite any existing constraint with the same key
      * @return Returns itself for convenience
      * @throws InvalidArgumentException if a constraint exists for the provided key and $overwrite is false
      */
