@@ -356,6 +356,7 @@ abstract class AbstractPacker implements IPacker
      * @param int|string  $key        Optional key parameter used to access the constraint
      * @param boolean     $required   True if the constraint is required, or false for an optional constraint
      * @param boolean     $overwrite  True to overwrite any existing constraint
+     * @return Returns itself for convenience
      * @throws InvalidArgumentException if a constraint exists for the provided key and $overwrite is false
      */
     public function addConstraint(\Awsp\Constraint\IConstraint $constraint, $key = null, $required = true, $overwrite = false) {
@@ -371,6 +372,7 @@ abstract class AbstractPacker implements IPacker
         } else {
             throw new \InvalidArgumentException(($required ? 'Required' : 'Optional') . " constraint '$key' already exists!");
         }
+        return $this;
     }
 
     /**
@@ -380,6 +382,7 @@ abstract class AbstractPacker implements IPacker
      * @param IConstraint $constraint The constraint to add
      * @param int|string  $key        Optional key parameter used to access the constraint
      * @param boolean     $overwrite  True to overwrite any existing constraint
+     * @return Returns itself for convenience
      * @throws InvalidArgumentException if a constraint exists for the provided key and $overwrite is false
      */
     public function addPostConstraint(\Awsp\Constraint\IConstraint $constraint, $key = null, $overwrite = false) {
@@ -390,6 +393,7 @@ abstract class AbstractPacker implements IPacker
         } else {
             throw new \InvalidArgumentException("Post constraint '$key' already exists!");
         }
+        return $this;
     }
 
     /**
