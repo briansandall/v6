@@ -3,7 +3,7 @@
  * AWSP UPS Module for CubeCart v6
  * ========================================
  * @author Brian Sandall
- * @copyright (c) 2015 Brian Sandall
+ * @copyright (c) 2016 Brian Sandall
  * @license GPL-3.0 http://opensource.org/licenses/GPL-3.0
  *
  * NOTE: The class name must match the module directory name,
@@ -158,10 +158,10 @@ class UPS {
 		// Add store settings for per-package weight
 		$packer->setPackagingWeight($this->_settings['packagingWeight']);
 		// Add additional constraints
-		$packer->setMaxInsurance(50000.00);
-		$packer->setPreferredSize(129.999);
-		$packer->setPreferredWeight(69.999);
-		$packer->setAdditionalHandlingLimits(60, 30);
+		$packer->addConstraint(new \Awsp\Constraint\PackageOptionConstraint($packer->getCurrencyValue(50000.00), 'insured_amount', '<=', true), 'max_insurance', true, true);
+		$packer->addConstraint(new \Awsp\Constraint\PackageValueConstraint($packer->getMeasurementValue(130), 'size', '<'), 'preferred_size', false, true);
+		$packer->addConstraint(new \Awsp\Constraint\PackageValueConstraint($packer->getMeasurementValue(70), 'weight', '<'), 'preferred_weight', false, true);
+		$packer->addConstraint(new \Awsp\Constraint\PackageHandlingConstraint(array($packer->getMeasurementValue(60), $packer->getMeasurementValue(30))), 'additional_handling', false, true);
 		// Add merge strategies
 		$packer->addMergeStrategy(new \Awsp\MergeStrategy\DefaultMergeStrategy());
 		$notPacked = array();
