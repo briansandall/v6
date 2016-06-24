@@ -2,7 +2,7 @@ REQUIREMENTS
 - Cubecart v6 or higher: http://www.cubecart.com
 - Database supporting 'length', 'height', and 'width' fields for products
 	See https://github.com/briansandall/v6/commits/product_dimensions
-- AWSP Shipping Library:  https://bitbucket.org/briansandall/awsp-ship
+- AWSP Shipping Library v1.1 or higher:  https://bitbucket.org/briansandall/awsp-ship
 
 INSTALLATION
 0.a. Make sure you meet all of the requirements
