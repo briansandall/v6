@@ -284,6 +284,9 @@ abstract class AbstractPacker implements IPacker
             while ($quantity > 0 && $this->mergePackage($current_package, $single_item, $this->merge_strategies)) {
                 $quantity--;
             }
+            if ($quantity < 1) {
+                break;
+            }
         }
         unset($current_package); // unset reference to save puppies
         return $quantity;
