@@ -90,8 +90,7 @@ class RecursivePacker extends AbstractPacker
      * Recursively packs items into packages, distributing quantity as evenly as possible
      * @param items Array of items, where each entry is a complete item
      */
-    protected function recursivePackageWorker(array $items) {
-        $packages = array();
+    protected function recursivePackageWorker(array $items, array $packages = array()) {
         // Break items up into suitable packages based on max weight and max size
         foreach ($items AS $item) {
             // Current item characteristics
@@ -128,11 +127,14 @@ class RecursivePacker extends AbstractPacker
             // Must meet all required constraints to pack singly, and optional constraints to pack with other items
             $package = new \Awsp\Ship\Package($weight, array($length, $width, $height), $this->getPackageOptions($item));
             if ($this->checkConstraints($package, $error) && ($quantity === 1 || $this->checkOptionalConstraints($package, $error))) {
-                $packages[] = $package;
+                // try to merge new package into previous packages; otherwise add it
+                if (empty($packages) || $this->merge($packages, $package, 1) > 0) {
+                    $packages[] = $package;
+                }
             } elseif ($quantity === 1) { // couldn't be packed even as a single item
                 throw new \InvalidArgumentException("Invalid package: $error");
             } else { // recursively split items into separate packages
-                $packages = array_merge($packages, $this->recursivePackageWorker($this->splitItem($item)));
+                $packages = $this->recursivePackageWorker($this->splitItem($item), $packages);
             }
         }
         return $packages;

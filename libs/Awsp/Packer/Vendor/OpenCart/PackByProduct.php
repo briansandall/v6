@@ -82,8 +82,7 @@ class PackByProduct extends AbstractOCPacker
      * Recursively packs items into packages, fitting as many in each package as possible
      * @param $items Array of items, where each entry is a complete item
      */
-    private function recursivePackageWorker(array $items) {
-        $packages = array();
+    protected function recursivePackageWorker(array $items, array $packages = array()) {
         // Break items up into suitable packages based on max weight and max size
         foreach ($items AS $item) {
             // Current item characteristics
@@ -119,11 +118,14 @@ class PackByProduct extends AbstractOCPacker
             $options = $this->getPackageOptions($item);
             $package = new \Awsp\Ship\Package($weight, array($length, $width, $height), $options);
             if ($this->checkConstraints($package, $error) && ($quantity === 1 || $this->checkOptionalConstraints($package, $error))) {
-                $packages[] = $package;
+                // try to merge new package into previous packages; otherwise add it
+                if (empty($packages) || $this->merge($packages, $package, 1) > 0) {
+                    $packages[] = $package;
+                }
             } elseif ($quantity === 1) { // couldn't be packed even as a single item
                 throw new \InvalidArgumentException("Invalid package: $error");
             } else { // recursively split items into separate packages
-                $packages = array_merge($packages, $this->recursivePackageWorker($this->splitItem($item)));
+                $packages = $this->recursivePackageWorker($this->splitItem($item), $packages);
             }
         }
         return $packages;
