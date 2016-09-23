@@ -468,7 +468,8 @@ function specification_inc_options() {
                     }
                 }
                 // Handle after loop so elements are properly displayed / hidden
-                if (data['ctrl_sale']) {
+                // Check if #fbp exists before adding 'sale_price' class to ensure skin compatibility
+                if ($('#fbp').length > 0 && data['ctrl_sale']) {
                     $('#fbp').show();
                     $('#ptp').addClass('sale_price');
                 } else {
