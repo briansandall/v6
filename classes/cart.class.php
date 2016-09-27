@@ -681,7 +681,7 @@ class Cart {
 
 					// Running totals of price modifiers for dealing with multiple absolute pricing options
 					$product['price_total_modifier'] = 0.00;
-					$product['option_price_ignoring_tax_modifier'] = 0.00;
+					$product['price_including_tax_modifier'] = 0.00;
 
 					$product['quantity'] = $item['quantity'];
 					$product['price_display'] = $product['price'];
@@ -693,7 +693,7 @@ class Cart {
 						$product['tax_inclusive'] = false;
 						$product['remove_options_tax'] = true;
 					}
-					$product['option_line_price'] = $product['option_price_ignoring_tax'] = 0;
+					$product['option_line_price'] = $product['price_including_tax'] = 0;
 					if (isset($item['options']) && is_array($item['options'])) {
 						foreach ($item['options'] as $option_id => $option_data) {
 							if (is_array($option_data)) {
@@ -754,7 +754,7 @@ class Cart {
 						'tax_type'  => $gc['taxType'],
 						'tax_inclusive' => true,
 						'options'  => array(),
-						'option_price_ignoring_tax' => 0,
+						'price_including_tax' => 0,
 					);
 					$product['price_display'] = $product['price'];
 				}
@@ -762,14 +762,9 @@ class Cart {
 					$this->basket_digital = true;
 				}
 
-				if(!empty($product['absolute_price'])) {
-					$product['line_price_display'] = $product['option_price_ignoring_tax'];
-					$product['price_display']  = $product['option_price_ignoring_tax']*$item['quantity'];
-				} else {
-					$product['line_price_display'] = $product['price_display']+$product['option_price_ignoring_tax'];
-					$product['price_display']  = ($product['price_display']+$product['option_price_ignoring_tax'])*$item['quantity'];
-				}
-
+				// Price has already been adjusted for absolute pricing and any appropriate option modifiers
+				$product['line_price_display'] = $product['price_including_tax'];
+				$product['price_display'] = $product['price_including_tax']*$item['quantity'];
 
 				## Update Subtotals
 				$product['line_price'] = $product['price'];
@@ -1289,8 +1284,8 @@ class Cart {
 	 *        'sale_price' => option price modifiers are applied, using highest absolute option price as the base price
 	 *        'price_total_modifier' => sum of all price adjustments from all non-absolute options
 	 *        'option_line_price' => calculated the same as 'price'
-	 *        'option_price_ignoring_tax' => calculated the same as 'price' but does not remove any included tax
-	 *        'option_price_ignoring_tax_modifier' => sum of all price adjustments to 'option_price_ignoring_tax' from all non-absolute options
+	 *        'price_including_tax' => calculated the same as 'price' but does not remove any included tax
+	 *        'price_including_tax_modifier' => sum of all price adjustments to 'price_including_tax' from all non-absolute options
 	 *        'absolute_price' => added and set to true if any option uses absolute pricing
 	 *        'product_weight' => option modifier (may be negative), if any, is added to product weight
 	 *
@@ -1301,20 +1296,20 @@ class Cart {
 	public static function updateProductDataWithOption(array &$product, array &$option) {
 		if ($option['option_price'] > 0) {
 			$option['price_display'] = '';
-			$display_option_tax = $option['option_price'];
+			$price_including_tax = $option['option_price'];
 			if (!empty($product['remove_options_tax'])) {
 				$GLOBALS['tax']->inclusiveTaxRemove($option['option_price'], $product['tax_type']);
 			}
 			$price_value = $option['option_price'] * (isset($option['option_negative']) && $option['option_negative'] ? -1 : 1);
-			$display_option_tax *= (isset($option['option_negative']) && $option['option_negative'] ? -1 : 1);
+			$price_including_tax *= (isset($option['option_negative']) && $option['option_negative'] ? -1 : 1);
 			if ($option['absolute_price']) {
 				// Use highest absolute price as the base, then apply modifiers
 				$product['price'] = (empty($product['absolute_price']) ? $price_value : max($product['price'] - $product['price_total_modifier'], $price_value));
 				$product['price'] += $product['price_total_modifier'];
 				$product['sale_price'] = $product['price'];
 				$product['option_line_price'] = $price_value;
-				$product['option_price_ignoring_tax'] = (empty($product['absolute_price']) ? $display_option_tax : max($product['option_price_ignoring_tax'] - $product['option_price_ignoring_tax_modifier'], $display_option_tax));
-				$product['option_price_ignoring_tax'] += $product['option_price_ignoring_tax_modifier'];
+				$product['price_including_tax'] = (empty($product['absolute_price']) ? $price_including_tax : max($product['price_including_tax'] - $product['price_including_tax_modifier'], $price_including_tax));
+				$product['price_including_tax'] += $product['price_including_tax_modifier'];
 				$product['absolute_price'] = true;
 			} else {
 				$product['price'] += $price_value;
@@ -1322,11 +1317,11 @@ class Cart {
 				// Only modify sale price if it is set to a non-zero value to avoid a false sale
 				$product['sale_price'] += (preg_match('/^(0+|0+\.0+)$/', $product['sale_price']) ? 0 : $price_value);
 				$product['option_line_price'] += $price_value;
-				$product['option_price_ignoring_tax'] += $display_option_tax;
-				$product['option_price_ignoring_tax_modifier'] += $display_option_tax;
+				$product['price_including_tax'] += $price_including_tax;
+				$product['price_including_tax_modifier'] += $price_including_tax;
 				$option['price_display'] = ($price_value < 0 ? '-' : '+');
 			}
-			$option['price_display'] .= $GLOBALS['tax']->priceFormat(abs($display_option_tax), true);
+			$option['price_display'] .= $GLOBALS['tax']->priceFormat(abs($price_including_tax), true);
 		}
 		$product['product_weight'] += (isset($option['option_weight'])) ? $option['option_weight'] : 0;
 	}
