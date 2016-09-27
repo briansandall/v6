@@ -723,6 +723,15 @@ class Cart {
 					} else {
 						$product['options'] = false;
 					}
+					// Update product based on values in matrix entry, if any
+					if ($item['options_identifier']) {
+						$matrix_fields = array('product_id', 'use_stock as use_stock_level', 'stock_level', 'product_code', 'image');
+						$matrix_where = array('product_id' => $item['id'], 'options_identifier' => $item['options_identifier'], 'status' => 1);
+						$matrix = $GLOBALS['db']->select('CubeCart_option_matrix', $matrix_fields, $matrix_where);
+						if ($matrix) {
+							Cart::applyProductMatrix($product, $matrix[0]);
+						}
+					}
 
 					// Check for sale after prices fully updated
 					if ($product['ctrl_sale']) { // this item is supposed to be on sale
@@ -1324,5 +1333,29 @@ class Cart {
 			$option['price_display'] .= $GLOBALS['tax']->priceFormat(abs($price_including_tax), true);
 		}
 		$product['product_weight'] += (isset($option['option_weight'])) ? $option['option_weight'] : 0;
+	}
+
+	/** Used as default $overwrite argument for Cart::applyProductMatrix */
+	private static $_OVERWRITE = array('stock_level'=>true);
+
+	/**
+	 * Updates the product array with non-empty values from the matrix.
+	 * @param array $product Updated to contain the most authoritative version of any field, e.g. 'stock_level'
+	 * @param array $matrix  Array containing the 'CubeCart_option_matrix' values for the currently selected product
+	 * @param array $overwrite Array containing product field name : true|false pairs to be overwritten even if the
+	 *                         matrix value is empty, e.g. array('stock_level'=>true) to allow matrix stock levels of zero
+	 */
+	public static function applyProductMatrix(array &$product, array $matrix, array $overwrite = null) {
+		if ($overwrite === null) {
+			$overwrite = Cart::$_OVERWRITE;
+		}
+		foreach ($matrix as $k => $v) {
+			switch ($k) {
+			default:
+				if (!empty($v) || !empty($overwrite[$k])) {
+					$product[$k] = $v;
+				}
+			}
+		}
 	}
 }

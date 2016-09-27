@@ -252,6 +252,13 @@ class Cubecart {
 								}
 							}
 						}
+						// Apply option matrix modifiers, if any
+						$options_identifier_string = $GLOBALS['catalogue']->defineOptionsIdentifier($options);
+						$matrix_fields = array('product_id', 'use_stock as use_stock_level', 'stock_level', 'product_code', 'upc', 'ean', 'jan', 'isbn', 'image');
+						$result = $GLOBALS['db']->select('CubeCart_option_matrix', $matrix_fields, array('product_id' => $product_id, 'status' => 1, 'options_identifier' => $options_identifier_string));
+						if ($result) {
+							Cart::applyProductMatrix($product, $result[0]);
+						}
 					}
 					// Finally, format product values for display
 					if ($product['sale_price'] == 0 || $product['price'] < $product['sale_price']) {
@@ -260,6 +267,27 @@ class Cubecart {
 					$product['ctrl_sale'] = ($product['sale_price'] > 0 && $product['sale_price'] < $product['price'] ? true : false);
 					$product['price'] = $GLOBALS['tax']->priceFormat($product['price']);
 					$product['sale_price'] = $GLOBALS['tax']->priceFormat($product['sale_price']);
+					// Add settings to determine which GUI elements to display / hide (replicates variables / logic in Catalogue#displayProduct)
+					$product['CTRL_SETTINGS'] = array(
+						'CATALOGUE_MODE'      => ($GLOBALS['config']->get('config', 'catalogue_mode') ? true : false),
+						'CTRL_ALLOW_PURCHASE' => true,
+						'CTRL_OUT_OF_STOCK'   => false,
+						'CTRL_HIDE_PRICES'    => false
+					);
+					if ((bool)$product['use_stock_level']) {
+						// Out of Stock
+						if ((int)$product['stock_level'] <= 0) {
+							if (!$GLOBALS['config']->get('config', 'basket_out_of_stock_purchase')) {
+								// Not Allowed
+								$product['CTRL_SETTINGS']['CTRL_ALLOW_PURCHASE'] = false;
+								$product['CTRL_SETTINGS']['CTRL_OUT_OF_STOCK'] = true;
+							}
+						}
+					}
+					if ($GLOBALS['session']->get('hide_prices')) {
+						$product['CTRL_SETTINGS']['CTRL_ALLOW_PURCHASE'] = false;
+						$product['CTRL_SETTINGS']['CTRL_HIDE_PRICES'] = true;
+					}
 					// TODO apply whitelist to product array keys to limit amount of data sent back to client
 					die(json_encode($product));
 				break;

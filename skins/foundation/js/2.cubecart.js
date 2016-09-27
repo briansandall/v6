@@ -465,6 +465,26 @@ function specification_inc_options() {
                     case 'sale_price':
                         $('#ptp').html(data[key]);
                     break;
+                    case 'CTRL_SETTINGS':
+                        if (data[key]['CTRL_ALLOW_PURCHASE'] && !data[key]['CATALOGUE_MODE']) {
+                            $('#allow_purchase').show();
+                            $('#out_of_stock').hide();
+                            $('#login_to_view').hide();
+                        } else {
+                            if (data[key]['CTRL_OUT_OF_STOCK']) {
+                                $('#allow_purchase').hide();
+                                $('#out_of_stock').show();
+                            } else {
+                                $('#allow_purchase').show();
+                                $('#out_of_stock').hide();
+                            }
+                            if (data[key]['CTRL_HIDE_PRICES']) {
+                                $('#login_to_view').show();
+                            } else {
+                                $('#login_to_view').hide();
+                            }
+                        }
+                    break;
                     }
                 }
                 // Handle after loop so elements are properly displayed / hidden
