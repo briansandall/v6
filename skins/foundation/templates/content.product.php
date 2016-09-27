@@ -159,7 +159,7 @@
          </div>
          {/if}
          <div class="content{if empty($PRODUCT.description)} active{/if}" id="product_spec">
-            <table>
+            <table id="product_spec_table">
                <tbody>
                   <tr>
                      <td>{$LANG.catalogue.product_code}</td>
@@ -184,7 +184,7 @@
                   {if $PRODUCT.product_weight > 0}
                   <tr>
                      <td>{$LANG.common.weight}</td>
-                     <td>{$PRODUCT.product_weight}{$CONFIG.product_weight_unit|lower}</td>
+                     <td><span id="spec_product_weight" data-product_weight="{$PRODUCT.product_weight}">{$PRODUCT.product_weight}</span>{$CONFIG.product_weight_unit}</td>
                   </tr>
                   {/if}
                </tbody>

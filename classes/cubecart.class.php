@@ -260,6 +260,7 @@ class Cubecart {
 					$product['ctrl_sale'] = ($product['sale_price'] > 0 && $product['sale_price'] < $product['price'] ? true : false);
 					$product['price'] = $GLOBALS['tax']->priceFormat($product['price']);
 					$product['sale_price'] = $GLOBALS['tax']->priceFormat($product['sale_price']);
+					$product['product_weight'] = sprintf('%.3F', $product['product_weight']);
 					// TODO apply whitelist to product array keys to limit amount of data sent back to client
 					die(json_encode($product));
 				break;
