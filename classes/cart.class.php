@@ -679,10 +679,11 @@ class Cart {
 						continue;
 					}
 
+					// Running totals of price modifiers for dealing with multiple absolute pricing options
+					$product['price_total_modifier'] = 0.00;
+					$product['option_price_ignoring_tax_modifier'] = 0.00;
+
 					$product['quantity'] = $item['quantity'];
-					if ($GLOBALS['tax']->salePrice($product['price'], $product['sale_price'])) {
-						$product['price'] = $product['sale_price'];
-					}
 					$product['price_display'] = $product['price'];
 					$product['base_price_display'] = $GLOBALS['tax']->priceFormat($product['price'], true);
 					$product['remove_options_tax'] = false;
@@ -721,6 +722,15 @@ class Cart {
 						}
 					} else {
 						$product['options'] = false;
+					}
+
+					// Check for sale after prices fully updated
+					if ($product['ctrl_sale']) { // this item is supposed to be on sale
+						if ($GLOBALS['tax']->salePrice($product['price'], $product['sale_price']) && $product['sale_price'] < $product['price']) {
+							$product['price'] = $product['sale_price'];
+						} else {
+							$product['ctrl_sale'] = false;
+						}
 					}
 
 					// Add the total product price inc options etc for payment gateways
@@ -1275,9 +1285,12 @@ class Cart {
 	 * 
 	 * @param array $product product to modify, as retreived from Catalogue->getProductData
 	 *        Elements modified:
-	 *        'price' => option price modifiers are applied, with absolute pricing taking precedence over any previous modifiers
+	 *        'price' => option price modifiers are applied, using highest absolute option price as the base price
+	 *        'sale_price' => option price modifiers are applied, using highest absolute option price as the base price
+	 *        'price_total_modifier' => sum of all price adjustments from all non-absolute options
 	 *        'option_line_price' => calculated the same as 'price'
 	 *        'option_price_ignoring_tax' => calculated the same as 'price' but does not remove any included tax
+	 *        'option_price_ignoring_tax_modifier' => sum of all price adjustments to 'option_price_ignoring_tax' from all non-absolute options
 	 *        'absolute_price' => added and set to true if any option uses absolute pricing
 	 *        'product_weight' => option modifier (may be negative), if any, is added to product weight
 	 *
@@ -1295,14 +1308,22 @@ class Cart {
 			$price_value = $option['option_price'] * (isset($option['option_negative']) && $option['option_negative'] ? -1 : 1);
 			$display_option_tax *= (isset($option['option_negative']) && $option['option_negative'] ? -1 : 1);
 			if ($option['absolute_price']) {
-				$product['price'] = $price_value;
+				// Use highest absolute price as the base, then apply modifiers
+				$product['price'] = (empty($product['absolute_price']) ? $price_value : max($product['price'] - $product['price_total_modifier'], $price_value));
+				$product['price'] += $product['price_total_modifier'];
+				$product['sale_price'] = $product['price'];
 				$product['option_line_price'] = $price_value;
-				$product['option_price_ignoring_tax'] = $display_option_tax;
+				$product['option_price_ignoring_tax'] = (empty($product['absolute_price']) ? $display_option_tax : max($product['option_price_ignoring_tax'] - $product['option_price_ignoring_tax_modifier'], $display_option_tax));
+				$product['option_price_ignoring_tax'] += $product['option_price_ignoring_tax_modifier'];
 				$product['absolute_price'] = true;
 			} else {
 				$product['price'] += $price_value;
+				$product['price_total_modifier'] += $price_value;
+				// Only modify sale price if it is set to a non-zero value to avoid a false sale
+				$product['sale_price'] += (preg_match('/^(0+|0+\.0+)$/', $product['sale_price']) ? 0 : $price_value);
 				$product['option_line_price'] += $price_value;
 				$product['option_price_ignoring_tax'] += $display_option_tax;
+				$product['option_price_ignoring_tax_modifier'] += $display_option_tax;
 				$option['price_display'] = ($price_value < 0 ? '-' : '+');
 			}
 			$option['price_display'] .= $GLOBALS['tax']->priceFormat(abs($display_option_tax), true);

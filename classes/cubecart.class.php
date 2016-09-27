@@ -216,6 +216,53 @@ class Cubecart {
 					}
 					exit;
 				break;
+				case 'ajax_update_product_data':
+					$GLOBALS['debug']->supress();
+					$product_id = filter_var($_GET['product_id'], FILTER_VALIDATE_INT);
+					if (!is_int($product_id)) {
+						die(json_encode(false));
+					}
+					$product = $GLOBALS['catalogue']->getProductData($product_id, 1, false, 10, 1, false, null);
+					if (!$product) {
+						die(json_encode(false));
+					}
+					$options = (isset($_GET['productOptions']) && is_array($_GET['productOptions']) ? $_GET['productOptions'] : false);
+					if ($options) {
+						// running totals of price modifiers for dealing with multiple absolute pricing options
+						$product['price_total_modifier'] = 0.00;
+						$product['option_price_ignoring_tax_modifier'] = 0.00;
+						// Modify product specifications based on each option
+						foreach ($options as $option_id => $option_data) {
+							if (is_array($option_data)) {
+								// Text option
+								foreach ($option_data as $trash => $option_value) {
+									if (($assign_id = $GLOBALS['db']->select('CubeCart_option_assign', false, array('product' => $product_id, 'option_id' => $option_id))) !== false) {
+										$assign_id = $assign_id[0]['assign_id'];
+									} else {
+										$assign_id = 0;
+									}
+									$value = $GLOBALS['catalogue']->getOptionData((int)$option_id, $assign_id);
+									if ($value) {
+										Cart::updateProductDataWithOption($product, $value);
+									}
+								}
+							} elseif (is_numeric($option_data)) {
+								if (($value = $GLOBALS['catalogue']->getOptionData((int)$option_id, (int)$option_data)) !== false) {
+									Cart::updateProductDataWithOption($product, $value);
+								}
+							}
+						}
+					}
+					// Finally, format product values for display
+					if ($product['sale_price'] == 0 || $product['price'] < $product['sale_price']) {
+						$product['sale_price'] = $product['price'];
+					}
+					$product['ctrl_sale'] = ($product['sale_price'] > 0 && $product['sale_price'] < $product['price'] ? true : false);
+					$product['price'] = $GLOBALS['tax']->priceFormat($product['price']);
+					$product['sale_price'] = $GLOBALS['tax']->priceFormat($product['sale_price']);
+					// TODO apply whitelist to product array keys to limit amount of data sent back to client
+					die(json_encode($product));
+				break;
 				case 'ajax_email':
 					$GLOBALS['debug']->supress();
 
