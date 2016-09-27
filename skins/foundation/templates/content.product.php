@@ -163,7 +163,7 @@
                <tbody>
                   <tr>
                      <td>{$LANG.catalogue.product_code}</td>
-                     <td>{$PRODUCT.product_code}</td>
+                     <td><span id="spec_product_code" data-product_code="{$PRODUCT.product_code}">{$PRODUCT.product_code}</span></td>
                   </tr>
                   {if $PRODUCT.manufacturer}
                   <tr>
@@ -172,11 +172,13 @@
                   </tr>
                   {/if}
                   {if $PRODUCT.stock_level}
-                  <tr>
+                  <tr id="stock_level_row">
+				  {else}
+				  <tr id="stock_level_row" class="hide">
+				  {/if}
                      <td>{$LANG.catalogue.stock_level}</td>
-                     <td>{$PRODUCT.stock_level}</td>
+                     <td><span id="spec_stock_level" data-stock_level="{$PRODUCT.stock_level}">{$PRODUCT.stock_level}</span></td>
                   </tr>
-                  {/if}
                   <tr>
                      <td>{$LANG.common.condition}</td>
                      <td>{$PRODUCT.condition}</td>
