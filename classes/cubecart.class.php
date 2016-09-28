@@ -267,6 +267,7 @@ class Cubecart {
 					$product['ctrl_sale'] = ($product['sale_price'] > 0 && $product['sale_price'] < $product['price'] ? true : false);
 					$product['price'] = $GLOBALS['tax']->priceFormat($product['price']);
 					$product['sale_price'] = $GLOBALS['tax']->priceFormat($product['sale_price']);
+					$product['product_weight'] = sprintf('%.3F', $product['product_weight']);
 					// Add settings to determine which GUI elements to display / hide (replicates variables / logic in Catalogue#displayProduct)
 					$product['CTRL_SETTINGS'] = array(
 						'CATALOGUE_MODE'      => ($GLOBALS['config']->get('config', 'catalogue_mode') ? true : false),

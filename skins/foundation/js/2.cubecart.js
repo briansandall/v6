@@ -485,6 +485,11 @@ function specification_inc_options() {
                             }
                         }
                     break;
+                    default: // update product specifications
+                        var id = '#spec_' + key;
+                        if (data.hasOwnProperty(key) && $(id).length) {
+                            $(id).html(data[key]);
+                        }
                     }
                 }
                 // Handle after loop so elements are properly displayed / hidden

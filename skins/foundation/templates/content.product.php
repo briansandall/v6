@@ -174,11 +174,11 @@
          </div>
          {/if}
          <div class="content{if empty($PRODUCT.description)} active{/if}" id="product_spec">
-            <table>
+            <table id="product_spec_table">
                <tbody>
                   <tr>
                      <td>{$LANG.catalogue.product_code}</td>
-                     <td>{$PRODUCT.product_code}</td>
+                     <td><span id="spec_product_code" data-product_code="{$PRODUCT.product_code}">{$PRODUCT.product_code}</span></td>
                   </tr>
                   {if $PRODUCT.manufacturer}
                   <tr>
@@ -187,11 +187,13 @@
                   </tr>
                   {/if}
                   {if $PRODUCT.stock_level}
-                  <tr>
+                  <tr id="stock_level_row">
+				  {else}
+				  <tr id="stock_level_row" class="hide">
+				  {/if}
                      <td>{$LANG.catalogue.stock_level}</td>
-                     <td>{$PRODUCT.stock_level}</td>
+                     <td><span id="spec_stock_level" data-stock_level="{$PRODUCT.stock_level}">{$PRODUCT.stock_level}</span></td>
                   </tr>
-                  {/if}
                   <tr>
                      <td>{$LANG.common.condition}</td>
                      <td>{$PRODUCT.condition}</td>
@@ -199,7 +201,7 @@
                   {if $PRODUCT.product_weight > 0}
                   <tr>
                      <td>{$LANG.common.weight}</td>
-                     <td>{$PRODUCT.product_weight}{$CONFIG.product_weight_unit|lower}</td>
+                     <td><span id="spec_product_weight" data-product_weight="{$PRODUCT.product_weight}">{$PRODUCT.product_weight}</span>{$CONFIG.product_weight_unit}</td>
                   </tr>
                   {/if}
                </tbody>
