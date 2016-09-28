@@ -684,6 +684,9 @@ class Cart {
 					$product['price_including_tax_modifier'] = 0.00;
 
 					$product['quantity'] = $item['quantity'];
+					if ($GLOBALS['tax']->salePrice($product['price'], $product['sale_price'])) {
+						$product['price'] = $product['sale_price'];
+					}
 					$product['price_display'] = $product['price'];
 					$product['base_price_display'] = $GLOBALS['tax']->priceFormat($product['price'], true);
 					$product['remove_options_tax'] = false;
@@ -733,15 +736,6 @@ class Cart {
 						}
 					}
 
-					// Check for sale after prices fully updated
-					if ($product['ctrl_sale']) { // this item is supposed to be on sale
-						if ($GLOBALS['tax']->salePrice($product['price'], $product['sale_price']) && $product['sale_price'] < $product['price']) {
-							$product['price'] = $product['sale_price'];
-						} else {
-							$product['ctrl_sale'] = false;
-						}
-					}
-
 					// Add the total product price inc options etc for payment gateways
 					$this->basket['contents'][$hash]['option_line_price'] = $product['option_line_price'];
 					$this->basket['contents'][$hash]['total_price_each'] = $product['price'];
@@ -771,9 +765,13 @@ class Cart {
 					$this->basket_digital = true;
 				}
 
-				// Price has already been adjusted for absolute pricing and any appropriate option modifiers
-				$product['line_price_display'] = $product['price_including_tax'];
-				$product['price_display'] = $product['price_including_tax']*$item['quantity'];
+				if(!empty($product['absolute_price'])) {
+					$product['line_price_display'] = $product['price_including_tax'];
+					$product['price_display']  = $product['price_including_tax']*$item['quantity'];
+				} else {
+					$product['line_price_display'] = $product['price_display']+$product['price_including_tax'];
+					$product['price_display']  = ($product['price_display']+$product['price_including_tax'])*$item['quantity'];
+				}
 
 				## Update Subtotals
 				$product['line_price'] = $product['price'];
