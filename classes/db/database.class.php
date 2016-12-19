@@ -800,6 +800,8 @@ class Database_Contoller {
 					unset($symbol);
 					if (is_array($value)) {
 						foreach ($value as $val) {
+							// Remove column label so that it can correctly check against table columns
+							$val = (is_string($val) && $label ? preg_replace("/^$label\./", '', $val, 1) : $val);
 							if (in_array($val, $allowed) && !is_numeric($val) || preg_match('/CONCAT/',$val)) {
 								if (isset($key[0]) && !ctype_alnum($key[0]) || $key[0]=='NULL' || is_null($key[0]) || $key[0]=='NOT NULL') {
 									if (preg_match('#^([<>!~\+\-]=?)(.+)#', $key, $match)) {
@@ -816,7 +818,8 @@ class Database_Contoller {
 									}
 								}
   								
-  								$val_ = preg_match('/CONCAT/',$val) ? $val : "`$val`";
+								// Re-add column identifier if it was given
+								$val_ = preg_match('/CONCAT/',$val) ? $val : ($label ? "`$label`.`$val`" : "`$val`");
 
 								if (strtoupper($key[0]) == 'NULL' || is_null($key[0])) {
 									$symbol = 'IS NULL';
